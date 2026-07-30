@@ -4,83 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact - Paroisse Saint-François d'Assise</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;0,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] } } } }
+        tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', azur: '#2563eb', or: '#f59e0b', sable: '#fef3c7' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] } } } }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+<body class="bg-gradient-to-br from-slate-50 via-white to-blue-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
-    <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
+    <header class="bg-white/80 backdrop-blur-xl shadow-sm sticky top-0 z-50 border-b border-blue-100">
         <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
-            <div class="flex items-center gap-4">
-                <div class="bg-nuit text-or p-2 rounded-full shadow-md"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v18m-6-12h12"></path></svg></div>
+            <div class="flex items-center gap-4 group cursor-pointer">
+                <div class="bg-gradient-to-br from-nuit to-azur text-or p-2.5 rounded-2xl shadow-lg shadow-blue-900/20 group-hover:scale-105 transition-transform"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v18m-6-12h12"></path></svg></div>
                 <span class="text-2xl font-serif font-bold text-nuit block leading-none">Saint-François d'Assise</span>
             </div>
-            <nav class="mt-4 md:mt-0 flex gap-8 text-sm font-semibold text-slate-600">
-                <a href="/" class="hover:text-nuit pb-1 transition-all">Accueil</a>
-                <a href="/messes" class="hover:text-nuit pb-1 transition-all">Messes</a>
-                <a href="/horaires" class="hover:text-nuit pb-1 transition-all">Ouverture des Églises</a>
-                <a href="/contact" class="text-or border-b-2 border-or pb-1 transition-all">Contact</a>
+            <nav class="mt-4 md:mt-0 flex gap-8 text-sm font-bold text-slate-500">
+                <a href="/" class="hover:text-azur pb-1 transition-all">Accueil</a>
+                <a href="/messes" class="hover:text-azur pb-1 transition-all">Messes</a>
+                <a href="/horaires" class="hover:text-azur pb-1 transition-all">Ouverture des Églises</a>
+                <a href="/contact" class="text-azur border-b-2 border-azur pb-1 transition-all">Contact</a>
             </nav>
         </div>
     </header>
 
     <main class="max-w-5xl mx-auto px-6 py-16 flex-grow w-full">
-        <div class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-serif font-bold text-nuit mb-4">Contact & Permanences</h1>
-            <p class="text-slate-600 text-lg">Nous sommes à votre écoute pour vous accompagner.</p>
+        <div class="text-center mb-16">
+            <h1 class="text-4xl md:text-6xl font-serif font-bold text-nuit mb-6 tracking-tight">Contact & Écoute</h1>
+            <p class="text-slate-500 font-medium text-lg max-w-2xl mx-auto">Nous sommes à votre disposition pour vous accompagner, échanger ou répondre à vos questions.</p>
         </div>
         
-        <!-- CONTACTS PRINCIPAUX -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            <div class="bg-white p-10 rounded-3xl shadow-lg border-t-[6px] border-or">
-                <h2 class="text-2xl font-serif font-bold text-nuit mb-6">Le Presbytère</h2>
-                <div class="space-y-6 text-slate-600">
-                    <p class="flex items-start gap-3">
-                        <span class="text-or text-xl mt-1">📍</span>
-                        <span id="vue-adresse">Chargement de l'adresse...</span>
-                    </p>
-                    <p class="flex items-center gap-3">
-                        <span class="text-or text-xl">📞</span>
-                        <span><strong>Téléphone :</strong> <span id="vue-tel">...</span></span>
-                    </p>
-                    <p class="flex items-center gap-3">
-                        <span class="text-or text-xl">✉️</span>
-                        <span><strong>Email :</strong> <span id="vue-email">...</span></span>
-                    </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-16">
+            <!-- Maison Paroissiale -->
+            <div class="bg-white p-10 rounded-[2.5rem] shadow-xl shadow-blue-900/5 border-t-[8px] border-or group hover:-translate-y-2 transition-transform duration-300 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-full blur-3xl -mr-10 -mt-10"></div>
+                <h2 class="text-3xl font-serif font-bold text-nuit mb-8 relative z-10">Maison Paroissiale</h2>
+                <div class="space-y-8 text-slate-600 relative z-10">
+                    <div class="flex items-start gap-5">
+                        <div class="bg-amber-100 text-or p-3 rounded-2xl"><span class="text-xl leading-none">📍</span></div>
+                        <div id="vue-adresse" class="mt-1 leading-relaxed">Chargement...</div>
+                    </div>
+                    <div class="flex items-center gap-5">
+                        <div class="bg-blue-100 text-azur p-3 rounded-2xl"><span class="text-xl leading-none">📞</span></div>
+                        <div class="font-medium text-lg text-nuit" id="vue-tel">...</div>
+                    </div>
+                    <div class="flex items-center gap-5">
+                        <div class="bg-emerald-100 text-emerald-600 p-3 rounded-2xl"><span class="text-xl leading-none">✉️</span></div>
+                        <div class="font-medium text-azur" id="vue-email">...</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="bg-nuit text-white p-10 rounded-3xl shadow-lg relative overflow-hidden">
-                <h2 class="text-2xl font-serif font-bold mb-6">Informations Utiles</h2>
-                <div class="space-y-6">
-                    <div>
-                        <h3 class="font-bold text-or mb-2">Permanences d'accueil</h3>
-                        <p id="vue-permanences" class="text-sm text-blue-100 leading-relaxed">Chargement...</p>
+            <!-- Infos utiles -->
+            <div class="bg-gradient-to-br from-nuit to-blue-900 text-white p-10 rounded-[2.5rem] shadow-2xl shadow-blue-900/20 relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 opacity-10">
+                    <svg class="w-64 h-64" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v18m-6-12h12" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+                </div>
+                <h2 class="text-3xl font-serif font-bold mb-8 relative z-10">Informations Utiles</h2>
+                <div class="space-y-8 relative z-10">
+                    <div class="bg-white/10 backdrop-blur p-6 rounded-2xl border border-white/10">
+                        <h3 class="font-bold text-or mb-3 flex items-center gap-2"><span class="text-xl">🕰️</span> Permanences d'accueil</h3>
+                        <p id="vue-permanences" class="text-sm text-blue-50 leading-relaxed">Chargement...</p>
                     </div>
-                    <div class="w-full h-px bg-slate-700"></div>
-                    <div>
-                        <h3 class="font-bold text-or mb-2">Urgences (Obsèques)</h3>
-                        <p id="vue-urgences" class="text-sm text-blue-100 leading-relaxed">Chargement...</p>
+                    <div class="bg-red-500/10 backdrop-blur p-6 rounded-2xl border border-red-500/20">
+                        <h3 class="font-bold text-red-300 mb-3 flex items-center gap-2"><span class="text-xl">🕊️</span> Urgences & Obsèques</h3>
+                        <p id="vue-urgences" class="text-sm text-blue-50 leading-relaxed font-medium">Chargement...</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- AUTRES CONTACTS (NOUVEAU) -->
+        <!-- L'équipe -->
         <div class="mt-16">
-            <h2 class="text-2xl font-serif font-bold text-nuit mb-6 border-b-2 border-or pb-2 inline-block">L'équipe & Autres contacts</h2>
-            <div id="liste-autres-contacts" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                <!-- Les cartes s'afficheront ici -->
-                <p class="text-slate-400 italic col-span-full">Chargement des contacts...</p>
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-serif font-bold text-nuit">L'équipe & Autres contacts</h2>
             </div>
+            <div id="liste-autres-contacts" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
         </div>
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 text-center py-10 text-sm mt-auto"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
+    <footer class="bg-white border-t border-slate-200 text-slate-500 text-center py-10 text-sm mt-auto font-medium"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
 
     <script>
         const SUPABASE_URL = 'https://tyxybtrthvmyzjefziop.supabase.co';
@@ -88,28 +91,26 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function chargerContacts() {
-            // Contacts Principaux
             const { data } = await _supabase.from('contact_info').select('*').eq('id', 1).single();
             if(data) {
-                document.getElementById('vue-adresse').innerHTML = `<strong>Maison Paroissiale</strong><br>` + (data.adresse ? data.adresse.replace(/\n/g, '<br>') : '');
+                document.getElementById('vue-adresse').innerHTML = data.adresse ? data.adresse.replace(/\n/g, '<br>') : '';
                 document.getElementById('vue-tel').innerText = data.telephone || '';
                 document.getElementById('vue-email').innerText = data.email || '';
                 document.getElementById('vue-permanences').innerHTML = data.permanences ? data.permanences.replace(/\n/g, '<br>') : '';
                 document.getElementById('vue-urgences').innerHTML = data.urgences ? data.urgences.replace(/\n/g, '<br>') : '';
             }
 
-            // Autres Contacts
             const { data: autres } = await _supabase.from('autres_contacts').select('*');
             const conteneur = document.getElementById('liste-autres-contacts');
             if (autres && autres.length > 0) {
                 conteneur.innerHTML = autres.map(c => `
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border-l-[4px] border-nuit flex flex-col justify-center">
-                        <span class="font-bold text-nuit text-lg font-serif mb-1">${c.nom}</span>
-                        <span class="text-slate-600 font-medium">${c.valeur}</span>
+                    <div class="bg-white p-6 rounded-2xl shadow-lg shadow-blue-900/5 border border-slate-100 flex flex-col justify-center hover:-translate-y-1 transition-transform group">
+                        <span class="font-bold text-nuit text-lg font-serif mb-2 group-hover:text-azur transition-colors">${c.nom}</span>
+                        <span class="text-slate-600 font-medium bg-slate-50 px-3 py-2 rounded-lg text-sm inline-block w-fit">${c.valeur}</span>
                     </div>
                 `).join('');
             } else {
-                conteneur.innerHTML = '<p class="text-slate-400 italic">Aucun autre contact renseigné pour le moment.</p>';
+                conteneur.innerHTML = '<p class="text-slate-400 italic text-center w-full col-span-full">Aucun autre contact renseigné pour le moment.</p>';
             }
         }
         chargerContacts();
