@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Horaires des Messes - Paroisse Saint-François d'Assise</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans">
+
+    <header class="bg-emerald-800 text-white shadow-md">
+        <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold">Paroisse Saint-François d'Assise</h1>
+                <p class="text-emerald-200 text-sm mt-1">Domérat, Huriel, Prémilhat et environs</p>
+            </div>
+            <nav class="mt-4 md:mt-0 flex gap-4 text-sm font-medium">
+                <a href="index.html" class="hover:underline">Accueil</a>
+                <a href="horaires.html" class="underline font-bold">Horaires des messes</a>
+                <a href="contact.html" class="hover:underline">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 mb-8">
+            <h2 class="text-2xl font-bold text-emerald-900 mb-2">⛪ Célébrations et Messes</h2>
+            <p class="text-slate-600 text-sm mb-6">Retrouvez ci-dessous la liste de nos prochaines messes dominicales et en semaine sur la paroisse.</p>
+            
+            <div id="toutes-les-messes" class="space-y-4">
+                <p class="text-slate-400 text-sm">Chargement des horaires...</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 text-center py-6 mt-12 text-sm">
+        <p>&copy; 2026 Paroisse Saint-François d'Assise - Tous droits réservés.</p>
+    </footer>
+
+    <script>
+        const SUPABASE_URL = 'https://tyxybtrthvmyzjefziop.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
+
+        const { createClient } = supabase;
+        const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function chargerToutesLesMesses() {
+            const container = document.getElementById('toutes-les-messes');
+            const { data, error } = await _supabase.from('horaires_messes').select('*');
+
+            if (error) {
+                container.innerHTML = '<p class="text-red-500 text-sm">Erreur de chargement.</p>';
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p class="text-slate-500 text-sm">Aucun horaire renseigné pour l\'instant.</p>';
+                return;
+            }
+
+            container.innerHTML = data.map(m => `
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-2">
+                    <div>
+                        <span class="font-bold text-emerald-900 text-lg block">${m.lieu}</span>
+                        <span class="text-slate-600 text-sm font-medium">📅 ${m.jour} à ${m.heure}</span>
+                    </div>
+                    ${m.remarques ? `<span class="text-xs bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-full font-medium">${m.remarques}</span>` : ''}
+                </div>
+            `).join('');
+        }
+
+        chargerToutesLesMesses();
+    </script>
+</body>
+</html>
