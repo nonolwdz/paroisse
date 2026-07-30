@@ -354,12 +354,31 @@
             document.getElementById('actu-titre').value = a.titre; document.getElementById('actu-date').value = a.date_publication; quill.root.innerHTML = a.contenu;
             document.getElementById('btn-save-actu').innerText = "💾 Modifier l'actualité"; window.scrollTo({top:0, behavior:'smooth'});
         }
-        function editAutreContact(id) {
-            const c = autresData.find(x => x.id === id); editAutreId = c.id;
-            document.getElementById('autre-nom').value = c.nom; document.getElementById('autre-valeur').value = c.valeur;
-            document.getElementById('btn-save-autre').innerText = "💾 Modifier le contact"; window.scrollTo({top:0, behavior:'smooth'});
+        async function sauvegarderContact() {
+            const adresse = document.getElementById('contact-adresse').value;
+            const telephone = document.getElementById('contact-tel').value;
+            const email = document.getElementById('contact-email').value;
+            const permanences = document.getElementById('contact-permanences').value;
+            const urgences = document.getElementById('contact-urgences').value;
+            
+            // On utilise "upsert" : si la ligne id=1 n'existe pas, il la crée tout seul !
+            const { error } = await _supabase.from('contact_info').upsert({ 
+                id: 1, 
+                adresse: adresse, 
+                telephone: telephone, 
+                email: email, 
+                permanences: permanences, 
+                urgences: urgences 
+            });
+            
+            const msg = document.getElementById('contact-msg');
+            if (error) { 
+                msg.innerHTML = `<span class="text-red-600">❌ Erreur : ${error.message} (Vérifiez que le RLS est bien désactivé)</span>`; 
+            } else { 
+                msg.innerHTML = "✅ Sauvegardé avec succès !"; 
+                setTimeout(() => msg.innerHTML = '', 3000); 
+            }
         }
-
         async function supprimer(table, id) { if(confirm("Supprimer définitivement ?")) { await _supabase.from(table).delete().eq('id', id); chargerDonnees(); } }
 
         checkSession();
