@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { ciel: '#0ea5e9', soleil: '#f97316', menthe: '#10b981', fraise: '#f43f5e', fond: '#f8fafc' }, fontFamily: { sans: ['Nunito', 'sans-serif'] } } } }
+        tailwind.config = { theme: { extend: { colors: { ciel: '#0ea5e9', soleil: '#fdba74', menthe: '#34d399', fraise: '#fb7185', fond: '#f8fafc', nuit: '#1e293b' } } } }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
@@ -15,126 +15,161 @@
 </head>
 <body class="bg-fond text-slate-700 font-sans min-h-screen">
 
-    <header class="bg-ciel text-white p-4 shadow-lg flex justify-between items-center sticky top-0 z-50">
+    <header class="bg-nuit text-white p-4 shadow-sm flex justify-between items-center sticky top-0 z-50">
         <span class="text-2xl font-black">⚙️ Espace Paroissial</span>
         <div class="flex gap-3">
-            <a href="/" class="bg-white/20 px-4 py-2 rounded-xl font-bold hover:bg-white/30 transition-colors">Retour au Site</a>
+            <a href="/" class="bg-white/10 border border-white/20 px-4 py-2 rounded-xl font-bold hover:bg-white/20 transition-colors">Retour au Site</a>
             <button id="btn-logout" class="hidden bg-fraise hover:bg-red-600 px-4 py-2 rounded-xl font-bold shadow-md transition-colors" onclick="seDeconnecter()">Déconnexion</button>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-6 py-12">
         
-        <div id="section-login" class="bg-white p-10 rounded-[3rem] shadow-2xl border-t-8 border-soleil max-w-md mx-auto mt-12">
+        <div id="section-login" class="bg-white p-10 rounded-[3rem] shadow-sm border border-slate-100 border-t-8 border-soleil max-w-md mx-auto mt-12">
             <h2 class="text-4xl font-black text-center mb-8 text-slate-800">Connexion</h2>
             <div class="space-y-4">
-                <input type="email" id="email" class="w-full border-4 border-slate-100 p-4 rounded-2xl outline-none focus:border-soleil font-bold" placeholder="Email admin">
-                <input type="password" id="password" class="w-full border-4 border-slate-100 p-4 rounded-2xl outline-none focus:border-soleil font-bold" placeholder="Mot de passe">
-                <button onclick="seConnecter()" class="w-full bg-soleil text-white font-black text-xl py-4 rounded-2xl shadow-lg hover:scale-105 transition-transform mt-4">Accéder</button>
+                <input type="email" id="email" class="w-full border-2 border-slate-200 p-4 rounded-2xl outline-none focus:border-soleil font-bold text-slate-800" placeholder="Email admin">
+                <input type="password" id="password" class="w-full border-2 border-slate-200 p-4 rounded-2xl outline-none focus:border-soleil font-bold text-slate-800" placeholder="Mot de passe">
+                <button onclick="seConnecter()" class="w-full bg-nuit text-white font-black text-xl py-4 rounded-2xl shadow-sm hover:bg-slate-800 transition-colors mt-4">Accéder</button>
             </div>
         </div>
 
         <div id="section-dashboard" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
             
-            <!-- ÉGLISES -->
-            <div class="bg-white p-8 rounded-[3rem] shadow-xl border-4 border-ciel/20">
-                <h3 class="text-3xl font-black text-ciel mb-8">🗝️ Ouvertures d'Églises</h3>
-                <div class="space-y-4">
-                    <input type="text" id="eglise-nom" placeholder="Nom de l'église (ex: Notre-Dame)" class="w-full border-4 border-slate-100 p-4 rounded-2xl focus:border-ciel outline-none font-black text-slate-800">
-                    <textarea id="eglise-horaires" placeholder="Texte public (Ex: Du lundi au vendredi...)" class="w-full border-4 border-slate-100 p-4 rounded-2xl focus:border-ciel outline-none h-24 font-bold"></textarea>
+            <!-- NOUVEAU : LA GESTION DES TICKETS PUBLIC -->
+            <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 border-t-8 border-ciel lg:col-span-2">
+                <div class="flex items-center gap-4 mb-8 border-b border-slate-100 pb-4">
+                    <span class="text-4xl">🎫</span>
+                    <div>
+                        <h3 class="text-3xl font-black text-slate-800">Tickets & Suggestions</h3>
+                        <p class="text-slate-500 font-bold">Répondez aux demandes des paroissiens.</p>
+                    </div>
+                </div>
 
-                    <div class="bg-slate-100 p-6 rounded-3xl">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Liste des tickets -->
+                    <div class="bg-slate-50 p-5 rounded-3xl border border-slate-200 h-[500px] overflow-y-auto custom-scrollbar" id="admin-liste-tickets">
+                        <p class="text-slate-400 font-bold text-center mt-10">Chargement...</p>
+                    </div>
+                    
+                    <!-- Espace réponse -->
+                    <div class="lg:col-span-2 bg-white rounded-3xl border border-slate-200 p-6 flex flex-col hidden" id="admin-ticket-view">
+                        <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
+                            <div>
+                                <h4 id="at-sujet" class="text-xl font-black text-slate-800">Sujet</h4>
+                                <p id="at-code" class="text-sm font-bold text-slate-400 tracking-wider mt-1">CODE</p>
+                            </div>
+                            <span id="at-statut" class="px-4 py-1.5 rounded-full text-xs font-black uppercase">Statut</span>
+                        </div>
+                        
+                        <div id="at-conversation" class="flex-grow overflow-y-auto custom-scrollbar space-y-4 pr-3 mb-6 bg-slate-50/50 p-4 rounded-2xl"></div>
+                        
+                        <div id="at-actions" class="mt-auto space-y-3">
+                            <textarea id="at-reponse" rows="3" placeholder="Rédiger une réponse officielle..." class="w-full border-2 border-slate-200 rounded-xl p-4 font-bold text-sm outline-none focus:border-ciel resize-none"></textarea>
+                            <div class="flex gap-3">
+                                <button onclick="repondreTicketAdmin()" class="flex-grow bg-ciel text-white font-black py-3 rounded-xl hover:bg-blue-500 shadow-sm">Envoyer la réponse</button>
+                                <button onclick="cloturerTicket()" class="bg-slate-200 text-slate-600 font-black px-6 py-3 rounded-xl hover:bg-slate-300">Clôturer ce dossier</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÉGLISES -->
+            <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 border-t-8 border-soleil">
+                <h3 class="text-2xl font-black text-slate-800 mb-8">🗝️ Ouvertures d'Églises</h3>
+                <div class="space-y-4">
+                    <input type="text" id="eglise-nom" placeholder="Nom de l'église (ex: Notre-Dame)" class="w-full border-2 border-slate-200 p-4 rounded-2xl focus:border-soleil outline-none font-black text-slate-800">
+                    <textarea id="eglise-horaires" placeholder="Texte public (Ex: Du lundi au vendredi...)" class="w-full border-2 border-slate-200 p-4 rounded-2xl focus:border-soleil outline-none h-24 font-bold"></textarea>
+
+                    <div class="bg-slate-50 p-6 rounded-3xl border border-slate-100">
                         <label class="font-black text-slate-700 block mb-3">Réglage des Badges :</label>
-                        <select id="eglise-type" onchange="toggleHoraires()" class="w-full border-4 border-white p-3 rounded-xl mb-4 bg-white outline-none focus:border-ciel font-bold text-slate-600">
+                        <select id="eglise-type" onchange="toggleHoraires()" class="w-full border-2 border-slate-200 p-3 rounded-xl mb-4 bg-white outline-none focus:border-soleil font-bold text-slate-600">
                             <option value="inconnu">Badges Gris (Inconnu)</option>
                             <option value="tous">Tous les jours identiques</option>
                             <option value="semaine_we">Semaine (Lun-Ven) / Samedi / Dimanche</option>
                         </select>
                         <div id="bloc-tous" class="hidden space-y-3">
-                            <div class="flex items-center gap-3 font-bold"><span class="w-16">Plage 1:</span><input type="time" id="tous-m-s" class="border-2 p-1 rounded-lg"> à <input type="time" id="tous-m-e" class="border-2 p-1 rounded-lg"></div>
-                            <div class="flex items-center gap-3 font-bold"><span class="w-16">Plage 2:</span><input type="time" id="tous-a-s" class="border-2 p-1 rounded-lg"> à <input type="time" id="tous-a-e" class="border-2 p-1 rounded-lg"></div>
+                            <div class="flex items-center gap-3 font-bold"><span class="w-16">Matin:</span><input type="time" id="tous-m-s" class="border p-1 rounded-lg"> à <input type="time" id="tous-m-e" class="border p-1 rounded-lg"></div>
+                            <div class="flex items-center gap-3 font-bold"><span class="w-16">Aprem:</span><input type="time" id="tous-a-s" class="border p-1 rounded-lg"> à <input type="time" id="tous-a-e" class="border p-1 rounded-lg"></div>
                         </div>
                         <div id="bloc-semaine" class="hidden space-y-4">
-                            <div><span class="font-black text-ciel block mb-1">Semaine</span><div class="flex gap-2 font-bold"><input type="time" id="sem-m-s" class="border-2 p-1 rounded-lg w-28"> à <input type="time" id="sem-m-e" class="border-2 p-1 rounded-lg w-28"><span class="mx-1">|</span><input type="time" id="sem-a-s" class="border-2 p-1 rounded-lg w-28"> à <input type="time" id="sem-a-e" class="border-2 p-1 rounded-lg w-28"></div></div>
-                            <div><span class="font-black text-soleil block mb-1">Samedi</span><div class="flex gap-2 font-bold"><input type="time" id="sam-m-s" class="border-2 p-1 rounded-lg w-28"> à <input type="time" id="sam-m-e" class="border-2 p-1 rounded-lg w-28"><span class="mx-1">|</span><input type="time" id="sam-a-s" class="border-2 p-1 rounded-lg w-28"> à <input type="time" id="sam-a-e" class="border-2 p-1 rounded-lg w-28"></div></div>
-                            <div><span class="font-black text-fraise block mb-1">Dimanche</span><div class="flex gap-2 font-bold"><input type="time" id="dim-m-s" class="border-2 p-1 rounded-lg w-28"> à <input type="time" id="dim-m-e" class="border-2 p-1 rounded-lg w-28"><span class="mx-1">|</span><input type="time" id="dim-a-s" class="border-2 p-1 rounded-lg w-28"> à <input type="time" id="dim-a-e" class="border-2 p-1 rounded-lg w-28"></div></div>
+                            <div><span class="font-black text-ciel block mb-1">Semaine</span><div class="flex flex-wrap gap-2 font-bold"><input type="time" id="sem-m-s" class="border p-1 rounded-lg w-24"> à <input type="time" id="sem-m-e" class="border p-1 rounded-lg w-24"><span class="mx-1">|</span><input type="time" id="sem-a-s" class="border p-1 rounded-lg w-24"> à <input type="time" id="sem-a-e" class="border p-1 rounded-lg w-24"></div></div>
+                            <div><span class="font-black text-soleil block mb-1">Samedi</span><div class="flex flex-wrap gap-2 font-bold"><input type="time" id="sam-m-s" class="border p-1 rounded-lg w-24"> à <input type="time" id="sam-m-e" class="border p-1 rounded-lg w-24"><span class="mx-1">|</span><input type="time" id="sam-a-s" class="border p-1 rounded-lg w-24"> à <input type="time" id="sam-a-e" class="border p-1 rounded-lg w-24"></div></div>
+                            <div><span class="font-black text-fraise block mb-1">Dimanche</span><div class="flex flex-wrap gap-2 font-bold"><input type="time" id="dim-m-s" class="border p-1 rounded-lg w-24"> à <input type="time" id="dim-m-e" class="border p-1 rounded-lg w-24"><span class="mx-1">|</span><input type="time" id="dim-a-s" class="border p-1 rounded-lg w-24"> à <input type="time" id="dim-a-e" class="border p-1 rounded-lg w-24"></div></div>
                         </div>
                     </div>
-                    <label class="flex items-center gap-3 bg-fraise/10 p-4 rounded-2xl border-2 border-fraise/20 cursor-pointer">
+                    <label class="flex items-center gap-3 bg-fraise/10 p-4 rounded-2xl border border-fraise/20 cursor-pointer">
                         <input type="checkbox" id="eglise-estferme" class="w-6 h-6 accent-fraise rounded">
                         <span class="font-black text-fraise">Forcer le Badge "Fermeture"</span>
                     </label>
-                    <input type="text" id="eglise-alerte" placeholder="Message d'alerte (ex: Travaux)" class="w-full border-4 border-slate-100 p-4 rounded-2xl focus:border-fraise outline-none font-bold">
-                    <button id="btn-save-eglise" onclick="ajouterEglise()" class="w-full bg-ciel text-white font-black text-lg py-4 rounded-2xl hover:bg-blue-500 shadow-md">Enregistrer l'Église</button>
-                    <p id="eglise-msg" class="text-center font-black text-ciel h-4"></p>
+                    <input type="text" id="eglise-alerte" placeholder="Message d'alerte (ex: Travaux)" class="w-full border-2 border-slate-200 p-4 rounded-2xl focus:border-fraise outline-none font-bold">
+                    <button id="btn-save-eglise" onclick="ajouterEglise()" class="w-full bg-nuit text-white font-black text-lg py-4 rounded-2xl hover:bg-slate-800 shadow-sm mt-2">Enregistrer l'Église</button>
                 </div>
             </div>
 
             <!-- MESSES -->
-            <div class="bg-white p-8 rounded-[3rem] shadow-xl border-4 border-menthe/20">
-                <h3 class="text-3xl font-black text-menthe mb-8">⛪ Ajouter une Messe</h3>
+            <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 border-t-8 border-menthe">
+                <h3 class="text-2xl font-black text-slate-800 mb-8">⛪ Ajouter une Messe</h3>
                 <div class="space-y-4">
-                    <select id="messe-lieu" class="w-full border-4 border-slate-100 p-4 rounded-2xl font-black text-slate-800 outline-none focus:border-menthe bg-slate-50"></select>
+                    <select id="messe-lieu" class="w-full border-2 border-slate-200 p-4 rounded-2xl font-black text-slate-800 outline-none focus:border-menthe bg-slate-50 cursor-pointer"></select>
                     <div class="grid grid-cols-2 gap-4">
-                        <input type="date" id="messe-jour" class="w-full border-4 border-slate-100 p-4 rounded-2xl outline-none focus:border-menthe font-bold">
-                        <input type="time" id="messe-heure" class="w-full border-4 border-slate-100 p-4 rounded-2xl outline-none focus:border-menthe font-bold">
+                        <input type="date" id="messe-jour" class="w-full border-2 border-slate-200 p-4 rounded-2xl outline-none focus:border-menthe font-bold">
+                        <input type="time" id="messe-heure" class="w-full border-2 border-slate-200 p-4 rounded-2xl outline-none focus:border-menthe font-bold">
                     </div>
-                    <input type="text" id="messe-remarques" placeholder="Remarque (ex: Fête Patronale)" class="w-full border-4 border-slate-100 p-4 rounded-2xl outline-none focus:border-menthe font-bold">
-                    <button id="btn-save-messe" onclick="ajouterMesse()" class="w-full bg-menthe text-white font-black text-lg py-4 rounded-2xl hover:bg-emerald-600 shadow-md">Ajouter au Calendrier</button>
-                    <p id="messe-msg" class="text-center font-black text-menthe h-4"></p>
+                    <input type="text" id="messe-remarques" placeholder="Remarque (ex: Fête Patronale)" class="w-full border-2 border-slate-200 p-4 rounded-2xl outline-none focus:border-menthe font-bold">
+                    <button id="btn-save-messe" onclick="ajouterMesse()" class="w-full bg-menthe text-white font-black text-lg py-4 rounded-2xl hover:bg-emerald-500 shadow-sm mt-2">Ajouter au Calendrier</button>
                 </div>
             </div>
 
-            <!-- ACTUALITÉS (Avec Images !) -->
-            <div class="bg-white p-8 rounded-[3rem] shadow-xl border-4 border-soleil/20 lg:col-span-2">
-                <h3 class="text-3xl font-black text-soleil mb-8">📢 Rédaction des Actualités</h3>
+            <!-- ACTUALITÉS -->
+            <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 border-t-8 border-fraise lg:col-span-2">
+                <h3 class="text-2xl font-black text-slate-800 mb-8">📢 Rédiger une Actualité</h3>
                 <div class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="text" id="actu-titre" placeholder="Titre de l'annonce" class="w-full border-4 border-slate-100 p-4 rounded-2xl outline-none focus:border-soleil font-black">
-                        <input type="date" id="actu-date" class="w-full border-4 border-slate-100 p-4 rounded-2xl outline-none focus:border-soleil font-bold">
+                        <input type="text" id="actu-titre" placeholder="Titre de l'annonce" class="w-full border-2 border-slate-200 p-4 rounded-2xl outline-none focus:border-fraise font-black">
+                        <input type="date" id="actu-date" class="w-full border-2 border-slate-200 p-4 rounded-2xl outline-none focus:border-fraise font-bold">
                     </div>
-                    <div class="border-4 border-slate-100 rounded-2xl overflow-hidden"><div id="editeur-actu" style="height: 300px; font-family: 'Nunito'; font-size: 18px; font-weight: bold;"></div></div>
-                    <button id="btn-save-actu" onclick="ajouterActualite()" class="w-full bg-soleil text-white font-black text-lg py-4 rounded-2xl hover:bg-orange-600 shadow-md">Publier l'Actualité</button>
-                    <p id="actu-msg" class="text-center font-black text-soleil h-4"></p>
+                    <div class="border-2 border-slate-200 rounded-2xl overflow-hidden"><div id="editeur-actu" style="height: 300px; font-family: 'Nunito'; font-size: 16px; font-weight: bold;"></div></div>
+                    <button id="btn-save-actu" onclick="ajouterActualite()" class="w-full bg-fraise text-white font-black text-lg py-4 rounded-2xl hover:bg-rose-500 shadow-sm">Publier l'Actualité</button>
                 </div>
             </div>
 
-            <!-- CONTACTS PRINCIPAUX (Sauvegarde corrigée) -->
-            <div class="bg-white p-8 rounded-[3rem] shadow-xl border-4 border-slate-200">
-                <h3 class="text-3xl font-black text-slate-700 mb-8">📞 Presbytère</h3>
-                <div class="space-y-4">
-                    <textarea id="contact-adresse" placeholder="Adresse" class="w-full border-4 border-slate-100 p-4 rounded-2xl outline-none focus:border-slate-400 h-24 font-bold"></textarea>
-                    <div class="grid grid-cols-2 gap-4">
-                        <input type="text" id="contact-tel" placeholder="Téléphone" class="w-full border-4 border-slate-100 p-4 rounded-2xl outline-none focus:border-slate-400 font-bold">
-                        <input type="text" id="contact-email" placeholder="Email" class="w-full border-4 border-slate-100 p-4 rounded-2xl outline-none focus:border-slate-400 font-bold">
+            <!-- CONTACTS -->
+            <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 border-t-8 border-slate-400 lg:col-span-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div>
+                        <h3 class="text-2xl font-black text-slate-800 mb-6">📞 Presbytère</h3>
+                        <div class="space-y-4">
+                            <textarea id="contact-adresse" placeholder="Adresse" class="w-full border-2 border-slate-200 p-4 rounded-2xl h-24 font-bold outline-none"></textarea>
+                            <input type="text" id="contact-tel" placeholder="Téléphone" class="w-full border-2 border-slate-200 p-4 rounded-2xl font-bold outline-none">
+                            <input type="text" id="contact-email" placeholder="Email" class="w-full border-2 border-slate-200 p-4 rounded-2xl font-bold outline-none">
+                            <textarea id="contact-permanences" placeholder="Permanences" class="w-full border-2 border-slate-200 p-4 rounded-2xl h-20 font-bold outline-none"></textarea>
+                            <textarea id="contact-urgences" placeholder="Urgences" class="w-full border-2 border-slate-200 p-4 rounded-2xl h-20 font-bold outline-none"></textarea>
+                            <button onclick="sauvegarderContact()" class="w-full bg-slate-800 text-white font-black py-4 rounded-2xl shadow-sm">Sauvegarder</button>
+                            <p id="contact-msg" class="text-center font-bold h-4"></p>
+                        </div>
                     </div>
-                    <textarea id="contact-permanences" placeholder="Permanences" class="w-full border-4 border-slate-100 p-4 rounded-2xl outline-none focus:border-slate-400 h-24 font-bold"></textarea>
-                    <textarea id="contact-urgences" placeholder="Urgences" class="w-full border-4 border-slate-100 p-4 rounded-2xl outline-none focus:border-fraise h-24 font-bold"></textarea>
-                    <button onclick="sauvegarderContact()" class="w-full bg-slate-700 text-white font-black text-lg py-4 rounded-2xl hover:bg-slate-800 shadow-md">Sauvegarder Infos</button>
-                    <div id="contact-msg" class="text-center font-black h-4"></div>
-                </div>
-            </div>
-
-            <!-- AUTRES CONTACTS -->
-            <div class="bg-white p-8 rounded-[3rem] shadow-xl border-4 border-fraise/20">
-                <h3 class="text-3xl font-black text-fraise mb-8">👥 Autres Contacts</h3>
-                <div class="space-y-4">
-                    <input type="text" id="autre-nom" placeholder="Rôle (ex: Secrétariat)" class="w-full border-4 border-slate-100 p-4 rounded-2xl outline-none focus:border-fraise font-black">
-                    <input type="text" id="autre-valeur" placeholder="Numéro ou Email" class="w-full border-4 border-slate-100 p-4 rounded-2xl outline-none focus:border-fraise font-bold">
-                    <button id="btn-save-autre" onclick="ajouterAutreContact()" class="w-full bg-fraise text-white font-black text-lg py-4 rounded-2xl hover:bg-rose-600 shadow-md">Ajouter ce Contact</button>
-                    <p id="autre-msg" class="text-center font-black text-fraise h-4"></p>
+                    <div>
+                        <h3 class="text-2xl font-black text-slate-800 mb-6">👥 L'Équipe</h3>
+                        <div class="space-y-4">
+                            <input type="text" id="autre-nom" placeholder="Rôle (ex: Secrétariat)" class="w-full border-2 border-slate-200 p-4 rounded-2xl font-black outline-none">
+                            <input type="text" id="autre-valeur" placeholder="Numéro ou Email" class="w-full border-2 border-slate-200 p-4 rounded-2xl font-bold outline-none">
+                            <button id="btn-save-autre" onclick="ajouterAutreContact()" class="w-full bg-slate-200 text-slate-700 font-black py-4 rounded-2xl hover:bg-slate-300">Ajouter ce Contact</button>
+                        </div>
+                        <div id="liste-autres" class="mt-8 space-y-2 h-64 overflow-y-auto custom-scrollbar"></div>
+                    </div>
                 </div>
             </div>
 
             <!-- GESTION -->
-            <div class="bg-slate-800 text-white p-10 rounded-[3rem] shadow-xl lg:col-span-2">
-                <h3 class="text-3xl font-black mb-10">🛠️ Gestion & Nettoyage</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-                    <div class="bg-slate-700 p-5 rounded-3xl"><h4 class="font-black text-ciel mb-4">Églises</h4><div id="liste-eglises" class="space-y-3 font-bold text-sm max-h-64 overflow-y-auto custom-scrollbar"></div></div>
-                    <div class="bg-slate-700 p-5 rounded-3xl"><h4 class="font-black text-menthe mb-4">Messes</h4><div id="liste-messes" class="space-y-3 font-bold text-sm max-h-64 overflow-y-auto custom-scrollbar"></div></div>
-                    <div class="bg-slate-700 p-5 rounded-3xl"><h4 class="font-black text-soleil mb-4">Actualités</h4><div id="liste-actus" class="space-y-3 font-bold text-sm max-h-64 overflow-y-auto custom-scrollbar"></div></div>
-                    <div class="bg-slate-700 p-5 rounded-3xl"><h4 class="font-black text-fraise mb-4">Contacts</h4><div id="liste-autres" class="space-y-3 font-bold text-sm max-h-64 overflow-y-auto custom-scrollbar"></div></div>
-                    <div class="bg-slate-700 p-5 rounded-3xl"><h4 class="font-black text-pink-300 mb-4">Ondes</h4><div id="liste-ondes" class="space-y-3 font-bold text-sm max-h-64 overflow-y-auto custom-scrollbar"></div></div>
+            <div class="bg-nuit text-white p-10 rounded-[3rem] shadow-xl lg:col-span-2 mb-12">
+                <h3 class="text-3xl font-black mb-8">🗑️ Gestion</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="bg-white/10 p-5 rounded-3xl"><h4 class="font-black text-ciel mb-4">Églises</h4><div id="liste-eglises" class="space-y-3 font-bold text-sm max-h-64 overflow-y-auto custom-scrollbar"></div></div>
+                    <div class="bg-white/10 p-5 rounded-3xl"><h4 class="font-black text-menthe mb-4">Messes</h4><div id="liste-messes" class="space-y-3 font-bold text-sm max-h-64 overflow-y-auto custom-scrollbar"></div></div>
+                    <div class="bg-white/10 p-5 rounded-3xl"><h4 class="font-black text-soleil mb-4">Actualités</h4><div id="liste-actus" class="space-y-3 font-bold text-sm max-h-64 overflow-y-auto custom-scrollbar"></div></div>
+                    <div class="bg-white/10 p-5 rounded-3xl"><h4 class="font-black text-pink-300 mb-4">Ondes</h4><div id="liste-ondes" class="space-y-3 font-bold text-sm max-h-64 overflow-y-auto custom-scrollbar"></div></div>
                 </div>
             </div>
 
@@ -143,8 +178,8 @@
 
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px;}
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px;}
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 10px;}
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px;}
     </style>
 
     <script>
@@ -152,15 +187,14 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
-        let eglisesData=[], messesData=[], actusData=[], autresData=[];
-        let editEgliseId = null, editMesseId = null, editActuId = null, editAutreId = null;
+        let eglisesData=[], messesData=[], actusData=[], autresData=[], ticketsData=[];
+        let editEgliseId = null, editMesseId = null, editActuId = null, editAutreId = null, ticketAdminCode = null;
 
-        // AJOUT DE L'ICONE IMAGE DANS L'ÉDITEUR
-        var quill = new Quill('#editeur-actu', { theme: 'snow', modules: { toolbar: [ [{ 'header': [2, 3, false] }], ['bold', 'italic', 'underline'], [{ 'list': 'bullet' }], ['link', 'image'], ['clean'] ] } });
+        var quill = new Quill('#editeur-actu', { theme: 'snow', modules: { toolbar: [ [{ 'header': [2, 3, false] }], ['bold', 'italic', 'underline'], ['link', 'image'], ['clean'] ] } });
 
         async function checkSession() {
             const { data: { session } } = await _supabase.auth.getSession();
-            if (session) { document.getElementById('section-login').classList.add('hidden'); document.getElementById('section-dashboard').classList.remove('hidden'); document.getElementById('btn-logout').classList.remove('hidden'); chargerDonnees(); chargerContactAdmin(); }
+            if (session) { document.getElementById('section-login').classList.add('hidden'); document.getElementById('section-dashboard').classList.remove('hidden'); document.getElementById('btn-logout').classList.remove('hidden'); chargerDonnees(); chargerContactAdmin(); chargerTicketsAdmin(); }
         }
 
         async function seConnecter() {
@@ -171,6 +205,78 @@
 
         async function seDeconnecter() { await _supabase.auth.signOut(); location.reload(); }
 
+        /* TICKETS ADMIN */
+        async function chargerTicketsAdmin() {
+            const { data } = await _supabase.from('tickets').select('*').order('created_at', { ascending: false });
+            ticketsData = data || [];
+            document.getElementById('admin-liste-tickets').innerHTML = ticketsData.map(t => {
+                let badgeClass = "bg-soleil/20 text-orange-700";
+                if(t.statut === 'Clos') badgeClass = "bg-slate-200 text-slate-500";
+                else if(t.statut !== 'Nouveau' && t.statut !== 'En attente') badgeClass = "bg-menthe/20 text-emerald-700";
+                
+                return `
+                <div onclick="ouvrirTicketAdmin('${t.code}')" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-3 cursor-pointer hover:border-ciel transition-colors">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs font-black text-slate-400 uppercase tracking-widest">${t.code}</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase ${badgeClass}">${t.statut}</span>
+                    </div>
+                    <p class="font-black text-slate-800 text-sm truncate">${t.sujet}</p>
+                </div>
+                `;
+            }).join('');
+            if(ticketsData.length === 0) document.getElementById('admin-liste-tickets').innerHTML = '<p class="text-slate-400 font-bold text-center mt-10">Aucun ticket.</p>';
+        }
+
+        function ouvrirTicketAdmin(code) {
+            ticketAdminCode = code;
+            const t = ticketsData.find(x => x.code === code);
+            document.getElementById('admin-ticket-view').classList.remove('hidden');
+            document.getElementById('at-sujet').innerText = t.sujet;
+            document.getElementById('at-code').innerText = "TICKET : " + t.code;
+            
+            let badgeClass = "bg-soleil/20 text-orange-700";
+            if(t.statut === 'Clos') badgeClass = "bg-slate-200 text-slate-500";
+            else if(t.statut !== 'Nouveau' && t.statut !== 'En attente') badgeClass = "bg-menthe/20 text-emerald-700";
+            document.getElementById('at-statut').className = `px-4 py-1.5 rounded-full text-xs font-black uppercase ${badgeClass}`;
+            document.getElementById('at-statut').innerText = t.statut;
+
+            const convBox = document.getElementById('at-conversation');
+            convBox.innerHTML = (t.conversation || []).map(m => `
+                <div class="flex flex-col ${m.auteur === 'Paroisse' ? 'items-end' : 'items-start'}">
+                    <span class="text-[10px] font-bold text-slate-400 mb-1 px-2">${m.auteur} - ${m.date}</span>
+                    <div class="max-w-[90%] px-4 py-3 rounded-2xl text-sm font-bold shadow-sm ${m.auteur === 'Paroisse' ? 'bg-ciel text-white rounded-tr-none' : 'bg-white text-slate-700 border border-slate-200 rounded-tl-none'}">
+                        ${m.texte.replace(/\n/g, '<br>')}
+                    </div>
+                </div>
+            `).join('');
+            convBox.scrollTop = convBox.scrollHeight;
+
+            if(t.statut === 'Clos') document.getElementById('at-actions').classList.add('hidden');
+            else document.getElementById('at-actions').classList.remove('hidden');
+        }
+
+        async function repondreTicketAdmin() {
+            const reponse = document.getElementById('at-reponse').value;
+            if(!reponse || !ticketAdminCode) return;
+            const t = ticketsData.find(x => x.code === ticketAdminCode);
+            let conv = t.conversation || [];
+            conv.push({ auteur: 'Paroisse', texte: reponse, date: new Date().toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'}) });
+
+            await _supabase.from('tickets').update({ conversation: conv, statut: 'Réponse envoyée' }).eq('code', ticketAdminCode);
+            document.getElementById('at-reponse').value = '';
+            await chargerTicketsAdmin();
+            ouvrirTicketAdmin(ticketAdminCode);
+        }
+
+        async function cloturerTicket() {
+            if(!confirm("Clôturer ce dossier ? Il ne sera plus possible d'y répondre.")) return;
+            await _supabase.from('tickets').update({ statut: 'Clos' }).eq('code', ticketAdminCode);
+            await chargerTicketsAdmin();
+            ouvrirTicketAdmin(ticketAdminCode);
+        }
+
+        /* FIN TICKETS */
+
         function toggleHoraires() {
             const type = document.getElementById('eglise-type').value;
             document.getElementById('bloc-tous').classList.add('hidden'); document.getElementById('bloc-semaine').classList.add('hidden');
@@ -179,7 +285,7 @@
         }
 
         async function ajouterEglise() {
-            const nom = document.getElementById('eglise-nom').value; if(!nom) return alert("Le nom est obligatoire !");
+            const nom = document.getElementById('eglise-nom').value; if(!nom) return;
             const h_json = JSON.stringify({
                 type: document.getElementById('eglise-type').value,
                 tous_m_s: document.getElementById('tous-m-s').value, tous_m_e: document.getElementById('tous-m-e').value, tous_a_s: document.getElementById('tous-a-s').value, tous_a_e: document.getElementById('tous-a-e').value,
@@ -188,59 +294,41 @@
                 dim_m_s: document.getElementById('dim-m-s').value, dim_m_e: document.getElementById('dim-m-e').value, dim_a_s: document.getElementById('dim-a-s').value, dim_a_e: document.getElementById('dim-a-e').value
             });
             const p = { nom, horaires_base: document.getElementById('eglise-horaires').value, horaires_json: h_json, est_ferme: document.getElementById('eglise-estferme').checked, alerte: document.getElementById('eglise-alerte').value };
-            
-            let e; if (editEgliseId) { e = (await _supabase.from('horaires_eglises').update(p).eq('id', editEgliseId)).error; } else { e = (await _supabase.from('horaires_eglises').insert([p])).error; }
-            if (e) return alert("Erreur");
+            if (editEgliseId) await _supabase.from('horaires_eglises').update(p).eq('id', editEgliseId); else await _supabase.from('horaires_eglises').insert([p]);
             editEgliseId = null; document.getElementById('btn-save-eglise').innerText = "Enregistrer l'église";
-            document.getElementById('eglise-msg').innerText = "Enregistré !"; setTimeout(()=>document.getElementById('eglise-msg').innerText='', 3000);
             document.getElementById('eglise-nom').value=''; document.getElementById('eglise-horaires').value=''; document.getElementById('eglise-estferme').checked=false; document.getElementById('eglise-alerte').value='';
-            document.getElementById('eglise-type').value='inconnu'; toggleHoraires(); ['tous-m-s','tous-m-e','tous-a-s','tous-a-e','sem-m-s','sem-m-e','sem-a-s','sem-a-e','sam-m-s','sam-m-e','sam-a-s','sam-a-e','dim-m-s','dim-m-e','dim-a-s','dim-a-e'].forEach(id => document.getElementById(id).value = '');
-            chargerDonnees();
+            document.getElementById('eglise-type').value='inconnu'; toggleHoraires(); ['tous-m-s','tous-m-e','tous-a-s','tous-a-e','sem-m-s','sem-m-e','sem-a-s','sem-a-e','sam-m-s','sam-m-e','sam-a-s','sam-a-e','dim-m-s','dim-m-e','dim-a-s','dim-a-e'].forEach(id => document.getElementById(id).value = ''); chargerDonnees();
         }
 
         async function ajouterMesse() {
             const l = document.getElementById('messe-lieu').value, j = document.getElementById('messe-jour').value, h = document.getElementById('messe-heure').value, r = document.getElementById('messe-remarques').value;
-            if(!l) return alert("Sélectionnez une église !");
+            if(!l) return;
             if (editMesseId) await _supabase.from('horaires_messes').update({ lieu:l, jour:j, heure:h, remarques:r }).eq('id', editMesseId); else await _supabase.from('horaires_messes').insert([{ lieu:l, jour:j, heure:h, remarques:r }]);
-            editMesseId = null; document.getElementById('btn-save-messe').innerText = "Ajouter au Calendrier"; document.getElementById('messe-msg').innerText = "Enregistré !"; setTimeout(()=>document.getElementById('messe-msg').innerText='', 3000);
+            editMesseId = null; document.getElementById('btn-save-messe').innerText = "Ajouter au Calendrier";
             document.getElementById('messe-jour').value=''; document.getElementById('messe-heure').value=''; document.getElementById('messe-remarques').value=''; chargerDonnees();
         }
 
         async function ajouterActualite() {
             const t = document.getElementById('actu-titre').value, d = document.getElementById('actu-date').value, c = quill.root.innerHTML;
-            if(!t) return alert("Titre obligatoire");
+            if(!t) return;
             if (editActuId) await _supabase.from('actualites').update({ titre:t, date_publication:d, contenu:c }).eq('id', editActuId); else await _supabase.from('actualites').insert([{ titre:t, date_publication:d, contenu:c }]);
-            editActuId = null; document.getElementById('btn-save-actu').innerText = "Publier l'Actualité"; document.getElementById('actu-msg').innerText = "Enregistré !"; setTimeout(()=>document.getElementById('actu-msg').innerText='', 3000);
+            editActuId = null; document.getElementById('btn-save-actu').innerText = "Publier l'Actualité";
             document.getElementById('actu-titre').value=''; document.getElementById('actu-date').value=''; quill.root.innerHTML=''; chargerDonnees();
         }
 
-        // CORRECTION DE LA SAUVEGARDE DU PRESBYTÈRE (Sans Upsert, marche à 100%)
         async function sauvegarderContact() {
             const a = document.getElementById('contact-adresse').value, t = document.getElementById('contact-tel').value, e = document.getElementById('contact-email').value, p = document.getElementById('contact-permanences').value, u = document.getElementById('contact-urgences').value;
             const m = document.getElementById('contact-msg');
-            
-            // 1. On vérifie si la ligne 1 existe
-            const { data, error: fetchErr } = await _supabase.from('contact_info').select('id').eq('id', 1).single();
-            
-            let err;
-            if (data) {
-                // Elle existe = on met à jour
-                const res = await _supabase.from('contact_info').update({ adresse: a, telephone: t, email: e, permanences: p, urgences: u }).eq('id', 1);
-                err = res.error;
-            } else {
-                // Elle n'existe pas = on l'insère
-                const res = await _supabase.from('contact_info').insert([{ id: 1, adresse: a, telephone: t, email: e, permanences: p, urgences: u }]);
-                err = res.error;
-            }
-
-            if (err) { m.innerHTML = `<span class="text-fraise">❌ Erreur : ${err.message}</span>`; } 
-            else { m.innerHTML = '<span class="text-menthe">✅ Sauvegardé avec succès !</span>'; setTimeout(() => m.innerHTML = '', 3000); }
+            const { data } = await _supabase.from('contact_info').select('id').eq('id', 1).single();
+            if (data) await _supabase.from('contact_info').update({ adresse: a, telephone: t, email: e, permanences: p, urgences: u }).eq('id', 1);
+            else await _supabase.from('contact_info').insert([{ id: 1, adresse: a, telephone: t, email: e, permanences: p, urgences: u }]);
+            m.innerHTML = '<span class="text-emerald-500">✅ Sauvegardé</span>'; setTimeout(() => m.innerHTML = '', 3000);
         }
 
         async function ajouterAutreContact() {
             const n = document.getElementById('autre-nom').value, v = document.getElementById('autre-valeur').value; if(!n || !v) return;
             if (editAutreId) await _supabase.from('autres_contacts').update({ nom:n, valeur:v }).eq('id', editAutreId); else await _supabase.from('autres_contacts').insert([{ nom:n, valeur:v }]);
-            editAutreId = null; document.getElementById('btn-save-autre').innerText = "Ajouter ce Contact"; document.getElementById('autre-msg').innerText = "Enregistré !"; setTimeout(()=>document.getElementById('autre-msg').innerText='', 3000);
+            editAutreId = null; document.getElementById('btn-save-autre').innerText = "Ajouter ce Contact";
             document.getElementById('autre-nom').value=''; document.getElementById('autre-valeur').value=''; chargerDonnees();
         }
 
@@ -252,19 +340,19 @@
         async function chargerDonnees() {
             const { data: eglises } = await _supabase.from('horaires_eglises').select('*'); eglisesData = eglises||[];
             const sL = document.getElementById('messe-lieu'); sL.innerHTML = '<option value="" disabled selected>Église...</option>';
-            document.getElementById('liste-eglises').innerHTML = eglisesData.map(e => { sL.innerHTML += `<option value="${e.nom}">${e.nom}</option>`; return `<div class="flex justify-between items-center bg-slate-800 p-2 rounded-xl"><span class="truncate" title="${e.nom}">${e.nom}</span> <div class="flex gap-2"><button onclick="editEglise(${e.id})" class="text-ciel">✏️</button><button onclick="supprimer('horaires_eglises', ${e.id})" class="text-fraise">✖</button></div></div>`; }).join('');
+            document.getElementById('liste-eglises').innerHTML = eglisesData.map(e => { sL.innerHTML += `<option value="${e.nom}">${e.nom}</option>`; return `<div class="flex justify-between items-center bg-white/5 p-2 rounded-xl"><span class="truncate" title="${e.nom}">${e.nom}</span> <div class="flex gap-2"><button onclick="editEglise(${e.id})" class="text-ciel">✏️</button><button onclick="supprimer('horaires_eglises', ${e.id})" class="text-fraise">✖</button></div></div>`; }).join('');
 
             const { data: messes } = await _supabase.from('horaires_messes').select('*').order('jour', {ascending: true}); messesData = messes||[];
-            document.getElementById('liste-messes').innerHTML = messesData.map(m => `<div class="flex justify-between items-center bg-slate-800 p-2 rounded-xl"><span class="truncate">${m.lieu.split('–')[0]} - ${m.jour}</span> <div class="flex gap-2"><button onclick="editMesse(${m.id})" class="text-ciel">✏️</button><button onclick="supprimer('horaires_messes', ${m.id})" class="text-fraise">✖</button></div></div>`).join('');
+            document.getElementById('liste-messes').innerHTML = messesData.map(m => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-xl"><span class="truncate">${m.lieu.split('–')[0]} - ${m.jour}</span> <div class="flex gap-2"><button onclick="editMesse(${m.id})" class="text-ciel">✏️</button><button onclick="supprimer('horaires_messes', ${m.id})" class="text-fraise">✖</button></div></div>`).join('');
 
             const { data: actus } = await _supabase.from('actualites').select('*'); actusData = actus||[];
-            document.getElementById('liste-actus').innerHTML = actusData.map(a => `<div class="flex justify-between items-center bg-slate-800 p-2 rounded-xl"><span class="truncate">${a.titre}</span> <div class="flex gap-2"><button onclick="editActu(${a.id})" class="text-ciel">✏️</button><button onclick="supprimer('actualites', ${a.id})" class="text-fraise">✖</button></div></div>`).join('');
+            document.getElementById('liste-actus').innerHTML = actusData.map(a => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-xl"><span class="truncate">${a.titre}</span> <div class="flex gap-2"><button onclick="editActu(${a.id})" class="text-ciel">✏️</button><button onclick="supprimer('actualites', ${a.id})" class="text-fraise">✖</button></div></div>`).join('');
 
             const { data: autres } = await _supabase.from('autres_contacts').select('*'); autresData = autres||[];
-            document.getElementById('liste-autres').innerHTML = autresData.map(c => `<div class="flex justify-between items-center bg-slate-800 p-2 rounded-xl"><span class="truncate">${c.nom}</span> <div class="flex gap-2"><button onclick="editAutreContact(${c.id})" class="text-ciel">✏️</button><button onclick="supprimer('autres_contacts', ${c.id})" class="text-fraise">✖</button></div></div>`).join('');
+            document.getElementById('liste-autres').innerHTML = autresData.map(c => `<div class="flex justify-between items-center bg-slate-100 text-slate-700 p-2 rounded-xl border border-slate-200"><span class="truncate">${c.nom}</span> <div class="flex gap-2"><button onclick="editAutreContact(${c.id})" class="text-blue-500">✏️</button><button onclick="supprimer('autres_contacts', ${c.id})" class="text-red-500">✖</button></div></div>`).join('');
 
             const { data: ondes } = await _supabase.from('bonnes_ondes').select('*');
-            document.getElementById('liste-ondes').innerHTML = (ondes||[]).map(o => `<div class="flex justify-between items-center bg-slate-800 p-2 rounded-xl"><span class="truncate italic">"${o.message}"</span> <button onclick="supprimer('bonnes_ondes', ${o.id})" class="text-fraise">✖</button></div>`).join('');
+            document.getElementById('liste-ondes').innerHTML = (ondes||[]).map(o => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-xl"><span class="truncate italic">"${o.message}"</span> <button onclick="supprimer('bonnes_ondes', ${o.id})" class="text-fraise">✖</button></div>`).join('');
         }
 
         function editEglise(id) { const e = eglisesData.find(x => x.id === id); editEgliseId = e.id; document.getElementById('eglise-nom').value = e.nom; document.getElementById('eglise-horaires').value = e.horaires_base || ''; document.getElementById('eglise-type').value = 'inconnu'; ['tous-m-s','tous-m-e','tous-a-s','tous-a-e','sem-m-s','sem-m-e','sem-a-s','sem-a-e','sam-m-s','sam-m-e','sam-a-s','sam-a-e','dim-m-s','dim-m-e','dim-a-s','dim-a-e'].forEach(id => document.getElementById(id).value = ''); if(e.horaires_json) { try { const h = JSON.parse(e.horaires_json); document.getElementById('eglise-type').value = h.type || 'inconnu'; if(h.type) { ['tous_m_s','tous_m_e','tous_a_s','tous_a_e','sem_m_s','sem_m_e','sem_a_s','sem_a_e','sam_m_s','sam_m_e','sam_a_s','sam_a_e','dim_m_s','dim_m_e','dim_a_s','dim_a_e'].forEach(key => { if(h[key]) document.getElementById(key.replace(/_/g, '-')).value = h[key]; }); } } catch(err) {} } toggleHoraires(); document.getElementById('eglise-estferme').checked = e.est_ferme; document.getElementById('eglise-alerte').value = e.alerte || ''; document.getElementById('btn-save-eglise').innerText = "💾 Modifier l'église"; window.scrollTo({top:0, behavior:'smooth'}); }
