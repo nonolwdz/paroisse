@@ -50,12 +50,12 @@
                 </div>
             </div>
 
-            <!-- OUVERTURE ÉGLISES -->
+            <!-- OUVERTURE ÉGLISES (Champ de texte libre) -->
             <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-blue-400 lg:col-span-2">
                 <h3 class="text-xl font-serif font-bold text-blue-900 mb-6">🗝️ Gérer l'ouverture d'une Église</h3>
                 <div class="space-y-4">
                     <div class="grid grid-cols-2 gap-4">
-                        <input type="text" id="eglise-nom" placeholder="Nom (ex: Église Notre-Dame)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-blue-400 outline-none">
+                        <input type="text" id="eglise-nom" placeholder="Nom de l'église (ex: Notre-Dame)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-blue-400 outline-none">
                         <input type="text" id="eglise-horaires" placeholder="Horaires (ex: Ouvert de 9h à 18h)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-blue-400 outline-none">
                     </div>
                     <input type="text" id="eglise-alerte" placeholder="Alerte éventuelle (ex: Fermé pour travaux)" class="w-full border border-red-300 rounded-lg p-3 text-sm focus:border-red-500 outline-none placeholder-red-300">
@@ -78,15 +78,17 @@
                 </div>
             </div>
 
-            <!-- MESSES AVEC VRAIE DATE -->
+            <!-- MESSES (Menu déroulant dynamique) -->
             <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-or lg:col-span-3">
                 <h3 class="text-xl font-serif font-bold text-or mb-6">⛪ Ajouter / Modifier une Messe</h3>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <input type="text" id="messe-lieu" placeholder="Lieu (ex: Église Saint-Pierre)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none">
                     
-                    <!-- LE NOUVEAU CHAMP DATE ! -->
+                    <select id="messe-lieu" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none text-slate-700 font-medium cursor-pointer">
+                        <option value="" disabled selected>Sélectionner une église...</option>
+                        <!-- Le javascript va remplir les églises ici -->
+                    </select>
+
                     <input type="date" id="messe-jour" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none text-slate-600" title="Date de la messe">
-                    
                     <input type="text" id="messe-heure" placeholder="Heure (ex: 11h00)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none">
                     <input type="text" id="messe-remarques" placeholder="Remarques (ex: Fête patronale)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none">
                 </div>
@@ -113,7 +115,7 @@
                 <h3 class="text-2xl font-serif font-bold text-slate-800 mb-6">🗑️ Gérer, Modifier et Supprimer</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <div>
-                        <h4 class="font-bold text-blue-800 border-b pb-2 mb-4">Églises</h4>
+                        <h4 class="font-bold text-blue-800 border-b pb-2 mb-4">Églises Ouvertes</h4>
                         <div id="liste-admin-eglises" class="space-y-2 text-sm max-h-64 overflow-y-auto pr-2">Chargement...</div>
                     </div>
                     <div>
@@ -121,7 +123,7 @@
                         <div id="liste-admin-actus" class="space-y-2 text-sm max-h-64 overflow-y-auto pr-2">Chargement...</div>
                     </div>
                     <div>
-                        <h4 class="font-bold text-or border-b pb-2 mb-4">Messes</h4>
+                        <h4 class="font-bold text-or border-b pb-2 mb-4">Messes Programmées</h4>
                         <div id="liste-admin-messes" class="space-y-2 text-sm max-h-64 overflow-y-auto pr-2">Chargement...</div>
                     </div>
                 </div>
@@ -201,6 +203,7 @@
 
         async function ajouterEglise() {
             const nom = document.getElementById('eglise-nom').value;
+            if(!nom) { alert("Le nom de l'église est obligatoire !"); return; }
             const horaires_base = document.getElementById('eglise-horaires').value;
             const alerte = document.getElementById('eglise-alerte').value;
             const msg = document.getElementById('eglise-msg');
@@ -235,6 +238,7 @@
 
         async function ajouterMesse() {
             const lieu = document.getElementById('messe-lieu').value;
+            if(!lieu) { alert("Sélectionnez une église !"); return; }
             const jour = document.getElementById('messe-jour').value;
             const heure = document.getElementById('messe-heure').value;
             const remarques = document.getElementById('messe-remarques').value;
@@ -254,9 +258,17 @@
         async function chargerListesAdmin() {
             const { data: eglises } = await _supabase.from('horaires_eglises').select('*');
             eglisesData = eglises || [];
+            
+            // Remplir le menu déroulant dynamique des messes
+            const selectLieu = document.getElementById('messe-lieu');
+            selectLieu.innerHTML = '<option value="" disabled selected>Sélectionner une église...</option>';
+            eglisesData.forEach(e => {
+                selectLieu.innerHTML += `<option value="${e.nom}">${e.nom}</option>`;
+            });
+
             document.getElementById('liste-admin-eglises').innerHTML = eglisesData.map(e => `
                 <div class="flex justify-between items-center p-3 bg-slate-50 border rounded-lg mb-2">
-                    <span class="truncate font-medium pr-2">${e.nom}</span>
+                    <span class="truncate font-medium pr-2 text-xs" title="${e.nom}">${e.nom}</span>
                     <div class="flex gap-4">
                         <button onclick="preparerEditionEglise(${e.id})" class="text-blue-500 hover:text-blue-800 text-lg">✏️</button>
                         <button onclick="supprimerDonnee('horaires_eglises', ${e.id})" class="text-red-500 hover:text-red-800 text-lg font-bold">✖</button>
@@ -268,7 +280,7 @@
             actusData = actus || [];
             document.getElementById('liste-admin-actus').innerHTML = actusData.map(a => `
                 <div class="flex justify-between items-center p-3 bg-slate-50 border rounded-lg mb-2">
-                    <span class="truncate font-medium pr-2">${a.titre}</span>
+                    <span class="truncate font-medium pr-2 text-xs">${a.titre}</span>
                     <div class="flex gap-4">
                         <button onclick="preparerEditionActu(${a.id})" class="text-blue-500 hover:text-blue-800 text-lg">✏️</button>
                         <button onclick="supprimerDonnee('actualites', ${a.id})" class="text-red-500 hover:text-red-800 text-lg font-bold">✖</button>
@@ -279,14 +291,13 @@
             const { data: messes } = await _supabase.from('horaires_messes').select('*').order('jour', { ascending: true });
             messesData = messes || [];
             document.getElementById('liste-admin-messes').innerHTML = messesData.map(m => {
-                // Formater la date YYYY-MM-DD en format lisible FR pour l'Admin
                 let dateAffichee = m.jour;
                 if(m.jour && m.jour.includes('-')) {
                     dateAffichee = new Date(m.jour).toLocaleDateString('fr-FR');
                 }
                 return `
                 <div class="flex justify-between items-center p-3 bg-slate-50 border rounded-lg mb-2">
-                    <span class="truncate font-medium pr-2">${m.lieu} - ${dateAffichee}</span>
+                    <span class="truncate font-medium pr-2 text-xs" title="${m.lieu}">${m.lieu} - ${dateAffichee}</span>
                     <div class="flex gap-4">
                         <button onclick="preparerEditionMesse(${m.id})" class="text-blue-500 hover:text-blue-800 text-lg">✏️</button>
                         <button onclick="supprimerDonnee('horaires_messes', ${m.id})" class="text-red-500 hover:text-red-800 text-lg font-bold">✖</button>
