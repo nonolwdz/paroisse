@@ -3,67 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horaires - Paroisse Saint-François d'Assise</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <title>Messes - Paroisse Saint-François d'Assise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;0,700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] }, animation: { 'fade-in-up': 'fadeInUp 0.6s ease-out forwards' }, keyframes: { fadeInUp: { '0%': { opacity: '0', transform: 'translateY(15px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } } } }
-        }
+        tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] }, animation: { 'fade-in-up': 'fadeInUp 0.6s ease-out forwards' }, keyframes: { fadeInUp: { '0%': { opacity: '0', transform: 'translateY(15px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } } } } }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>.anim-element { opacity: 0; }</style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans">
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
-    <!-- En-tête / Navigation -->
     <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
             <div class="flex items-center gap-4">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v18m-6-12h12"></path></svg>                <div>
-                    <span class="text-2xl font-serif font-bold text-nuit block leading-none">Saint-François d'Assise</span>
-                </div>
+                <div class="bg-nuit text-or p-2 rounded-full shadow-md"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v18m-6-12h12"></path></svg></div>
+                <span class="text-2xl font-serif font-bold text-nuit block leading-none">Saint-François d'Assise</span>
             </div>
             <nav class="mt-4 md:mt-0 flex gap-8 text-sm font-semibold text-slate-600">
-    <a href="/" class="hover:text-nuit pb-1 transition-all">Accueil</a>
-    <a href="/messes" class="hover:text-nuit pb-1 transition-all">Messes</a>
-    <a href="/horaires" class="hover:text-nuit pb-1 transition-all">Ouverture des Églises</a>
-    <a href="/contact" class="hover:text-nuit pb-1 transition-all">Contact</a>
-</nav>
+                <a href="/" class="hover:text-nuit pb-1 transition-all">Accueil</a>
+                <a href="/messes" class="text-or border-b-2 border-or pb-1 transition-all">Messes</a>
+                <a href="/horaires" class="hover:text-nuit pb-1 transition-all">Ouverture des Églises</a>
+                <a href="/contact" class="hover:text-nuit pb-1 transition-all">Contact</a>
+            </nav>
         </div>
     </header>
 
-    <main class="max-w-4xl mx-auto px-6 py-16 anim-element animate-fade-in-up" style="animation-delay: 0.1s;">
+    <main class="max-w-4xl mx-auto px-6 py-16 flex-grow w-full animate-fade-in-up">
         <div class="text-center mb-12">
             <h1 class="text-4xl md:text-5xl font-serif font-bold text-nuit mb-4">Célébrations & Messes</h1>
-            <p class="text-slate-600 text-lg">Retrouvez ci-dessous la liste de nos prochaines messes sur le secteur paroissial.</p>
+            <p class="text-slate-600 text-lg">Retrouvez la liste de nos prochaines messes sur le secteur paroissial.</p>
         </div>
         
         <div class="bg-white rounded-3xl p-8 shadow-xl border-t-[6px] border-nuit">
-            <div id="toutes-les-messes" class="space-y-4">
+            
+            <!-- Barre de recherche -->
+            <div class="mb-6">
+                <input type="text" id="recherche-messe" oninput="filtrerMesses()" placeholder="🔍 Rechercher une messe (lieu, jour, évènement...)" class="w-full border-2 border-slate-100 rounded-xl p-4 text-slate-700 focus:border-or outline-none transition shadow-sm bg-slate-50">
+            </div>
+
+            <div id="toutes-les-messes">
                 <p class="text-slate-400 italic text-center py-8">Chargement des horaires en cours...</p>
             </div>
         </div>
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 text-center py-10 text-sm mt-12"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
+    <footer class="bg-slate-900 text-slate-400 text-center py-10 text-sm mt-auto"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
 
     <script>
         const SUPABASE_URL = 'https://tyxybtrthvmyzjefziop.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let messesData = [];
 
         async function chargerToutesLesMesses() {
             const container = document.getElementById('toutes-les-messes');
             const { data, error } = await _supabase.from('horaires_messes').select('*');
-
             if (error) { container.innerHTML = '<p class="text-red-500">Erreur.</p>'; return; }
-            if (!data || data.length === 0) { container.innerHTML = '<p class="text-slate-500 text-center py-8">Aucun horaire renseigné pour l\'instant.</p>'; return; }
+            messesData = data || [];
+            afficherMesses(messesData);
+        }
 
-            container.innerHTML = data.map(m => `
-                <div class="group bg-slate-50 hover:bg-sable p-5 rounded-2xl border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-colors duration-300">
+        function afficherMesses(liste) {
+            const container = document.getElementById('toutes-les-messes');
+            if(liste.length === 0) { container.innerHTML = '<p class="text-slate-500 py-4 text-center">Aucune messe trouvée.</p>'; return; }
+            
+            container.innerHTML = liste.map(m => `
+                <div class="group bg-slate-50 hover:bg-sable p-5 rounded-2xl border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-colors duration-300 mb-3">
                     <div>
                         <span class="font-bold text-nuit text-lg block font-serif">${m.lieu}</span>
                         <span class="text-slate-600 font-medium">📅 ${m.jour} à <span class="text-or font-bold">${m.heure}</span></span>
@@ -72,6 +77,17 @@
                 </div>
             `).join('');
         }
+
+        function filtrerMesses() {
+            const recherche = document.getElementById('recherche-messe').value.toLowerCase();
+            const resultats = messesData.filter(m => 
+                m.lieu.toLowerCase().includes(recherche) || 
+                m.jour.toLowerCase().includes(recherche) ||
+                (m.remarques && m.remarques.toLowerCase().includes(recherche))
+            );
+            afficherMesses(resultats);
+        }
+
         chargerToutesLesMesses();
     </script>
 </body>
