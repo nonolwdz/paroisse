@@ -4,123 +4,101 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paroisse Saint-François d'Assise - Domérat</title>
-    <!-- NOUVELLE POLICE : Nunito, ultra conviviale et vivante -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { ciel: '#0ea5e9', soleil: '#f97316', menthe: '#10b981', fraise: '#f43f5e', fond: '#f8fafc' }, fontFamily: { sans: ['Nunito', 'sans-serif'] } } } }
+        tailwind.config = { theme: { extend: { colors: { ciel: '#0ea5e9', soleil: '#fdba74', menthe: '#34d399', fraise: '#fb7185', fond: '#f8fafc', nuit: '#1e293b' }, fontFamily: { sans: ['Nunito', 'sans-serif'] } } } }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>.quill-content img { border-radius: 1rem; margin-top: 1rem; margin-bottom: 1rem; max-height: 400px; width: auto; }</style>
 </head>
 <body class="bg-fond text-slate-700 font-sans min-h-screen">
 
-    <!-- En-tête Joyeux -->
-    <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b-4 border-ciel">
+    <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b-[3px] border-ciel/20">
         <div class="max-w-6xl mx-auto px-6 py-3 flex flex-col md:flex-row justify-between items-center">
             <div class="flex items-center gap-3 group cursor-pointer hover:scale-105 transition-transform">
-                <div class="bg-soleil text-white p-2.5 rounded-full shadow-lg shadow-soleil/30 transform rotate-[-10deg] group-hover:rotate-0 transition-all">
+                <div class="bg-soleil text-nuit p-2.5 rounded-full shadow-lg shadow-soleil/30 transform rotate-[-10deg] group-hover:rotate-0 transition-all">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 3v18m-6-12h12"></path></svg>
                 </div>
-                <div><span class="text-2xl font-black text-ciel tracking-tight">Saint-François d'Assise</span></div>
+                <div><span class="text-2xl font-black text-slate-800 tracking-tight">Saint-François d'Assise</span></div>
             </div>
             <nav class="mt-4 md:mt-0 flex gap-6 text-base font-bold text-slate-500">
-                <a href="/" class="text-soleil border-b-4 border-soleil pb-1">Accueil</a>
+                <a href="/" class="text-nuit border-b-[3px] border-soleil pb-1">Accueil</a>
                 <a href="/messes" class="hover:text-ciel hover:-translate-y-1 transition-all">Messes</a>
                 <a href="/horaires" class="hover:text-ciel hover:-translate-y-1 transition-all">Ouverture Églises</a>
-                <a href="/contact" class="hover:text-ciel hover:-translate-y-1 transition-all">Contact</a>
+                <a href="/contact" class="hover:text-ciel hover:-translate-y-1 transition-all">Contact / Aide</a>
             </nav>
         </div>
     </header>
 
-    <!-- Bannière avec Peps -->
-    <div class="hero-section text-white py-32 px-4 text-center border-b-[10px] border-soleil relative overflow-hidden">
+    <div class="hero-section text-white py-32 px-4 text-center border-b-[8px] border-soleil relative overflow-hidden">
         <div class="relative z-10">
             <h1 class="text-5xl md:text-7xl font-black mb-4 drop-shadow-lg tracking-tight">Bienvenue chez vous !</h1>
             <p class="max-w-2xl mx-auto text-xl md:text-3xl text-white drop-shadow-md font-bold">Joie, prière et partage au cœur de notre région.</p>
         </div>
     </div>
 
-    <!-- Saint du Jour -->
     <div class="max-w-6xl mx-auto px-6 mt-8">
-        <div class="bg-white border-2 border-ciel/20 rounded-2xl px-6 py-4 flex flex-col md:flex-row items-center justify-center gap-3 text-lg font-bold text-ciel shadow-lg shadow-ciel/10">
-            <span class="text-2xl animate-bounce">✨</span>
+        <div class="bg-white border border-slate-100 rounded-2xl px-6 py-4 flex flex-col md:flex-row items-center justify-center gap-3 text-lg font-bold text-slate-600 shadow-sm">
+            <span class="text-2xl">✨</span>
             <span>Aujourd'hui nous fêtons :</span>
-            <span id="saint-du-jour" class="text-soleil text-xl bg-soleil/10 px-4 py-1 rounded-full">Chargement...</span>
+            <span id="saint-du-jour" class="text-slate-800 text-xl bg-soleil/30 px-4 py-1 rounded-full">Chargement...</span>
         </div>
     </div>
 
     <main class="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-10">
-        
-        <!-- COLONNE GAUCHE -->
         <div class="lg:col-span-2 space-y-10">
-            
-            <!-- Actualités -->
             <section>
                 <div class="flex items-center gap-4 mb-6">
-                    <div class="bg-fraise text-white p-3 rounded-2xl shadow-lg shadow-fraise/30 transform -rotate-6"><span class="text-3xl leading-none">📢</span></div>
-                    <h2 class="text-4xl font-black text-slate-800 tracking-tight">À la une !</h2>
+                    <div class="bg-fraise/20 text-fraise p-3 rounded-2xl"><span class="text-3xl leading-none">📢</span></div>
+                    <h2 class="text-3xl font-black text-slate-800 tracking-tight">À la une !</h2>
                 </div>
-                <div id="actualites-container" class="grid gap-8">
-                    <p class="text-slate-400 font-bold italic">Chargement des nouvelles...</p>
-                </div>
+                <div id="actualites-container" class="grid gap-8"><p class="text-slate-400 font-bold italic">Chargement...</p></div>
             </section>
 
-            <!-- BOÎTE À BONNES ONDES -->
-            <section class="bg-gradient-to-br from-ciel to-blue-400 p-8 md:p-10 rounded-[2.5rem] shadow-xl shadow-ciel/30 text-white relative overflow-hidden">
-                <div class="absolute -top-10 -right-10 text-9xl opacity-20 transform rotate-12">💖</div>
-                <h3 class="text-3xl font-black mb-2 relative z-10 flex items-center gap-3">La Boîte à Bonnes Ondes</h3>
-                <p class="mb-8 font-bold text-blue-100 relative z-10 text-lg">Un merci, une prière, un sourire... Partagez votre joie !</p>
-                
+            <section class="bg-ciel/10 p-8 md:p-10 rounded-[2.5rem] shadow-sm relative overflow-hidden border border-ciel/20">
+                <h3 class="text-3xl font-black mb-2 relative z-10 flex items-center gap-3 text-slate-800">Boîte à Bonnes Ondes</h3>
+                <p class="mb-8 font-bold text-slate-600 relative z-10 text-lg">Un merci, une prière... Partagez votre joie !</p>
                 <div class="flex flex-col md:flex-row gap-8 relative z-10">
                     <div class="w-full md:w-2/5 space-y-4">
-                        <input type="text" id="bo-prenom" placeholder="Votre prénom (ou pseudo)" class="w-full p-4 rounded-2xl border-none outline-none text-slate-800 font-bold focus:ring-4 focus:ring-soleil transition-all">
-                        <textarea id="bo-message" rows="4" placeholder="Votre petit mot ici..." class="w-full p-4 rounded-2xl border-none outline-none text-slate-800 font-bold focus:ring-4 focus:ring-soleil transition-all resize-none"></textarea>
-                        <button onclick="envoyerOnde()" class="w-full bg-soleil text-white font-black text-xl py-4 rounded-2xl shadow-lg hover:scale-105 transition-transform hover:shadow-soleil/50">Envoyer !</button>
-                        <p id="bo-msg" class="text-lg font-black text-center text-white mt-2"></p>
+                        <input type="text" id="bo-prenom" placeholder="Votre prénom" class="w-full p-4 rounded-2xl outline-none text-slate-800 font-bold focus:ring-4 focus:ring-soleil/50 transition-all border border-slate-200">
+                        <textarea id="bo-message" rows="4" placeholder="Votre petit mot ici..." class="w-full p-4 rounded-2xl outline-none text-slate-800 font-bold focus:ring-4 focus:ring-soleil/50 transition-all resize-none border border-slate-200"></textarea>
+                        <button onclick="envoyerOnde()" class="w-full bg-soleil text-nuit font-black text-xl py-4 rounded-2xl shadow-sm hover:scale-105 transition-transform">Envoyer !</button>
+                        <p id="bo-msg" class="text-lg font-black text-center text-menthe mt-2"></p>
                     </div>
-                    <div class="w-full md:w-3/5 max-h-[320px] overflow-y-auto space-y-4 pr-3 custom-scrollbar" id="bo-liste">
-                        <p class="text-blue-100 italic font-bold">Chargement...</p>
-                    </div>
+                    <div class="w-full md:w-3/5 max-h-[320px] overflow-y-auto space-y-4 pr-3 custom-scrollbar" id="bo-liste"></div>
                 </div>
             </section>
         </div>
 
-        <!-- COLONNE DROITE -->
         <div class="space-y-10">
-            
-            <!-- Prochaines Messes -->
-            <section class="bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border-t-8 border-menthe">
+            <section class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 border-t-[6px] border-menthe/50">
                 <div class="flex items-center gap-3 mb-6">
-                    <div class="bg-menthe text-white p-2 rounded-xl"><span class="text-2xl">🌿</span></div>
+                    <div class="bg-menthe/20 text-menthe p-2 rounded-xl"><span class="text-2xl">🌿</span></div>
                     <h3 class="text-2xl font-black text-slate-800">Prochaines Messes</h3>
                 </div>
-                <div id="messes-container" class="space-y-4 mb-6">
-                    <p class="text-slate-400 font-bold italic">Recherche...</p>
-                </div>
+                <div id="messes-container" class="space-y-4 mb-6"></div>
                 <a href="/messes" class="block text-center font-black text-menthe bg-menthe/10 py-4 rounded-2xl hover:bg-menthe hover:text-white transition-colors text-lg">Voir tout l'agenda ➔</a>
             </section>
 
-            <!-- Inscription Brevo -->
-            <section class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border-t-8 border-soleil overflow-hidden">
-                <div class="p-6 pb-2 text-center bg-soleil/5">
-                    <h3 class="text-2xl font-black text-soleil mb-2">Restons connectés !</h3>
-                    <p class="font-bold text-slate-600">Recevez les horaires et infos directement par email.</p>
+            <section class="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 border-t-[6px] border-soleil overflow-hidden">
+                <div class="p-6 pb-2 text-center bg-soleil/10">
+                    <h3 class="text-2xl font-black text-slate-800 mb-2">Restons connectés !</h3>
+                    <p class="font-bold text-slate-600">Recevez les horaires par email.</p>
                 </div>
-                <div class="w-full flex justify-center pb-2 bg-soleil/5">
-                    <iframe width="100%" height="305" src="https://671c9c40.sibforms.com/v2/serve/MUIFAGbb0eHoYfpV99KUUhawm8mwusD5QQV1bHD3JcnYXMvhQsSEvfX1s5-ROgRhEH4pdzbeN14WE5FIJteE1vWuE4xICUuC1OB5s6q63N1Jursf3rmZTMBjqRZdUiPkR4SqpG7zrTY-ZKYK2EPk_iNme_8OMQ3nU8kej9NJTM7HlqDat0wb3P_3eh2Mj2793-68IpMSaAHYBu0DFA==" frameborder="0" scrolling="auto" allowfullscreen style="display: block;margin-left: auto;margin-right: auto;max-width: 100%;"></iframe>
+                <div class="w-full flex justify-center pb-2 bg-soleil/10">
+                    <iframe width="100%" height="305" src="https://671c9c40.sibforms.com/v2/serve/MUIFAGbb0eHoYfpV99KUUhawm8mwusD5QQV1bHD3JcnYXMvhQsSEvfX1s5-ROgRhEH4pdzbeN14WE5FIJteE1vWuE4xICUuC1OB5s6q63N1Jursf3rmZTMBjqRZdUiPkR4SqpG7zrTY-ZKYK2EPk_iNme_8OMQ3nU8kej9NJTM7HlqDat0wb3P_3eh2Mj2793-68IpMSaAHYBu0DFA==" frameborder="0" scrolling="auto"></iframe>
                 </div>
             </section>
-            
         </div>
     </main>
 
-    <footer class="bg-ciel text-white text-center py-10 mt-12 font-bold"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
+    <footer class="bg-slate-100 text-slate-500 text-center py-10 mt-12 font-bold"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
 
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); border-radius: 10px;}
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.4); border-radius: 10px;}
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 10px;}
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px;}
     </style>
 
     <script>
@@ -129,26 +107,22 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const imageUrl = `${SUPABASE_URL}/storage/v1/object/public/images/accueil.jpg?t=${new Date().getTime()}`;
-        document.querySelector('.hero-section').style.backgroundImage = `linear-gradient(to right, rgba(14, 165, 233, 0.8), rgba(249, 115, 22, 0.6)), url('${imageUrl}')`;
+        document.querySelector('.hero-section').style.backgroundImage = `linear-gradient(to right, rgba(14, 165, 233, 0.7), rgba(253, 186, 116, 0.5)), url('${imageUrl}')`;
         document.querySelector('.hero-section').style.backgroundSize = 'cover';
         document.querySelector('.hero-section').style.backgroundPosition = 'center';
 
         const saintsMois = [ "Jour de l'An,Basile,Geneviève,Odilon,Édouard,Mélaine,Raymond,Lucien,Alix,Guillaume,Paulin,Tatiana,Yvette,Nina,Rémi,Marcel,Roseline,Prisca,Marius,Sébastien,Agnès,Vincent,Barnard,François de Sales,Conversion de Paul,Paule,Angèle,Thomas d'Aquin,Gildas,Martine,Marcelle", "Ella,Présentation,Blaise,Véronique,Agathe,Gaston,Eugénie,Jacqueline,Apolline,Arnaud,N.-D. de Lourdes,Félix,Béatrice,Valentin,Claude,Julienne,Alexis,Bernadette,Gabin,Aimée,Damien,Isabelle,Lazare,Modeste,Roméo,Nestor,Honorine,Romain,Auguste", "Aubin,Charles le Bon,Guénolé,Casimir,Olive,Colette,Félicité,Jean de Dieu,Françoise,Vivien,Rosine,Justine,Rodrigue,Mathilde,Louise,Bénédicte,Patrice,Cyrille,Joseph,Herbert,Clémence,Léa,Victorien,Catherine de Suède,Annonciation,Larissa,Habib,Gontran,Gwladys,Amédée,Benjamin", "Hugues,Sandrine,Richard,Isidore,Irène,Marcellin,J.-B. de la Salle,Julie,Gautier,Fulbert,Stanislas,Jules,Ida,Maxime,Paterne,Benoît-Joseph,Anicet,Parfait,Emma,Odette,Anselme,Alexandre,Georges,Fidèle,Marc,Alida,Zita,Valérie,Catherine de Sienne,Robert", "Fête du Travail,Boris,Philippe,Sylvain,Judith,Prudence,Gisèle,Désiré,Pacôme,Solange,Estelle,Achille,Rolande,Matthias,Denise,Honoré,Pascal,Éric,Yves,Bernardin,Constantin,Émile,Didier,Donatien,Sophie,Bérenger,Augustin,Germain,Aymar,Ferdinand,Visitation", "Justin,Blandine,Kévin,Clotilde,Igor,Norbert,Gilbert,Médard,Diane,Landry,Barnabé,Guy,Antoine de Padoue,Élisée,Germaine,J.-F. Régis,Hervé,Léonce,Romuald,Silvère,Rodolphe,Alban,Audrey,Jean-Baptiste,Prosper,Anthelme,Fernand,Irénée,Pierre et Paul,Martial", "Thierry,Martinien,Thomas,Florent,Antoine,Mariette,Raoul,Thibaut,Amandine,Ulrich,Benoît,Olivier,Henri,Camille,Donald,N.-D. du Mont-Carmel,Charlotte,Frédéric,Arsène,Marina,Victor,Marie-Madeleine,Brigitte,Christine,Jacques,Anne et Joa.,Nathalie,Samson,Marthe,Juliette,Ignace de L.", "Alphonse,Julien Eymard,Lydie,J.-M. Vianney,Abel,Transfiguration,Gaétan,Dominique,Amour,Laurent,Claire,Clarisse,Hippolyte,Évrard,Assomption,Armel,Hyacinthe,Hélène,Jean-Eudes,Bernard,Christophe,Fabrice,Rose de Lima,Barthélemy,Louis,Natacha,Monique,Augustin,Sabine,Fiacre,Aristide", "Gilles,Ingrid,Grégoire,Rosalie,Raïssa,Bertrand,Reine,Nativité de N.-D.,Alain,Inès,Adelphe,Apollinaire,Aimé,Croix Glorieuse,Roland,Édith,Renaud,Nadège,Émilie,Davy,Matthieu,Maurice,Constant,Thècle,Hermann,Côme et D.,Vincent de Paul,Venceslas,Michel,Jérôme", "Thérèse de l'E.J.,Léger,Gérard,François d'Assise,Fleur,Bruno,Serge,Pélagie,Denis,Ghislain,Firmin,Wilfried,Géraud,Juste,Thérèse d'Avila,Edwige,Baudouin,Luc,René,Adeline,Céline,Élodie,Jean de Capistran,Florentin,Crépin,Dimitri,Émeline,Jude,Narcisse,Bienvenue,Quentin", "Toussaint,Défunts,Hubert,Charles B.,Sylvie,Bertille,Carine,Geoffroy,Théodore,Léon,Martin,Christian,Brice,Sidoine,Albert le Grand,Marguerite,Élisabeth,Aude,Tanguy,Edmond,Présentation de Marie,Cécile,Clément,Flora,Catherine L.,Delphine,Sévrin,Jacques de la M.,Saturnin,André", "Florence,Viviane,François-Xavier,Barbara,Gérald,Nicolas,Ambroise,Immaculée Conception,Pierre Fourier,Romaric,Daniel,Jeanne F.C.,Lucie,Odile,Ninon,Alice,Gaël,Gatien,Urbain,Théophile,Pierre Canisius,Françoise-Xavière,Armand,Adèle,Noël,Étienne,Jean,Innocents,David,Roger,Sylvestre" ];
-        try {
-            const date = new Date(); const saint = saintsMois[date.getMonth()].split(',')[date.getDate() - 1]; 
-            const prefixe = ["Jour", "Fête", "Assomption", "Annonciation", "Transfiguration", "Nativité", "Croix", "Toussaint", "Défunts", "Présentation", "Immaculée", "Noël", "N.-D.", "Visitation", "Conversion"].some(ex => saint.includes(ex)) ? "" : "Saint(e) ";
-            document.getElementById('saint-du-jour').innerText = prefixe + saint;
-        } catch(e) { document.getElementById('saint-du-jour').innerText = "Une belle journée"; }
+        try { const d = new Date(); const s = saintsMois[d.getMonth()].split(',')[d.getDate() - 1]; document.getElementById('saint-du-jour').innerText = (["Jour", "Fête", "Assomption", "Annonciation", "Transfiguration", "Nativité", "Croix", "Toussaint", "Défunts", "Présentation", "Immaculée", "Noël", "N.-D.", "Visitation", "Conversion"].some(ex => s.includes(ex)) ? "" : "Saint(e) ") + s; } catch(e) {}
 
         async function chargerActualites() {
             const { data } = await _supabase.from('actualites').select('*').order('date_publication', { ascending: false });
             const c = document.getElementById('actualites-container');
             if (!data || data.length===0) { c.innerHTML = '<p class="text-slate-500">Aucune actualité.</p>'; return; }
             c.innerHTML = data.map(actu => `
-                <article class="bg-white p-8 rounded-[2rem] shadow-xl shadow-slate-200/50 border-2 border-slate-100 hover:-translate-y-2 hover:border-ciel transition-all">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b-2 border-slate-100 pb-4">
-                        <h3 class="text-2xl font-black text-ciel">${actu.titre}</h3>
-                        <span class="bg-ciel text-white text-sm font-bold px-4 py-2 rounded-full whitespace-nowrap shadow-md">
+                <article class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-md transition-all">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-100 pb-4">
+                        <h3 class="text-2xl font-black text-slate-800">${actu.titre}</h3>
+                        <span class="bg-ciel/10 text-ciel text-sm font-bold px-4 py-2 rounded-full whitespace-nowrap">
                             📅 ${actu.date_publication ? new Date(actu.date_publication).toLocaleDateString('fr-FR') : 'Récent'}
                         </span>
                     </div>
@@ -165,8 +139,8 @@
                 c.innerHTML = data.map(m => {
                     let dFr = m.jour; if(m.jour && m.jour.includes('-')) { const d = new Date(m.jour); dFr = d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }); dFr = dFr.charAt(0).toUpperCase() + dFr.slice(1); }
                     return `
-                    <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border-2 border-transparent hover:border-menthe transition-all cursor-default">
-                        <div class="bg-white shadow-sm border border-slate-200 text-center rounded-xl p-2 min-w-[70px]">
+                    <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-transparent hover:border-menthe/30 transition-all cursor-default">
+                        <div class="bg-white shadow-sm border border-slate-100 text-center rounded-xl p-2 min-w-[70px]">
                             <div class="text-menthe font-black text-sm uppercase">${dFr.split(' ')[0]}</div>
                             <div class="text-slate-800 font-black text-xl">${dFr.split(' ')[1]}</div>
                         </div>
@@ -190,12 +164,12 @@
             const c = document.getElementById('bo-liste');
             if (data && data.length > 0) {
                 c.innerHTML = data.map(o => `
-                    <div class="bg-white/20 backdrop-blur p-5 rounded-2xl border-2 border-white/50 text-white shadow-lg">
-                        <p class="font-bold text-lg leading-snug">"${o.message}"</p>
+                    <div class="bg-white p-5 rounded-2xl border border-ciel/20 shadow-sm">
+                        <p class="font-bold text-lg leading-snug text-slate-700">"${o.message}"</p>
                         <p class="text-right text-sm font-black text-soleil mt-2">— ${o.prenom}</p>
                     </div>
                 `).join('');
-            } else { c.innerHTML = '<p class="text-blue-100 font-bold">Soyez le premier à écrire !</p>'; }
+            } else { c.innerHTML = '<p class="text-slate-500 font-bold">Soyez le premier à écrire !</p>'; }
         }
 
         chargerActualites(); chargerMesses(); chargerOndes();
