@@ -7,13 +7,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;0,700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] }, animation: { 'fade-in-up': 'fadeInUp 0.6s ease-out forwards' }, keyframes: { fadeInUp: { '0%': { opacity: '0', transform: 'translateY(15px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } } } } }
+        tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] } } } }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Bibliothèques du Calendrier Professionnel (FullCalendar) -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.11/locales-all.global.min.js"></script>
+    
+    <!-- Design sur-mesure du calendrier -->
+    <style>
+        .fc { font-family: 'Inter', sans-serif; }
+        .fc-theme-standard .fc-scrollgrid { border: none; border-radius: 1rem; overflow: hidden; }
+        .fc .fc-toolbar-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #1e3a8a; font-weight: bold; text-transform: capitalize; }
+        .fc .fc-button-primary { background-color: #1e3a8a; border-color: #1e3a8a; text-transform: capitalize; font-weight: bold; border-radius: 0.5rem; }
+        .fc .fc-button-primary:hover { background-color: #d97706; border-color: #d97706; }
+        .fc .fc-button-primary:not(:disabled).fc-button-active { background-color: #d97706; border-color: #d97706; }
+        .fc-col-header-cell { background-color: #f8fafc; padding: 12px 0; color: #1e3a8a; text-transform: capitalize; border-bottom: 2px solid #e2e8f0 !important; }
+        .fc-daygrid-day-number { color: #475569; font-weight: 600; padding: 8px !important; }
+        .fc-event { cursor: pointer; padding: 4px; border-radius: 6px; font-weight: 600; border: none; transition: transform 0.2s; background-color: #1e3a8a; }
+        .fc-event:hover { transform: scale(1.02); background-color: #d97706; }
+        .fc-day-today { background-color: #fef3c7 !important; } /* Couleur Sable pour aujourd'hui */
+        .fc-daygrid-event-dot { display: none; } /* Enlever le petit point par défaut */
+    </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
-    <!-- En-tête / Navigation -->
     <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
             <div class="flex items-center gap-4">
@@ -29,145 +48,111 @@
         </div>
     </header>
 
-    <!-- Contenu Principal -->
-    <main class="max-w-4xl mx-auto px-6 py-16 flex-grow w-full animate-fade-in-up">
-        <div class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-serif font-bold text-nuit mb-4">Célébrations & Messes</h1>
-            <p class="text-slate-600 text-lg">Retrouvez le calendrier complet de notre secteur paroissial.</p>
+    <main class="max-w-5xl mx-auto px-6 py-12 flex-grow w-full">
+        <div class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-serif font-bold text-nuit mb-4">Calendrier des Célébrations</h1>
+            <p class="text-slate-600 text-lg">Retrouvez toutes les messes de notre secteur paroissial.</p>
         </div>
         
-        <div class="bg-white rounded-3xl p-8 shadow-xl border-t-[6px] border-nuit">
-            
-            <!-- Système d'onglets (Vue Globale / Vue par Église) -->
-            <div class="flex flex-col md:flex-row gap-4 mb-8 bg-slate-50 p-2 rounded-xl border border-slate-200">
-                <button id="btn-globale" onclick="changerVue('globale')" class="flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all bg-white text-nuit shadow-sm border border-slate-200">
-                    🌍 Toutes les célébrations
-                </button>
-                <button id="btn-eglise" onclick="changerVue('eglise')" class="flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all text-slate-500 hover:text-nuit hover:bg-slate-100">
-                    ⛪ Trier par Église
-                </button>
+        <!-- Filtre par Église -->
+        <div class="mb-8 flex items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+            <span class="text-3xl">⛪</span>
+            <div class="w-full">
+                <label class="text-xs font-bold text-slate-400 uppercase tracking-wide">Afficher le planning de :</label>
+                <select id="filtre-eglise" onchange="filtrerCalendrier()" class="w-full text-xl font-bold text-nuit bg-transparent outline-none cursor-pointer mt-1">
+                    <option value="toutes">🌍 Toutes les églises du secteur</option>
+                    <!-- Les options s'ajouteront ici tout seul -->
+                </select>
             </div>
+        </div>
 
-            <!-- Barre de recherche -->
-            <div class="mb-8">
-                <input type="text" id="recherche-messe" oninput="filtrerMesses()" placeholder="🔍 Rechercher (un lieu, une date, un évènement...)" class="w-full border-2 border-slate-100 rounded-xl p-4 text-slate-700 focus:border-or outline-none transition shadow-sm bg-slate-50">
-            </div>
-
-            <!-- Conteneur d'affichage des listes -->
-            <div id="toutes-les-messes">
-                <p class="text-slate-400 italic text-center py-8">Chargement des horaires en cours...</p>
-            </div>
+        <!-- Le Calendrier -->
+        <div class="bg-white rounded-3xl p-6 md:p-10 shadow-xl border-t-[6px] border-nuit">
+            <div id="calendrier-messes"></div>
         </div>
     </main>
 
     <footer class="bg-slate-900 text-slate-400 text-center py-10 text-sm mt-auto"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
 
-    <!-- SCRIPT -->
     <script>
         const SUPABASE_URL = 'https://tyxybtrthvmyzjefziop.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         let messesData = [];
-        let vueActuelle = 'globale'; // 'globale' ou 'eglise'
+        let calendar;
 
-        // 1. Charger les données au démarrage
-        async function chargerToutesLesMesses() {
-            const container = document.getElementById('toutes-les-messes');
+        async function chargerMesses() {
             const { data, error } = await _supabase.from('horaires_messes').select('*');
-            
-            if (error) { container.innerHTML = '<p class="text-red-500 text-center font-bold">Erreur de connexion à la base de données.</p>'; return; }
-            
+            if (error) return;
             messesData = data || [];
-            afficherMesses(messesData);
+            
+            // 1. Remplir le menu déroulant avec le nom des églises
+            const eglises = [...new Set(messesData.map(m => m.lieu))].filter(Boolean).sort();
+            const select = document.getElementById('filtre-eglise');
+            eglises.forEach(e => {
+                select.innerHTML += `<option value="${e}">📍 ${e}</option>`;
+            });
+
+            // 2. Initialiser le calendrier
+            initCalendar(messesData);
         }
 
-        // 2. Fonction pour gérer le changement d'onglet
-        function changerVue(vue) {
-            vueActuelle = vue;
-            
-            // Gestion du style des boutons (Onglet Actif / Inactif)
-            const btnGlobale = document.getElementById('btn-globale');
-            const btnEglise = document.getElementById('btn-eglise');
-            
-            if (vue === 'globale') {
-                btnGlobale.className = "flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all bg-white text-nuit shadow-sm border border-slate-200";
-                btnEglise.className = "flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all text-slate-500 hover:text-nuit hover:bg-slate-100";
-            } else {
-                btnEglise.className = "flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all bg-white text-nuit shadow-sm border border-slate-200";
-                btnGlobale.className = "flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all text-slate-500 hover:text-nuit hover:bg-slate-100";
-            }
-            
-            // Relancer l'affichage avec la recherche éventuelle
-            filtrerMesses();
-        }
-
-        // 3. Fonction principale d'affichage
-        function afficherMesses(liste) {
-            const container = document.getElementById('toutes-les-messes');
-            if(liste.length === 0) { container.innerHTML = '<p class="text-slate-500 py-8 text-center font-medium">Aucune messe trouvée.</p>'; return; }
-            
-            if (vueActuelle === 'globale') {
-                // VUE GLOBALE (Liste simple)
-                container.innerHTML = liste.map(m => `
-                    <div class="group bg-slate-50 hover:bg-sable p-5 rounded-2xl border border-slate-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 transition-colors duration-300 mb-3">
-                        <div>
-                            <span class="font-bold text-nuit text-lg block font-serif">${m.lieu}</span>
-                            <span class="text-slate-600 font-medium flex items-center gap-2 mt-1">
-                                📅 ${m.jour} à <span class="text-or font-bold">${m.heure}</span>
-                            </span>
-                        </div>
-                        ${m.remarques ? `<span class="text-sm bg-white border border-or text-or px-4 py-2 rounded-full font-semibold shadow-sm">${m.remarques}</span>` : ''}
-                    </div>
-                `).join('');
-            } 
-            else if (vueActuelle === 'eglise') {
-                // VUE PAR ÉGLISE (Regroupement)
-                // On regroupe les messes par nom de lieu
-                const messesParEglise = {};
-                liste.forEach(m => {
-                    if (!messesParEglise[m.lieu]) messesParEglise[m.lieu] = [];
-                    messesParEglise[m.lieu].push(m);
+        function formatterEvenements(donnees) {
+            // Transforme les données de Supabase en événements pour le Calendrier
+            return donnees
+                .filter(m => m.jour && m.jour.includes('-')) // Garde uniquement les vraies dates (YYYY-MM-DD)
+                .map(m => {
+                    return {
+                        title: `${m.heure} - ${m.lieu}`, // Texte dans la case
+                        start: m.jour,
+                        extendedProps: { lieu: m.lieu, heure: m.heure, remarques: m.remarques }
+                    };
                 });
+        }
 
-                // On génère le code HTML pour chaque église
-                let html = '';
-                for (const lieu in messesParEglise) {
-                    html += `
-                        <div class="mb-10">
-                            <h3 class="text-2xl font-serif font-bold text-nuit border-b-2 border-or pb-2 mb-4 flex items-center gap-2">
-                                📍 ${lieu}
-                            </h3>
-                            <div class="space-y-3">
-                    `;
-                    
-                    messesParEglise[lieu].forEach(m => {
-                        html += `
-                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                                <span class="text-slate-700 font-medium">📅 ${m.jour} à <span class="text-or font-bold text-lg">${m.heure}</span></span>
-                                ${m.remarques ? `<span class="text-xs bg-white border border-slate-200 text-slate-500 px-3 py-1 rounded-full font-semibold">${m.remarques}</span>` : ''}
-                            </div>
-                        `;
-                    });
-
-                    html += `</div></div>`;
+        function initCalendar(donnees) {
+            const calendarEl = document.getElementById('calendrier-messes');
+            
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'fr', // Calendrier en Français
+                firstDay: 1, // La semaine commence le Lundi
+                height: 'auto',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,listMonth' // Boutons pour passer en vue Grille ou Liste
+                },
+                buttonText: {
+                    today: "Aujourd'hui",
+                    month: 'Grille',
+                    list: 'Vue Liste'
+                },
+                events: formatterEvenements(donnees), // On charge les messes
+                eventClick: function(info) {
+                    // Quand on clique sur une messe dans le calendrier
+                    const props = info.event.extendedProps;
+                    alert(`⛪ Lieu : ${props.lieu}\n🕒 Heure : ${props.heure}\n\nℹ️ Infos : ${props.remarques || 'Aucune remarque particulière'}`);
                 }
-                container.innerHTML = html;
+            });
+            calendar.render();
+        }
+
+        function filtrerCalendrier() {
+            const lieuChoisi = document.getElementById('filtre-eglise').value;
+            let dataFiltree = messesData;
+            
+            if (lieuChoisi !== 'toutes') {
+                dataFiltree = messesData.filter(m => m.lieu === lieuChoisi);
             }
+            
+            // Effacer les anciennes messes et mettre les nouvelles
+            calendar.removeAllEvents();
+            calendar.addEventSource(formatterEvenements(dataFiltree));
         }
 
-        // 4. Fonction de recherche qui met à jour la vue active
-        function filtrerMesses() {
-            const recherche = document.getElementById('recherche-messe').value.toLowerCase();
-            const resultats = messesData.filter(m => 
-                m.lieu.toLowerCase().includes(recherche) || 
-                m.jour.toLowerCase().includes(recherche) ||
-                (m.remarques && m.remarques.toLowerCase().includes(recherche))
-            );
-            afficherMesses(resultats);
-        }
-
-        chargerToutesLesMesses();
+        chargerMesses();
     </script>
 </body>
 </html>
