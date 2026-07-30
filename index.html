@@ -14,164 +14,122 @@
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans">
 
-    <!-- En-tête / Navigation -->
     <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
             <div class="flex items-center gap-4">
-                <div class="bg-nuit text-or p-2 rounded-full shadow-md">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v18m-6-12h12"></path></svg>
-                </div>
-                <div>
-                    <span class="text-2xl font-serif font-bold text-nuit block leading-none">Saint-François d'Assise</span>
-                    <span class="text-or text-xs font-bold tracking-widest uppercase mt-1 block">Domérat & Huriel</span>
-                </div>
+                <div class="bg-nuit text-or p-2 rounded-full shadow-md"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v18m-6-12h12"></path></svg></div>
+                <div><span class="text-2xl font-serif font-bold text-nuit block leading-none">Saint-François d'Assise</span></div>
             </div>
             <nav class="mt-4 md:mt-0 flex gap-8 text-sm font-semibold text-slate-600">
                 <a href="/" class="text-or border-b-2 border-or pb-1 transition-all">Accueil</a>
-                <a href="/messes" class="hover:text-nuit hover:border-b-2 hover:border-nuit pb-1 transition-all">Messes</a>
-                <a href="/horaires" class="hover:text-nuit hover:border-b-2 hover:border-nuit pb-1 transition-all">Ouverture des Églises</a>
-                <a href="/contact" class="hover:text-nuit hover:border-b-2 hover:border-nuit pb-1 transition-all">Contact</a>
+                <a href="/messes" class="hover:text-nuit pb-1 transition-all">Messes</a>
+                <a href="/horaires" class="hover:text-nuit pb-1 transition-all">Ouverture des Églises</a>
+                <a href="/contact" class="hover:text-nuit pb-1 transition-all">Contact</a>
             </nav>
         </div>
     </header>
 
-    <!-- Bannière Hero -->
     <div class="hero-section text-white py-32 px-4 text-center border-b-[6px] border-or transition-all duration-500">
-        <h1 class="text-5xl md:text-6xl font-serif font-bold mb-6 drop-shadow-lg anim-element animate-fade-in-up" style="animation-delay: 0.1s;">Bienvenue chez vous.</h1>
-        <p class="max-w-2xl mx-auto text-lg md:text-xl text-slate-100 drop-shadow-md font-light anim-element animate-fade-in-up" style="animation-delay: 0.3s;">Un espace de foi, de prière et de fraternité au cœur de notre région.</p>
-        <div class="mt-10 anim-element animate-fade-in-up" style="animation-delay: 0.5s;">
-            <a href="/messes" class="bg-or hover:bg-yellow-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform hover:scale-105 duration-300 inline-block">Voir les messes</a>
-        </div>
+        <h1 class="text-5xl md:text-6xl font-serif font-bold mb-6 drop-shadow-lg">Bienvenue chez vous.</h1>
+        <p class="max-w-2xl mx-auto text-lg md:text-xl text-slate-100 drop-shadow-md">Un espace de foi, de prière et de fraternité au cœur de notre région.</p>
     </div>
 
-    <!-- Saint du Jour -->
     <div class="max-w-6xl mx-auto px-6 mt-8">
-        <div class="bg-sable/50 border border-or/30 rounded-full px-6 py-3 flex items-center justify-center gap-3 text-sm font-medium text-or shadow-sm anim-element animate-fade-in-up" style="animation-delay: 0.1s;">
+        <div class="bg-sable/50 border border-or/30 rounded-full px-6 py-3 flex items-center justify-center gap-3 text-sm font-medium text-or shadow-sm">
             <span>🗓️ Aujourd'hui nous fêtons :</span>
             <span id="saint-du-jour" class="font-bold text-nuit">Chargement...</span>
         </div>
     </div>
 
-    <!-- Contenu Principal -->
     <main class="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
-        <!-- Actualités -->
-        <div class="lg:col-span-2 space-y-8 anim-element animate-fade-in-up" style="animation-delay: 0.2s;">
+        <div class="lg:col-span-2 space-y-8">
             <div class="flex items-center gap-3 mb-8">
                 <span class="text-3xl">📰</span>
                 <h2 class="text-3xl font-serif font-bold text-nuit">Actualités de la Paroisse</h2>
             </div>
-            <div id="actualites-container" class="grid gap-6">
-                <p class="text-slate-400 italic">Chargement des belles annonces...</p>
-            </div>
+            <div id="actualites-container" class="grid gap-6"></div>
+
+            <!-- BOÎTE À BONNES ONDES -->
+            <section class="mt-12 bg-sable p-8 rounded-3xl shadow-lg border-t-[4px] border-or">
+                <h3 class="text-2xl font-serif font-bold text-nuit mb-2">✨ Boîte à Bonnes Ondes</h3>
+                <p class="text-slate-600 mb-6 text-sm">Partagez une pensée bienveillante ou un mot gentil avec la communauté.</p>
+                
+                <div class="flex flex-col md:flex-row gap-8">
+                    <div class="w-full md:w-1/3 space-y-3">
+                        <input type="text" id="bo-prenom" placeholder="Votre prénom (facultatif)" class="w-full p-3 rounded-xl border border-white outline-none shadow-sm text-sm">
+                        <textarea id="bo-message" rows="3" placeholder="Votre message bienveillant..." class="w-full p-3 rounded-xl border border-white outline-none shadow-sm text-sm"></textarea>
+                        <button onclick="envoyerOnde()" class="w-full bg-or text-white font-bold py-3 rounded-xl hover:bg-yellow-600 shadow-md transition">Envoyer</button>
+                        <p id="bo-msg" class="text-sm font-bold text-center text-emerald-600 mt-2"></p>
+                    </div>
+                    <div class="w-full md:w-2/3 max-h-56 overflow-y-auto space-y-3 pr-2" id="bo-liste">
+                        <p class="text-slate-500 italic">Chargement...</p>
+                    </div>
+                </div>
+            </section>
         </div>
 
-        <!-- Colonne Latérale -->
-        <div class="space-y-8 anim-element animate-fade-in-up" style="animation-delay: 0.4s;">
-            <section class="bg-white p-8 rounded-2xl shadow-lg border-t-4 border-or hover:-translate-y-1 transition-transform duration-300">
+        <div class="space-y-8">
+            <section class="bg-white p-8 rounded-2xl shadow-lg border-t-4 border-or">
                 <h3 class="text-xl font-serif font-bold text-nuit mb-6">À venir prochainement</h3>
-                <div id="messes-container" class="space-y-4">
-                    <p class="text-slate-400 text-sm italic">Chargement...</p>
-                </div>
-                <a href="/messes" class="block mt-6 text-center text-sm font-bold text-or hover:text-yellow-600">Toutes les célébrations →</a>
-            </section>
-            
-            <section class="bg-nuit text-white p-8 rounded-2xl shadow-lg group">
-                <h3 class="text-xl font-serif font-bold mb-3">Le Presbytère</h3>
-                <p class="text-sm text-blue-100 mb-6 leading-relaxed">Pour toute demande de baptême, mariage, ou simplement pour échanger.</p>
-                <a href="/contact" class="inline-block bg-white text-nuit px-5 py-2.5 rounded-full font-bold text-sm hover:bg-sable transition-colors">Nous contacter</a>
+                <div id="messes-container" class="space-y-4"></div>
+                <a href="/messes" class="block mt-6 text-center text-sm font-bold text-or">Toutes les célébrations →</a>
             </section>
         </div>
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 text-center py-10 text-sm mt-12"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
-
-    <!-- SCRIPT COMPLET ET SANS BUG -->
     <script>
         const SUPABASE_URL = 'https://tyxybtrthvmyzjefziop.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // 1. Charger l'image d'accueil dynamiquement depuis l'Admin
         const imageUrl = `${SUPABASE_URL}/storage/v1/object/public/images/accueil.jpg?t=${new Date().getTime()}`;
         document.querySelector('.hero-section').style.backgroundImage = `linear-gradient(rgba(30, 58, 138, 0.75), rgba(30, 58, 138, 0.6)), url('${imageUrl}')`;
         document.querySelector('.hero-section').style.backgroundSize = 'cover';
         document.querySelector('.hero-section').style.backgroundPosition = 'center';
 
-        // 2. Le calendrier des saints (Intégré, ne plante jamais)
-        const saintsMois = [
-            "Jour de l'An,Basile,Geneviève,Odilon,Édouard,Mélaine,Raymond,Lucien,Alix,Guillaume,Paulin,Tatiana,Yvette,Nina,Rémi,Marcel,Roseline,Prisca,Marius,Sébastien,Agnès,Vincent,Barnard,François de Sales,Conversion de Paul,Paule,Angèle,Thomas d'Aquin,Gildas,Martine,Marcelle",
-            "Ella,Présentation,Blaise,Véronique,Agathe,Gaston,Eugénie,Jacqueline,Apolline,Arnaud,N.-D. de Lourdes,Félix,Béatrice,Valentin,Claude,Julienne,Alexis,Bernadette,Gabin,Aimée,Damien,Isabelle,Lazare,Modeste,Roméo,Nestor,Honorine,Romain,Auguste",
-            "Aubin,Charles le Bon,Guénolé,Casimir,Olive,Colette,Félicité,Jean de Dieu,Françoise,Vivien,Rosine,Justine,Rodrigue,Mathilde,Louise,Bénédicte,Patrice,Cyrille,Joseph,Herbert,Clémence,Léa,Victorien,Catherine de Suède,Annonciation,Larissa,Habib,Gontran,Gwladys,Amédée,Benjamin",
-            "Hugues,Sandrine,Richard,Isidore,Irène,Marcellin,J.-B. de la Salle,Julie,Gautier,Fulbert,Stanislas,Jules,Ida,Maxime,Paterne,Benoît-Joseph,Anicet,Parfait,Emma,Odette,Anselme,Alexandre,Georges,Fidèle,Marc,Alida,Zita,Valérie,Catherine de Sienne,Robert",
-            "Fête du Travail,Boris,Philippe,Sylvain,Judith,Prudence,Gisèle,Désiré,Pacôme,Solange,Estelle,Achille,Rolande,Matthias,Denise,Honoré,Pascal,Éric,Yves,Bernardin,Constantin,Émile,Didier,Donatien,Sophie,Bérenger,Augustin,Germain,Aymar,Ferdinand,Visitation",
-            "Justin,Blandine,Kévin,Clotilde,Igor,Norbert,Gilbert,Médard,Diane,Landry,Barnabé,Guy,Antoine de Padoue,Élisée,Germaine,J.-F. Régis,Hervé,Léonce,Romuald,Silvère,Rodolphe,Alban,Audrey,Jean-Baptiste,Prosper,Anthelme,Fernand,Irénée,Pierre et Paul,Martial",
-            "Thierry,Martinien,Thomas,Florent,Antoine,Mariette,Raoul,Thibaut,Amandine,Ulrich,Benoît,Olivier,Henri,Camille,Donald,N.-D. du Mont-Carmel,Charlotte,Frédéric,Arsène,Marina,Victor,Marie-Madeleine,Brigitte,Christine,Jacques,Anne et Joa.,Nathalie,Samson,Marthe,Juliette,Ignace de L.",
-            "Alphonse,Julien Eymard,Lydie,J.-M. Vianney,Abel,Transfiguration,Gaétan,Dominique,Amour,Laurent,Claire,Clarisse,Hippolyte,Évrard,Assomption,Armel,Hyacinthe,Hélène,Jean-Eudes,Bernard,Christophe,Fabrice,Rose de Lima,Barthélemy,Louis,Natacha,Monique,Augustin,Sabine,Fiacre,Aristide",
-            "Gilles,Ingrid,Grégoire,Rosalie,Raïssa,Bertrand,Reine,Nativité de N.-D.,Alain,Inès,Adelphe,Apollinaire,Aimé,Croix Glorieuse,Roland,Édith,Renaud,Nadège,Émilie,Davy,Matthieu,Maurice,Constant,Thècle,Hermann,Côme et D.,Vincent de Paul,Venceslas,Michel,Jérôme",
-            "Thérèse de l'E.J.,Léger,Gérard,François d'Assise,Fleur,Bruno,Serge,Pélagie,Denis,Ghislain,Firmin,Wilfried,Géraud,Juste,Thérèse d'Avila,Edwige,Baudouin,Luc,René,Adeline,Céline,Élodie,Jean de Capistran,Florentin,Crépin,Dimitri,Émeline,Jude,Narcisse,Bienvenue,Quentin",
-            "Toussaint,Défunts,Hubert,Charles B.,Sylvie,Bertille,Carine,Geoffroy,Théodore,Léon,Martin,Christian,Brice,Sidoine,Albert le Grand,Marguerite,Élisabeth,Aude,Tanguy,Edmond,Présentation de Marie,Cécile,Clément,Flora,Catherine L.,Delphine,Sévrin,Jacques de la M.,Saturnin,André",
-            "Florence,Viviane,François-Xavier,Barbara,Gérald,Nicolas,Ambroise,Immaculée Conception,Pierre Fourier,Romaric,Daniel,Jeanne F.C.,Lucie,Odile,Ninon,Alice,Gaël,Gatien,Urbain,Théophile,Pierre Canisius,Françoise-Xavière,Armand,Adèle,Noël,Étienne,Jean,Innocents,David,Roger,Sylvestre"
-        ];
+        const saintsMois = [ "Jour de l'An,Basile,Geneviève,Odilon,Édouard,Mélaine,Raymond,Lucien,Alix,Guillaume,Paulin,Tatiana,Yvette,Nina,Rémi,Marcel,Roseline,Prisca,Marius,Sébastien,Agnès,Vincent,Barnard,François de Sales,Conversion de Paul,Paule,Angèle,Thomas d'Aquin,Gildas,Martine,Marcelle", "Ella,Présentation,Blaise,Véronique,Agathe,Gaston,Eugénie,Jacqueline,Apolline,Arnaud,N.-D. de Lourdes,Félix,Béatrice,Valentin,Claude,Julienne,Alexis,Bernadette,Gabin,Aimée,Damien,Isabelle,Lazare,Modeste,Roméo,Nestor,Honorine,Romain,Auguste", "Aubin,Charles le Bon,Guénolé,Casimir,Olive,Colette,Félicité,Jean de Dieu,Françoise,Vivien,Rosine,Justine,Rodrigue,Mathilde,Louise,Bénédicte,Patrice,Cyrille,Joseph,Herbert,Clémence,Léa,Victorien,Catherine de Suède,Annonciation,Larissa,Habib,Gontran,Gwladys,Amédée,Benjamin", "Hugues,Sandrine,Richard,Isidore,Irène,Marcellin,J.-B. de la Salle,Julie,Gautier,Fulbert,Stanislas,Jules,Ida,Maxime,Paterne,Benoît-Joseph,Anicet,Parfait,Emma,Odette,Anselme,Alexandre,Georges,Fidèle,Marc,Alida,Zita,Valérie,Catherine de Sienne,Robert", "Fête du Travail,Boris,Philippe,Sylvain,Judith,Prudence,Gisèle,Désiré,Pacôme,Solange,Estelle,Achille,Rolande,Matthias,Denise,Honoré,Pascal,Éric,Yves,Bernardin,Constantin,Émile,Didier,Donatien,Sophie,Bérenger,Augustin,Germain,Aymar,Ferdinand,Visitation", "Justin,Blandine,Kévin,Clotilde,Igor,Norbert,Gilbert,Médard,Diane,Landry,Barnabé,Guy,Antoine de Padoue,Élisée,Germaine,J.-F. Régis,Hervé,Léonce,Romuald,Silvère,Rodolphe,Alban,Audrey,Jean-Baptiste,Prosper,Anthelme,Fernand,Irénée,Pierre et Paul,Martial", "Thierry,Martinien,Thomas,Florent,Antoine,Mariette,Raoul,Thibaut,Amandine,Ulrich,Benoît,Olivier,Henri,Camille,Donald,N.-D. du Mont-Carmel,Charlotte,Frédéric,Arsène,Marina,Victor,Marie-Madeleine,Brigitte,Christine,Jacques,Anne et Joa.,Nathalie,Samson,Marthe,Juliette,Ignace de L.", "Alphonse,Julien Eymard,Lydie,J.-M. Vianney,Abel,Transfiguration,Gaétan,Dominique,Amour,Laurent,Claire,Clarisse,Hippolyte,Évrard,Assomption,Armel,Hyacinthe,Hélène,Jean-Eudes,Bernard,Christophe,Fabrice,Rose de Lima,Barthélemy,Louis,Natacha,Monique,Augustin,Sabine,Fiacre,Aristide", "Gilles,Ingrid,Grégoire,Rosalie,Raïssa,Bertrand,Reine,Nativité de N.-D.,Alain,Inès,Adelphe,Apollinaire,Aimé,Croix Glorieuse,Roland,Édith,Renaud,Nadège,Émilie,Davy,Matthieu,Maurice,Constant,Thècle,Hermann,Côme et D.,Vincent de Paul,Venceslas,Michel,Jérôme", "Thérèse de l'E.J.,Léger,Gérard,François d'Assise,Fleur,Bruno,Serge,Pélagie,Denis,Ghislain,Firmin,Wilfried,Géraud,Juste,Thérèse d'Avila,Edwige,Baudouin,Luc,René,Adeline,Céline,Élodie,Jean de Capistran,Florentin,Crépin,Dimitri,Émeline,Jude,Narcisse,Bienvenue,Quentin", "Toussaint,Défunts,Hubert,Charles B.,Sylvie,Bertille,Carine,Geoffroy,Théodore,Léon,Martin,Christian,Brice,Sidoine,Albert le Grand,Marguerite,Élisabeth,Aude,Tanguy,Edmond,Présentation de Marie,Cécile,Clément,Flora,Catherine L.,Delphine,Sévrin,Jacques de la M.,Saturnin,André", "Florence,Viviane,François-Xavier,Barbara,Gérald,Nicolas,Ambroise,Immaculée Conception,Pierre Fourier,Romaric,Daniel,Jeanne F.C.,Lucie,Odile,Ninon,Alice,Gaël,Gatien,Urbain,Théophile,Pierre Canisius,Françoise-Xavière,Armand,Adèle,Noël,Étienne,Jean,Innocents,David,Roger,Sylvestre" ];
+        try {
+            const date = new Date();
+            const saint = saintsMois[date.getMonth()].split(',')[date.getDate() - 1]; 
+            const prefixe = ["Jour", "Fête", "Assomption", "Annonciation", "Transfiguration", "Nativité", "Croix", "Toussaint", "Défunts", "Présentation", "Immaculée", "Noël", "N.-D.", "Visitation", "Conversion"].some(ex => saint.includes(ex)) ? "" : "Saint(e) ";
+            document.getElementById('saint-du-jour').innerText = prefixe + saint;
+        } catch(e) {}
 
-        function chargerSaintDuJour() {
-            try {
-                const exceptions = ["Jour", "Fête", "Assomption", "Annonciation", "Transfiguration", "Nativité", "Croix", "Toussaint", "Défunts", "Présentation", "Immaculée", "Noël", "N.-D.", "Visitation", "Conversion"];
-                const date = new Date();
-                const saint = saintsMois[date.getMonth()].split(',')[date.getDate() - 1]; 
-                
-                const prefixe = exceptions.some(ex => saint.includes(ex)) ? "" : "Saint(e) ";
-                document.getElementById('saint-du-jour').innerText = prefixe + saint;
-            } catch(e) {
-                document.getElementById('saint-du-jour').innerText = "Un beau jour !";
-            }
-        }
-
-        // 3. Charger les actualités depuis Supabase
         async function chargerActualites() {
-            const container = document.getElementById('actualites-container');
-            const { data, error } = await _supabase.from('actualites').select('*').order('date_publication', { ascending: false });
-            
-            if (error || !data || data.length === 0) { 
-                container.innerHTML = '<p class="text-slate-500">Aucune actualité pour le moment.</p>'; 
-                return; 
-            }
-            
-            container.innerHTML = data.map(actu => `
-                <article class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-bold text-nuit font-serif">${actu.titre}</h3>
-                        <span class="bg-sable text-or text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
-                            ${actu.date_publication ? new Date(actu.date_publication).toLocaleDateString('fr-FR') : 'Nouveau'}
-                        </span>
-                    </div>
-                    <div class="text-slate-600 leading-relaxed quill-content">${actu.contenu}</div>
-                </article>
-            `).join('');
+            const { data } = await _supabase.from('actualites').select('*').order('date_publication', { ascending: false });
+            if (data) document.getElementById('actualites-container').innerHTML = data.map(actu => `<article class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100"><h3 class="text-xl font-bold text-nuit font-serif mb-4">${actu.titre}</h3><div class="text-slate-600">${actu.contenu}</div></article>`).join('');
         }
 
-        // 4. Charger les 3 prochaines messes depuis Supabase
         async function chargerMesses() {
-            const container = document.getElementById('messes-container');
-            const { data, error } = await _supabase.from('horaires_messes').select('*').limit(3);
-            
-            if (error || !data || data.length === 0) { 
-                container.innerHTML = '<p class="text-slate-500 text-sm">Aucun horaire renseigné.</p>'; 
-                return; 
-            }
-            
-            container.innerHTML = data.map(m => `
-                <div class="border-b border-slate-100 pb-3 last:border-0 last:pb-0">
-                    <div class="font-bold text-slate-800 text-sm">${m.lieu}</div>
-                    <div class="text-or text-xs font-semibold mt-1">${m.jour} - <span class="text-nuit">${m.heure}</span></div>
-                    ${m.remarques ? `<div class="text-xs text-slate-500 mt-1 italic">${m.remarques}</div>` : ''}
-                </div>
-            `).join('');
+            const { data } = await _supabase.from('horaires_messes').select('*').order('jour', {ascending: true}).limit(3);
+            if (data) document.getElementById('messes-container').innerHTML = data.map(m => {
+                // DATE EN FRANÇAIS ICI
+                let dateFr = m.jour;
+                if(m.jour && m.jour.includes('-')) {
+                    const d = new Date(m.jour);
+                    dateFr = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+                    dateFr = dateFr.charAt(0).toUpperCase() + dateFr.slice(1);
+                }
+                return `<div class="border-b border-slate-100 pb-3 last:border-0"><div class="font-bold text-slate-800 text-sm">${m.lieu.split('–')[0]}</div><div class="text-or text-xs font-semibold mt-1">${dateFr} - <span class="text-nuit">${m.heure}</span></div></div>`;
+            }).join('');
         }
 
-        // 5. Exécuter toutes les fonctions au chargement de la page
-        chargerSaintDuJour();
-        chargerActualites();
-        chargerMesses();
+        async function envoyerOnde() {
+            const prenom = document.getElementById('bo-prenom').value || 'Anonyme';
+            const message = document.getElementById('bo-message').value;
+            if(!message) return;
+            await _supabase.from('bonnes_ondes').insert([{ prenom, message }]);
+            document.getElementById('bo-msg').innerText = "Message envoyé avec succès !";
+            document.getElementById('bo-message').value = '';
+            chargerOndes();
+        }
+
+        async function chargerOndes() {
+            const { data } = await _supabase.from('bonnes_ondes').select('*').order('id', { ascending: false });
+            if (data) document.getElementById('bo-liste').innerHTML = data.map(o => `<div class="bg-white p-4 rounded-xl shadow-sm"><p class="text-slate-700 italic text-sm">"${o.message}"</p><p class="text-right text-xs font-bold text-or mt-2">— ${o.prenom}</p></div>`).join('');
+        }
+
+        chargerActualites(); chargerMesses(); chargerOndes();
     </script>
 </body>
 </html>
