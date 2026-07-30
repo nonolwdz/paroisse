@@ -31,6 +31,7 @@
                 <input type="email" id="email" class="w-full border-2 p-3 rounded-lg outline-none focus:border-nuit" placeholder="Email admin">
                 <input type="password" id="password" class="w-full border-2 p-3 rounded-lg outline-none focus:border-nuit" placeholder="Mot de passe">
                 <button onclick="seConnecter()" class="w-full bg-nuit hover:bg-blue-900 text-white font-bold py-3 rounded-lg shadow-md transition">Se connecter</button>
+                <p id="login-error" class="text-red-500 text-sm mt-2 text-center hidden font-bold">Identifiants incorrects.</p>
             </div>
         </div>
 
@@ -95,7 +96,7 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="text-xs text-blue-600 mt-4 font-semibold border-t border-blue-100 pt-3">💡 Astuce journée continue : Si l'église est ouverte de 8h à 19h sans coupure le midi, remplissez uniquement la première plage (gauche) et laissez la deuxième vide.</p>
+                        <p class="text-xs text-blue-600 mt-4 font-semibold border-t border-blue-100 pt-3">💡 Astuce journée continue : Si l'église est ouverte de 8h à 19h sans coupure, remplissez uniquement la première plage (gauche) et laissez la deuxième vide.</p>
                     </div>
 
                     <label class="flex items-center gap-2 bg-red-50 p-3 rounded-lg border border-red-200 cursor-pointer mt-2">
@@ -105,6 +106,7 @@
                     <input type="text" id="eglise-alerte" placeholder="Message d'alerte (ex: En travaux)" class="w-full border border-red-300 p-3 rounded-lg focus:border-red-500 outline-none">
                     
                     <button id="btn-save-eglise" onclick="ajouterEglise()" class="w-full bg-blue-600 hover:bg-blue-800 text-white py-3 rounded-lg font-bold">Enregistrer l'église</button>
+                    <p id="eglise-msg" class="text-sm mt-1 text-center font-bold text-blue-600"></p>
                 </div>
             </div>
 
@@ -119,6 +121,7 @@
                     </div>
                     <input type="text" id="messe-remarques" placeholder="Remarques (ex: Messe des familles)" class="w-full border p-3 rounded-lg outline-none">
                     <button id="btn-save-messe" onclick="ajouterMesse()" class="w-full bg-or hover:bg-yellow-600 text-white py-3 rounded-lg font-bold">Ajouter au calendrier</button>
+                    <p id="messe-msg" class="text-sm mt-1 text-center font-bold text-or"></p>
                 </div>
             </div>
 
@@ -132,10 +135,11 @@
                     </div>
                     <div class="bg-white"><div id="editeur-actu" style="height: 180px;"></div></div>
                     <button id="btn-save-actu" onclick="ajouterActualite()" class="w-full bg-nuit hover:bg-blue-900 text-white py-3 rounded-lg font-bold">Publier l'actualité</button>
+                    <p id="actu-msg" class="text-sm mt-1 text-center font-bold text-nuit"></p>
                 </div>
             </div>
 
-            <!-- CONTACTS PRINCIPAUX -->
+            <!-- CONTACTS PRINCIPAUX (CORRIGÉ AVEC UPSERT) -->
             <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-emeraude">
                 <h3 class="text-xl font-serif font-bold text-emerald-900 mb-6">📞 Contact Principal (Presbytère)</h3>
                 <div class="space-y-4">
@@ -147,7 +151,7 @@
                     <textarea id="contact-permanences" placeholder="Permanences d'accueil" class="w-full border p-3 rounded-lg outline-none h-20"></textarea>
                     <textarea id="contact-urgences" placeholder="Urgences / Obsèques" class="w-full border p-3 rounded-lg outline-none h-20"></textarea>
                     <button onclick="sauvegarderContact()" class="w-full bg-emeraude hover:bg-emerald-800 text-white py-3 rounded-lg font-bold">💾 Sauvegarder</button>
-                    <p id="contact-msg" class="text-sm mt-1 text-center font-bold text-emerald-600"></p>
+                    <div id="contact-msg" class="text-sm mt-1 text-center font-bold"></div>
                 </div>
             </div>
 
@@ -158,6 +162,7 @@
                     <input type="text" id="autre-nom" placeholder="Nom ou Rôle (ex: Père Jean, Secrétariat)" class="w-full border p-3 rounded-lg outline-none focus:border-violet">
                     <input type="text" id="autre-valeur" placeholder="Coordonnées (ex: 06 12 34... ou email@...)" class="w-full border p-3 rounded-lg outline-none focus:border-violet">
                     <button id="btn-save-autre" onclick="ajouterAutreContact()" class="w-full bg-violet hover:bg-violet-800 text-white py-3 rounded-lg font-bold">Ajouter ce contact</button>
+                    <p id="autre-msg" class="text-sm mt-1 text-center font-bold text-violet-600"></p>
                 </div>
             </div>
 
@@ -209,7 +214,7 @@
         async function seConnecter() {
             const email = document.getElementById('email').value, password = document.getElementById('password').value;
             const { error } = await _supabase.auth.signInWithPassword({ email, password });
-            if (!error) location.reload(); else alert("Identifiants incorrects.");
+            if (!error) location.reload(); else document.getElementById('login-error').classList.remove('hidden');
         }
 
         async function seDeconnecter() { await _supabase.auth.signOut(); location.reload(); }
@@ -248,9 +253,14 @@
                 alerte: document.getElementById('eglise-alerte').value 
             };
             
-            if (editEgliseId) await _supabase.from('horaires_eglises').update(payload).eq('id', editEgliseId);
-            else await _supabase.from('horaires_eglises').insert([payload]);
+            let error;
+            if (editEgliseId) { error = (await _supabase.from('horaires_eglises').update(payload).eq('id', editEgliseId)).error; }
+            else { error = (await _supabase.from('horaires_eglises').insert([payload])).error; }
+            
+            if (error) { document.getElementById('eglise-msg').innerHTML = `<span class="text-red-600">❌ ${error.message}</span>`; return; }
+            
             editEgliseId = null; document.getElementById('btn-save-eglise').innerText = "Enregistrer l'église";
+            document.getElementById('eglise-msg').innerText = "✅ Enregistré !"; setTimeout(()=>document.getElementById('eglise-msg').innerText='', 3000);
             
             document.getElementById('eglise-nom').value=''; document.getElementById('eglise-horaires').value=''; document.getElementById('eglise-estferme').checked=false; document.getElementById('eglise-alerte').value='';
             document.getElementById('eglise-type').value='inconnu'; toggleHoraires();
@@ -261,9 +271,14 @@
         async function ajouterMesse() {
             const lieu = document.getElementById('messe-lieu').value, jour = document.getElementById('messe-jour').value, heure = document.getElementById('messe-heure').value, remarques = document.getElementById('messe-remarques').value;
             if(!lieu) return alert("Sélectionnez une église !");
-            if (editMesseId) await _supabase.from('horaires_messes').update({ lieu, jour, heure, remarques }).eq('id', editMesseId);
-            else await _supabase.from('horaires_messes').insert([{ lieu, jour, heure, remarques }]);
+            let error;
+            if (editMesseId) { error = (await _supabase.from('horaires_messes').update({ lieu, jour, heure, remarques }).eq('id', editMesseId)).error; }
+            else { error = (await _supabase.from('horaires_messes').insert([{ lieu, jour, heure, remarques }])).error; }
+            
+            if (error) { document.getElementById('messe-msg').innerHTML = `<span class="text-red-600">❌ ${error.message}</span>`; return; }
+            
             editMesseId = null; document.getElementById('btn-save-messe').innerText = "Ajouter au calendrier";
+            document.getElementById('messe-msg').innerText = "✅ Enregistré !"; setTimeout(()=>document.getElementById('messe-msg').innerText='', 3000);
             document.getElementById('messe-jour').value=''; document.getElementById('messe-heure').value=''; document.getElementById('messe-remarques').value='';
             chargerDonnees();
         }
@@ -271,25 +286,56 @@
         async function ajouterActualite() {
             const titre = document.getElementById('actu-titre').value, date_publication = document.getElementById('actu-date').value, contenu = quill.root.innerHTML;
             if(!titre) return alert("Titre obligatoire");
-            if (editActuId) await _supabase.from('actualites').update({ titre, date_publication, contenu }).eq('id', editActuId);
-            else await _supabase.from('actualites').insert([{ titre, date_publication, contenu }]);
+            let error;
+            if (editActuId) { error = (await _supabase.from('actualites').update({ titre, date_publication, contenu }).eq('id', editActuId)).error; }
+            else { error = (await _supabase.from('actualites').insert([{ titre, date_publication, contenu }])).error; }
+            
+            if (error) { document.getElementById('actu-msg').innerHTML = `<span class="text-red-600">❌ ${error.message}</span>`; return; }
+            
             editActuId = null; document.getElementById('btn-save-actu').innerText = "Publier l'actualité";
+            document.getElementById('actu-msg').innerText = "✅ Enregistré !"; setTimeout(()=>document.getElementById('actu-msg').innerText='', 3000);
             document.getElementById('actu-titre').value=''; document.getElementById('actu-date').value=''; quill.root.innerHTML='';
             chargerDonnees();
         }
 
+        /* --- CORRECTION ICI : LA FONCTION UPSERT POUR LES CONTACTS --- */
         async function sauvegarderContact() {
-            const adresse = document.getElementById('contact-adresse').value, telephone = document.getElementById('contact-tel').value, email = document.getElementById('contact-email').value, permanences = document.getElementById('contact-permanences').value, urgences = document.getElementById('contact-urgences').value;
-            const { error } = await _supabase.from('contact_info').update({ adresse, telephone, email, permanences, urgences }).eq('id', 1);
-            if (!error) { document.getElementById('contact-msg').innerText = "✅ Sauvegardé !"; setTimeout(()=>document.getElementById('contact-msg').innerText='', 3000); }
+            const adresse = document.getElementById('contact-adresse').value;
+            const telephone = document.getElementById('contact-tel').value;
+            const email = document.getElementById('contact-email').value;
+            const permanences = document.getElementById('contact-permanences').value;
+            const urgences = document.getElementById('contact-urgences').value;
+            const msg = document.getElementById('contact-msg');
+            
+            // L'upsert crée la ligne 1 si elle n'existe pas, ou la met à jour si elle existe
+            const { error } = await _supabase.from('contact_info').upsert({ 
+                id: 1, 
+                adresse: adresse, 
+                telephone: telephone, 
+                email: email, 
+                permanences: permanences, 
+                urgences: urgences 
+            });
+            
+            if (error) { 
+                msg.innerHTML = `<span class="text-red-600">❌ Erreur : ${error.message} (Vérifiez le RLS de la table)</span>`; 
+            } else { 
+                msg.innerHTML = '<span class="text-emerald-600">✅ Sauvegardé avec succès !</span>'; 
+                setTimeout(() => msg.innerHTML = '', 3000); 
+            }
         }
 
         async function ajouterAutreContact() {
             const nom = document.getElementById('autre-nom').value, valeur = document.getElementById('autre-valeur').value;
             if(!nom || !valeur) return alert("Remplissez le nom et les coordonnées.");
-            if (editAutreId) await _supabase.from('autres_contacts').update({ nom, valeur }).eq('id', editAutreId);
-            else await _supabase.from('autres_contacts').insert([{ nom, valeur }]);
+            let error;
+            if (editAutreId) { error = (await _supabase.from('autres_contacts').update({ nom, valeur }).eq('id', editAutreId)).error; }
+            else { error = (await _supabase.from('autres_contacts').insert([{ nom, valeur }])).error; }
+            
+            if (error) { document.getElementById('autre-msg').innerHTML = `<span class="text-red-600">❌ ${error.message}</span>`; return; }
+
             editAutreId = null; document.getElementById('btn-save-autre').innerText = "Ajouter ce contact";
+            document.getElementById('autre-msg').innerText = "✅ Enregistré !"; setTimeout(()=>document.getElementById('autre-msg').innerText='', 3000);
             document.getElementById('autre-nom').value=''; document.getElementById('autre-valeur').value='';
             chargerDonnees();
         }
@@ -354,31 +400,12 @@
             document.getElementById('actu-titre').value = a.titre; document.getElementById('actu-date').value = a.date_publication; quill.root.innerHTML = a.contenu;
             document.getElementById('btn-save-actu').innerText = "💾 Modifier l'actualité"; window.scrollTo({top:0, behavior:'smooth'});
         }
-        async function sauvegarderContact() {
-            const adresse = document.getElementById('contact-adresse').value;
-            const telephone = document.getElementById('contact-tel').value;
-            const email = document.getElementById('contact-email').value;
-            const permanences = document.getElementById('contact-permanences').value;
-            const urgences = document.getElementById('contact-urgences').value;
-            
-            // On utilise "upsert" : si la ligne id=1 n'existe pas, il la crée tout seul !
-            const { error } = await _supabase.from('contact_info').upsert({ 
-                id: 1, 
-                adresse: adresse, 
-                telephone: telephone, 
-                email: email, 
-                permanences: permanences, 
-                urgences: urgences 
-            });
-            
-            const msg = document.getElementById('contact-msg');
-            if (error) { 
-                msg.innerHTML = `<span class="text-red-600">❌ Erreur : ${error.message} (Vérifiez que le RLS est bien désactivé)</span>`; 
-            } else { 
-                msg.innerHTML = "✅ Sauvegardé avec succès !"; 
-                setTimeout(() => msg.innerHTML = '', 3000); 
-            }
+        function editAutreContact(id) {
+            const c = autresData.find(x => x.id === id); editAutreId = c.id;
+            document.getElementById('autre-nom').value = c.nom; document.getElementById('autre-valeur').value = c.valeur;
+            document.getElementById('btn-save-autre').innerText = "💾 Modifier le contact"; window.scrollTo({top:0, behavior:'smooth'});
         }
+
         async function supprimer(table, id) { if(confirm("Supprimer définitivement ?")) { await _supabase.from(table).delete().eq('id', id); chargerDonnees(); } }
 
         checkSession();
