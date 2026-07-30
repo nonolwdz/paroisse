@@ -34,7 +34,8 @@
             <p class="text-slate-600 text-lg">Nous sommes à votre écoute pour vous accompagner.</p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- CONTACTS PRINCIPAUX -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             <div class="bg-white p-10 rounded-3xl shadow-lg border-t-[6px] border-or">
                 <h2 class="text-2xl font-serif font-bold text-nuit mb-6">Le Presbytère</h2>
                 <div class="space-y-6 text-slate-600">
@@ -68,6 +69,15 @@
                 </div>
             </div>
         </div>
+
+        <!-- AUTRES CONTACTS (NOUVEAU) -->
+        <div class="mt-16">
+            <h2 class="text-2xl font-serif font-bold text-nuit mb-6 border-b-2 border-or pb-2 inline-block">L'équipe & Autres contacts</h2>
+            <div id="liste-autres-contacts" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <!-- Les cartes s'afficheront ici -->
+                <p class="text-slate-400 italic col-span-full">Chargement des contacts...</p>
+            </div>
+        </div>
     </main>
 
     <footer class="bg-slate-900 text-slate-400 text-center py-10 text-sm mt-auto"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
@@ -78,6 +88,7 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function chargerContacts() {
+            // Contacts Principaux
             const { data } = await _supabase.from('contact_info').select('*').eq('id', 1).single();
             if(data) {
                 document.getElementById('vue-adresse').innerHTML = `<strong>Maison Paroissiale</strong><br>` + (data.adresse ? data.adresse.replace(/\n/g, '<br>') : '');
@@ -85,6 +96,20 @@
                 document.getElementById('vue-email').innerText = data.email || '';
                 document.getElementById('vue-permanences').innerHTML = data.permanences ? data.permanences.replace(/\n/g, '<br>') : '';
                 document.getElementById('vue-urgences').innerHTML = data.urgences ? data.urgences.replace(/\n/g, '<br>') : '';
+            }
+
+            // Autres Contacts
+            const { data: autres } = await _supabase.from('autres_contacts').select('*');
+            const conteneur = document.getElementById('liste-autres-contacts');
+            if (autres && autres.length > 0) {
+                conteneur.innerHTML = autres.map(c => `
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border-l-[4px] border-nuit flex flex-col justify-center">
+                        <span class="font-bold text-nuit text-lg font-serif mb-1">${c.nom}</span>
+                        <span class="text-slate-600 font-medium">${c.valeur}</span>
+                    </div>
+                `).join('');
+            } else {
+                conteneur.innerHTML = '<p class="text-slate-400 italic">Aucun autre contact renseigné pour le moment.</p>';
             }
         }
         chargerContacts();
