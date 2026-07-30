@@ -195,6 +195,11 @@
 
         chargerActualites();
         chargerMesses();
+  // Charge dynamiquement l'image d'accueil envoyée depuis l'admin
+        const imageUrl = `${SUPABASE_URL}/storage/v1/object/public/images/accueil.jpg?t=${new Date().getTime()}`;
+        document.querySelector('.hero-section').style.backgroundImage = `linear-gradient(rgba(30, 58, 138, 0.75), rgba(30, 58, 138, 0.6)), url('${imageUrl}')`;
+        document.querySelector('.hero-section').style.backgroundSize = 'cover';
+        document.querySelector('.hero-section').style.backgroundPosition = 'center';
     </script>
 </body>
 </html>
