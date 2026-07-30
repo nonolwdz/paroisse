@@ -25,7 +25,6 @@
 
     <main class="max-w-7xl mx-auto px-6 py-12">
         
-        <!-- CONNEXION -->
         <div id="section-login" class="bg-white p-10 rounded-3xl shadow-xl border-t-[6px] border-or max-w-md mx-auto mt-12">
             <h2 class="text-3xl font-serif font-bold text-center mb-8">Connexion</h2>
             <div class="space-y-4">
@@ -35,31 +34,73 @@
             </div>
         </div>
 
-        <!-- DASHBOARD : Structure solide en grille -->
         <div id="section-dashboard" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             
-            <!-- ÉGLISES ET HORAIRES -->
+            <!-- ÉGLISES ET HORAIRES COMPLEXES -->
             <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-blue-400">
-                <h3 class="text-xl font-serif font-bold text-blue-900 mb-4">🗝️ Gérer une Église</h3>
-                <div class="space-y-3">
-                    <input type="text" id="eglise-nom" placeholder="Nom de l'église (ex: Église Notre-Dame)" class="w-full border p-3 rounded-lg focus:border-blue-400 outline-none">
-                    <input type="text" id="eglise-horaires" placeholder="Texte Libre Horaires (ex: Ouvert de 9h à 18h)" class="w-full border p-3 rounded-lg focus:border-blue-400 outline-none">
+                <h3 class="text-xl font-serif font-bold text-blue-900 mb-6">🗝️ Gérer l'ouverture d'une Église</h3>
+                <div class="space-y-4">
+                    <input type="text" id="eglise-nom" placeholder="Nom de l'église (ex: Église Notre-Dame)" class="w-full border p-3 rounded-lg focus:border-blue-400 outline-none font-bold text-nuit">
                     
-                    <div class="grid grid-cols-2 gap-3 mt-4">
-                        <div>
-                            <label class="text-xs font-bold text-slate-500">Heure Ouverture (Calcul)</label>
-                            <input type="time" id="eglise-ouv" class="w-full border p-3 rounded-lg">
-                        </div>
-                        <div>
-                            <label class="text-xs font-bold text-slate-500">Heure Fermeture (Calcul)</label>
-                            <input type="time" id="eglise-fer" class="w-full border p-3 rounded-lg">
-                        </div>
+                    <div>
+                        <label class="text-xs font-bold text-slate-500 mb-1 block">Texte affiché aux visiteurs (Ce qu'ils vont lire) :</label>
+                        <textarea id="eglise-horaires" placeholder="Ex: Du lundi au vendredi de 9h à 18h..." class="w-full border p-3 rounded-lg focus:border-blue-400 outline-none h-20"></textarea>
                     </div>
-                    <p class="text-xs text-slate-400 italic">💡 Laisser vide si inconnu.</p>
-                    
+
+                    <!-- CONFIGURATION AVANCEE DES HORAIRES (POUR LES BADGES) -->
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <label class="text-sm font-bold text-nuit block mb-2">Configuration de l'algorithme (Badges de couleurs) :</label>
+                        <select id="eglise-type" onchange="toggleHoraires()" class="w-full border p-2 rounded-lg text-sm mb-4 bg-white outline-none focus:border-blue-400 cursor-pointer">
+                            <option value="inconnu">Horaires inconnus (Badge gris)</option>
+                            <option value="tous">Tous les jours identiques</option>
+                            <option value="semaine_we">Semaine (Lun-Ven) / Samedi / Dimanche</option>
+                        </select>
+
+                        <!-- Bloc "Tous les jours" -->
+                        <div id="bloc-tous" class="hidden space-y-2">
+                            <div class="flex items-center gap-2 text-sm">
+                                <span class="w-16 font-bold text-slate-600">Matin :</span>
+                                <input type="time" id="tous-m-s" class="border p-1 rounded outline-none"> à <input type="time" id="tous-m-e" class="border p-1 rounded outline-none">
+                            </div>
+                            <div class="flex items-center gap-2 text-sm">
+                                <span class="w-16 font-bold text-slate-600">Aprem :</span>
+                                <input type="time" id="tous-a-s" class="border p-1 rounded outline-none"> à <input type="time" id="tous-a-e" class="border p-1 rounded outline-none">
+                            </div>
+                        </div>
+
+                        <!-- Bloc "Semaine + WE" -->
+                        <div id="bloc-semaine" class="hidden space-y-4">
+                            <div>
+                                <span class="font-bold text-blue-800 text-sm block mb-1">Du Lundi au Vendredi</span>
+                                <div class="flex items-center gap-2 text-sm">
+                                    <input type="time" id="sem-m-s" class="border p-1 rounded w-24"> à <input type="time" id="sem-m-e" class="border p-1 rounded w-24">
+                                    <span class="text-slate-300">|</span>
+                                    <input type="time" id="sem-a-s" class="border p-1 rounded w-24"> à <input type="time" id="sem-a-e" class="border p-1 rounded w-24">
+                                </div>
+                            </div>
+                            <div>
+                                <span class="font-bold text-or text-sm block mb-1">Le Samedi</span>
+                                <div class="flex items-center gap-2 text-sm">
+                                    <input type="time" id="sam-m-s" class="border p-1 rounded w-24"> à <input type="time" id="sam-m-e" class="border p-1 rounded w-24">
+                                    <span class="text-slate-300">|</span>
+                                    <input type="time" id="sam-a-s" class="border p-1 rounded w-24"> à <input type="time" id="sam-a-e" class="border p-1 rounded w-24">
+                                </div>
+                            </div>
+                            <div>
+                                <span class="font-bold text-red-700 text-sm block mb-1">Le Dimanche</span>
+                                <div class="flex items-center gap-2 text-sm">
+                                    <input type="time" id="dim-m-s" class="border p-1 rounded w-24"> à <input type="time" id="dim-m-e" class="border p-1 rounded w-24">
+                                    <span class="text-slate-300">|</span>
+                                    <input type="time" id="dim-a-s" class="border p-1 rounded w-24"> à <input type="time" id="dim-a-e" class="border p-1 rounded w-24">
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-3 italic">Laissez des cases vides si l'église est fermée le matin ou l'après-midi.</p>
+                    </div>
+
                     <label class="flex items-center gap-2 bg-red-50 p-3 rounded-lg border border-red-200 cursor-pointer mt-2">
                         <input type="checkbox" id="eglise-estferme" class="w-5 h-5 accent-red-600">
-                        <span class="font-bold text-red-800 text-sm">Forcer en "Fermeture exceptionnelle"</span>
+                        <span class="font-bold text-red-800 text-sm">Fermeture exceptionnelle active</span>
                     </label>
                     <input type="text" id="eglise-alerte" placeholder="Message d'alerte (ex: En travaux)" class="w-full border border-red-300 p-3 rounded-lg outline-none">
                     <button id="btn-save-eglise" onclick="ajouterEglise()" class="w-full bg-blue-600 hover:bg-blue-800 text-white py-3 rounded-lg font-bold">Enregistrer l'église</button>
@@ -68,8 +109,8 @@
 
             <!-- MESSES -->
             <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-or">
-                <h3 class="text-xl font-serif font-bold text-or mb-4">⛪ Ajouter / Modifier une Messe</h3>
-                <div class="space-y-3">
+                <h3 class="text-xl font-serif font-bold text-or mb-6">⛪ Ajouter / Modifier une Messe</h3>
+                <div class="space-y-4">
                     <select id="messe-lieu" class="w-full border p-3 rounded-lg font-medium outline-none cursor-pointer"></select>
                     <div class="grid grid-cols-2 gap-3">
                         <input type="date" id="messe-jour" class="w-full border p-3 rounded-lg outline-none text-slate-600">
@@ -80,23 +121,23 @@
                 </div>
             </div>
 
-            <!-- ACTUALITÉS (100% VISIBLE) -->
+            <!-- ACTUALITÉS -->
             <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-nuit lg:col-span-2">
-                <h3 class="text-xl font-serif font-bold text-nuit mb-4">📰 Éditer une Actualité</h3>
-                <div class="space-y-3">
+                <h3 class="text-xl font-serif font-bold text-nuit mb-6">📰 Éditer une Actualité</h3>
+                <div class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <input type="text" id="actu-titre" placeholder="Titre de l'actualité" class="w-full border p-3 rounded-lg outline-none">
                         <input type="date" id="actu-date" class="w-full border p-3 rounded-lg outline-none text-slate-600">
                     </div>
                     <div class="bg-white"><div id="editeur-actu" style="height: 180px;"></div></div>
-                    <button id="btn-save-actu" onclick="ajouterActualite()" class="w-full bg-nuit hover:bg-blue-900 text-white py-3 rounded-lg font-bold mt-2">Publier l'actualité</button>
+                    <button id="btn-save-actu" onclick="ajouterActualite()" class="w-full bg-nuit hover:bg-blue-900 text-white py-3 rounded-lg font-bold">Publier l'actualité</button>
                 </div>
             </div>
 
             <!-- CONTACTS PRINCIPAUX -->
             <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-emeraude">
-                <h3 class="text-xl font-serif font-bold text-emerald-900 mb-4">📞 Contact Principal (Presbytère)</h3>
-                <div class="space-y-3">
+                <h3 class="text-xl font-serif font-bold text-emerald-900 mb-6">📞 Contact Principal (Presbytère)</h3>
+                <div class="space-y-4">
                     <textarea id="contact-adresse" placeholder="Adresse complète" class="w-full border p-3 rounded-lg outline-none h-20"></textarea>
                     <div class="grid grid-cols-2 gap-3">
                         <input type="text" id="contact-tel" placeholder="Téléphone" class="w-full border p-3 rounded-lg outline-none">
@@ -109,39 +150,39 @@
                 </div>
             </div>
 
-            <!-- AUTRES CONTACTS (NOUVEAU) -->
+            <!-- AUTRES CONTACTS -->
             <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-violet">
-                <h3 class="text-xl font-serif font-bold text-violet-900 mb-4">👥 L'Équipe & Autres Contacts</h3>
-                <div class="space-y-3">
+                <h3 class="text-xl font-serif font-bold text-violet-900 mb-6">👥 L'Équipe & Autres Contacts</h3>
+                <div class="space-y-4">
                     <input type="text" id="autre-nom" placeholder="Nom ou Rôle (ex: Père Jean, Secrétariat)" class="w-full border p-3 rounded-lg outline-none focus:border-violet">
                     <input type="text" id="autre-valeur" placeholder="Coordonnées (ex: 06 12 34... ou email@...)" class="w-full border p-3 rounded-lg outline-none focus:border-violet">
                     <button id="btn-save-autre" onclick="ajouterAutreContact()" class="w-full bg-violet hover:bg-violet-800 text-white py-3 rounded-lg font-bold">Ajouter ce contact</button>
                 </div>
             </div>
 
-            <!-- GESTION / SUPPRESSION (Toutes les listes en bas) -->
+            <!-- GESTION / SUPPRESSION -->
             <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-slate-800 lg:col-span-2">
-                <h3 class="text-2xl font-serif font-bold mb-6">🗑️ Gestion, Modification & Suppression</h3>
+                <h3 class="text-2xl font-serif font-bold mb-8">🗑️ Gestion, Modification & Suppression</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
                     <div>
-                        <h4 class="font-bold border-b pb-2 mb-2 text-sm text-blue-800">Églises</h4>
-                        <div id="liste-eglises" class="space-y-2 text-xs max-h-48 overflow-y-auto"></div>
+                        <h4 class="font-bold border-b pb-2 mb-3 text-sm text-blue-800">Églises</h4>
+                        <div id="liste-eglises" class="space-y-2 text-xs max-h-48 overflow-y-auto pr-1"></div>
                     </div>
                     <div>
-                        <h4 class="font-bold border-b pb-2 mb-2 text-sm text-or">Messes</h4>
-                        <div id="liste-messes" class="space-y-2 text-xs max-h-48 overflow-y-auto"></div>
+                        <h4 class="font-bold border-b pb-2 mb-3 text-sm text-or">Messes</h4>
+                        <div id="liste-messes" class="space-y-2 text-xs max-h-48 overflow-y-auto pr-1"></div>
                     </div>
                     <div>
-                        <h4 class="font-bold border-b pb-2 mb-2 text-sm text-nuit">Actualités</h4>
-                        <div id="liste-actus" class="space-y-2 text-xs max-h-48 overflow-y-auto"></div>
+                        <h4 class="font-bold border-b pb-2 mb-3 text-sm text-nuit">Actualités</h4>
+                        <div id="liste-actus" class="space-y-2 text-xs max-h-48 overflow-y-auto pr-1"></div>
                     </div>
                     <div>
-                        <h4 class="font-bold border-b pb-2 mb-2 text-sm text-violet">Autres Contacts</h4>
-                        <div id="liste-autres" class="space-y-2 text-xs max-h-48 overflow-y-auto"></div>
+                        <h4 class="font-bold border-b pb-2 mb-3 text-sm text-violet">Autres Contacts</h4>
+                        <div id="liste-autres" class="space-y-2 text-xs max-h-48 overflow-y-auto pr-1"></div>
                     </div>
                     <div>
-                        <h4 class="font-bold border-b pb-2 mb-2 text-sm text-pink-600">Bonnes Ondes</h4>
-                        <div id="liste-ondes" class="space-y-2 text-xs max-h-48 overflow-y-auto"></div>
+                        <h4 class="font-bold border-b pb-2 mb-3 text-sm text-pink-600">Bonnes Ondes</h4>
+                        <div id="liste-ondes" class="space-y-2 text-xs max-h-48 overflow-y-auto pr-1"></div>
                     </div>
                 </div>
             </div>
@@ -172,22 +213,49 @@
 
         async function seDeconnecter() { await _supabase.auth.signOut(); location.reload(); }
 
+        /* --- HORAIRES COMPLEXES --- */
+        function toggleHoraires() {
+            const type = document.getElementById('eglise-type').value;
+            document.getElementById('bloc-tous').classList.add('hidden');
+            document.getElementById('bloc-semaine').classList.add('hidden');
+            if (type === 'tous') document.getElementById('bloc-tous').classList.remove('hidden');
+            if (type === 'semaine_we') document.getElementById('bloc-semaine').classList.remove('hidden');
+        }
+
         /* --- ENREGISTREMENTS --- */
         async function ajouterEglise() {
             const nom = document.getElementById('eglise-nom').value;
             if(!nom) return alert("Le nom est obligatoire !");
+            
+            // On compile les horaires dans un seul JSON
+            const horaires_json = JSON.stringify({
+                type: document.getElementById('eglise-type').value,
+                tous_m_s: document.getElementById('tous-m-s').value, tous_m_e: document.getElementById('tous-m-e').value,
+                tous_a_s: document.getElementById('tous-a-s').value, tous_a_e: document.getElementById('tous-a-e').value,
+                sem_m_s: document.getElementById('sem-m-s').value, sem_m_e: document.getElementById('sem-m-e').value,
+                sem_a_s: document.getElementById('sem-a-s').value, sem_a_e: document.getElementById('sem-a-e').value,
+                sam_m_s: document.getElementById('sam-m-s').value, sam_m_e: document.getElementById('sam-m-e').value,
+                sam_a_s: document.getElementById('sam-a-s').value, sam_a_e: document.getElementById('sam-a-e').value,
+                dim_m_s: document.getElementById('dim-m-s').value, dim_m_e: document.getElementById('dim-m-e').value,
+                dim_a_s: document.getElementById('dim-a-s').value, dim_a_e: document.getElementById('dim-a-e').value
+            });
+
             const payload = { 
                 nom, 
                 horaires_base: document.getElementById('eglise-horaires').value, 
-                heure_ouverture: document.getElementById('eglise-ouv').value || null, 
-                heure_fermeture: document.getElementById('eglise-fer').value || null, 
+                horaires_json,
                 est_ferme: document.getElementById('eglise-estferme').checked, 
                 alerte: document.getElementById('eglise-alerte').value 
             };
+            
             if (editEgliseId) await _supabase.from('horaires_eglises').update(payload).eq('id', editEgliseId);
             else await _supabase.from('horaires_eglises').insert([payload]);
             editEgliseId = null; document.getElementById('btn-save-eglise').innerText = "Enregistrer l'église";
-            document.getElementById('eglise-nom').value=''; document.getElementById('eglise-horaires').value=''; document.getElementById('eglise-ouv').value=''; document.getElementById('eglise-fer').value=''; document.getElementById('eglise-estferme').checked=false; document.getElementById('eglise-alerte').value='';
+            
+            // Réinitialisation des champs
+            document.getElementById('eglise-nom').value=''; document.getElementById('eglise-horaires').value=''; document.getElementById('eglise-estferme').checked=false; document.getElementById('eglise-alerte').value='';
+            document.getElementById('eglise-type').value='inconnu'; toggleHoraires();
+            ['tous-m-s','tous-m-e','tous-a-s','tous-a-e','sem-m-s','sem-m-e','sem-a-s','sem-a-e','sam-m-s','sam-m-e','sam-a-s','sam-a-e','dim-m-s','dim-m-e','dim-a-s','dim-a-e'].forEach(id => document.getElementById(id).value = '');
             chargerDonnees();
         }
 
@@ -214,7 +282,7 @@
         async function sauvegarderContact() {
             const adresse = document.getElementById('contact-adresse').value, telephone = document.getElementById('contact-tel').value, email = document.getElementById('contact-email').value, permanences = document.getElementById('contact-permanences').value, urgences = document.getElementById('contact-urgences').value;
             const { error } = await _supabase.from('contact_info').update({ adresse, telephone, email, permanences, urgences }).eq('id', 1);
-            if (!error) { document.getElementById('contact-msg').innerText = "Sauvegardé !"; setTimeout(()=>document.getElementById('contact-msg').innerText='', 3000); }
+            if (!error) { document.getElementById('contact-msg').innerText = "✅ Sauvegardé !"; setTimeout(()=>document.getElementById('contact-msg').innerText='', 3000); }
         }
 
         async function ajouterAutreContact() {
@@ -234,7 +302,6 @@
         }
 
         async function chargerDonnees() {
-            // Eglises
             const { data: eglises } = await _supabase.from('horaires_eglises').select('*'); eglisesData = eglises||[];
             const selectLieu = document.getElementById('messe-lieu'); selectLieu.innerHTML = '<option value="" disabled selected>Église...</option>';
             document.getElementById('liste-eglises').innerHTML = eglisesData.map(e => {
@@ -242,19 +309,15 @@
                 return `<div class="flex justify-between items-center bg-slate-50 p-2 border rounded"><span class="truncate pr-2" title="${e.nom}">${e.nom}</span> <div class="flex gap-2"><button onclick="editEglise(${e.id})" class="text-blue-500 font-bold">✏️</button><button onclick="supprimer('horaires_eglises', ${e.id})" class="text-red-500 font-bold">✖</button></div></div>`;
             }).join('');
 
-            // Messes
             const { data: messes } = await _supabase.from('horaires_messes').select('*'); messesData = messes||[];
             document.getElementById('liste-messes').innerHTML = messesData.map(m => `<div class="flex justify-between items-center bg-slate-50 p-2 border rounded"><span class="truncate pr-2">${m.lieu.split('–')[0]} - ${m.jour}</span> <div class="flex gap-2"><button onclick="editMesse(${m.id})" class="text-blue-500 font-bold">✏️</button><button onclick="supprimer('horaires_messes', ${m.id})" class="text-red-500 font-bold">✖</button></div></div>`).join('');
 
-            // Actus
             const { data: actus } = await _supabase.from('actualites').select('*'); actusData = actus||[];
             document.getElementById('liste-actus').innerHTML = actusData.map(a => `<div class="flex justify-between items-center bg-slate-50 p-2 border rounded"><span class="truncate pr-2">${a.titre}</span> <div class="flex gap-2"><button onclick="editActu(${a.id})" class="text-blue-500 font-bold">✏️</button><button onclick="supprimer('actualites', ${a.id})" class="text-red-500 font-bold">✖</button></div></div>`).join('');
 
-            // Autres contacts
             const { data: autres } = await _supabase.from('autres_contacts').select('*'); autresData = autres||[];
             document.getElementById('liste-autres').innerHTML = autresData.map(c => `<div class="flex justify-between items-center bg-slate-50 p-2 border rounded"><span class="truncate pr-2">${c.nom}</span> <div class="flex gap-2"><button onclick="editAutreContact(${c.id})" class="text-blue-500 font-bold">✏️</button><button onclick="supprimer('autres_contacts', ${c.id})" class="text-red-500 font-bold">✖</button></div></div>`).join('');
 
-            // Ondes
             const { data: ondes } = await _supabase.from('bonnes_ondes').select('*');
             document.getElementById('liste-ondes').innerHTML = (ondes||[]).map(o => `<div class="flex justify-between items-center bg-slate-50 p-2 border rounded"><span class="truncate pr-2 italic">"${o.message}"</span> <button onclick="supprimer('bonnes_ondes', ${o.id})" class="text-red-500 font-bold">✖</button></div>`).join('');
         }
@@ -262,7 +325,26 @@
         /* --- EDITION --- */
         function editEglise(id) {
             const e = eglisesData.find(x => x.id === id); editEgliseId = e.id;
-            document.getElementById('eglise-nom').value = e.nom; document.getElementById('eglise-horaires').value = e.horaires_base || ''; document.getElementById('eglise-ouv').value = e.heure_ouverture||''; document.getElementById('eglise-fer').value = e.heure_fermeture||''; document.getElementById('eglise-estferme').checked = e.est_ferme; document.getElementById('eglise-alerte').value = e.alerte||'';
+            document.getElementById('eglise-nom').value = e.nom; document.getElementById('eglise-horaires').value = e.horaires_base || ''; 
+            
+            // Remise à zéro des champs de temps
+            document.getElementById('eglise-type').value = 'inconnu';
+            ['tous-m-s','tous-m-e','tous-a-s','tous-a-e','sem-m-s','sem-m-e','sem-a-s','sem-a-e','sam-m-s','sam-m-e','sam-a-s','sam-a-e','dim-m-s','dim-m-e','dim-a-s','dim-a-e'].forEach(id => document.getElementById(id).value = '');
+            
+            // Remplissage si des données JSON existent
+            if(e.horaires_json) {
+                try {
+                    const h = JSON.parse(e.horaires_json);
+                    document.getElementById('eglise-type').value = h.type || 'inconnu';
+                    if(h.type) {
+                        ['tous_m_s','tous_m_e','tous_a_s','tous_a_e','sem_m_s','sem_m_e','sem_a_s','sem_a_e','sam_m_s','sam_m_e','sam_a_s','sam_a_e','dim_m_s','dim_m_e','dim_a_s','dim_a_e'].forEach(key => {
+                            if(h[key]) document.getElementById(key.replace(/_/g, '-')).value = h[key];
+                        });
+                    }
+                } catch(err) {}
+            }
+            toggleHoraires();
+            document.getElementById('eglise-estferme').checked = e.est_ferme; document.getElementById('eglise-alerte').value = e.alerte || '';
             document.getElementById('btn-save-eglise').innerText = "💾 Modifier l'église"; window.scrollTo({top:0, behavior:'smooth'});
         }
         function editMesse(id) {
