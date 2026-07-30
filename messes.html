@@ -10,25 +10,26 @@
         tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] } } } }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- Bibliothèques du Calendrier Professionnel (FullCalendar) -->
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.11/locales-all.global.min.js"></script>
     
-    <!-- Design sur-mesure du calendrier -->
     <style>
         .fc { font-family: 'Inter', sans-serif; }
         .fc-theme-standard .fc-scrollgrid { border: none; border-radius: 1rem; overflow: hidden; }
         .fc .fc-toolbar-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #1e3a8a; font-weight: bold; text-transform: capitalize; }
         .fc .fc-button-primary { background-color: #1e3a8a; border-color: #1e3a8a; text-transform: capitalize; font-weight: bold; border-radius: 0.5rem; }
-        .fc .fc-button-primary:hover { background-color: #d97706; border-color: #d97706; }
-        .fc .fc-button-primary:not(:disabled).fc-button-active { background-color: #d97706; border-color: #d97706; }
+        .fc .fc-button-primary:hover, .fc .fc-button-primary:not(:disabled).fc-button-active { background-color: #d97706; border-color: #d97706; }
         .fc-col-header-cell { background-color: #f8fafc; padding: 12px 0; color: #1e3a8a; text-transform: capitalize; border-bottom: 2px solid #e2e8f0 !important; }
         .fc-daygrid-day-number { color: #475569; font-weight: 600; padding: 8px !important; }
-        .fc-event { cursor: pointer; padding: 4px; border-radius: 6px; font-weight: 600; border: none; transition: transform 0.2s; background-color: #1e3a8a; }
+        .fc-event { cursor: pointer; padding: 6px; border-radius: 6px; font-weight: 600; border: none; transition: transform 0.2s; background-color: #1e3a8a; }
         .fc-event:hover { transform: scale(1.02); background-color: #d97706; }
-        .fc-day-today { background-color: #fef3c7 !important; } /* Couleur Sable pour aujourd'hui */
-        .fc-daygrid-event-dot { display: none; } /* Enlever le petit point par défaut */
+        .fc-day-today { background-color: #fef3c7 !important; }
+        .fc-daygrid-event-dot { display: none; }
+        
+        /* CORRECTION LISIBILITÉ : Texte en blanc sur les événements */
+        .fc-event-main, .fc-event-title, .fc-list-event-title { color: #ffffff !important; }
+        .fc-list-event:hover td { background-color: #e0f2fe !important; }
+        .fc-list-event-time { color: #1e3a8a !important; font-weight: bold; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
@@ -54,14 +55,14 @@
             <p class="text-slate-600 text-lg">Retrouvez toutes les messes de notre secteur paroissial.</p>
         </div>
         
-        <!-- Filtre par Église -->
+        <!-- Filtre par Église Dynamique -->
         <div class="mb-8 flex items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
             <span class="text-3xl">⛪</span>
             <div class="w-full">
                 <label class="text-xs font-bold text-slate-400 uppercase tracking-wide">Afficher le planning de :</label>
                 <select id="filtre-eglise" onchange="filtrerCalendrier()" class="w-full text-xl font-bold text-nuit bg-transparent outline-none cursor-pointer mt-1">
                     <option value="toutes">🌍 Toutes les églises du secteur</option>
-                    <!-- Les options s'ajouteront ici tout seul -->
+                    <!-- Le javascript va remplir les options ici tout seul -->
                 </select>
             </div>
         </div>
@@ -87,24 +88,22 @@
             if (error) return;
             messesData = data || [];
             
-            // 1. Remplir le menu déroulant avec le nom des églises
+            // On remplit le menu déroulant avec les églises qui ont des messes prévues
             const eglises = [...new Set(messesData.map(m => m.lieu))].filter(Boolean).sort();
             const select = document.getElementById('filtre-eglise');
             eglises.forEach(e => {
                 select.innerHTML += `<option value="${e}">📍 ${e}</option>`;
             });
 
-            // 2. Initialiser le calendrier
             initCalendar(messesData);
         }
 
         function formatterEvenements(donnees) {
-            // Transforme les données de Supabase en événements pour le Calendrier
             return donnees
-                .filter(m => m.jour && m.jour.includes('-')) // Garde uniquement les vraies dates (YYYY-MM-DD)
+                .filter(m => m.jour && m.jour.includes('-')) 
                 .map(m => {
                     return {
-                        title: `${m.heure} - ${m.lieu}`, // Texte dans la case
+                        title: `${m.heure} - ${m.lieu}`, // Affiche l'heure et le lieu dans la case
                         start: m.jour,
                         extendedProps: { lieu: m.lieu, heure: m.heure, remarques: m.remarques }
                     };
@@ -113,25 +112,19 @@
 
         function initCalendar(donnees) {
             const calendarEl = document.getElementById('calendrier-messes');
-            
             calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
-                locale: 'fr', // Calendrier en Français
-                firstDay: 1, // La semaine commence le Lundi
+                locale: 'fr',
+                firstDay: 1,
                 height: 'auto',
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'dayGridMonth,listMonth' // Boutons pour passer en vue Grille ou Liste
+                    right: 'dayGridMonth,listMonth'
                 },
-                buttonText: {
-                    today: "Aujourd'hui",
-                    month: 'Grille',
-                    list: 'Vue Liste'
-                },
-                events: formatterEvenements(donnees), // On charge les messes
+                buttonText: { today: "Aujourd'hui", month: 'Grille', list: 'Vue Liste' },
+                events: formatterEvenements(donnees),
                 eventClick: function(info) {
-                    // Quand on clique sur une messe dans le calendrier
                     const props = info.event.extendedProps;
                     alert(`⛪ Lieu : ${props.lieu}\n🕒 Heure : ${props.heure}\n\nℹ️ Infos : ${props.remarques || 'Aucune remarque particulière'}`);
                 }
@@ -142,12 +135,9 @@
         function filtrerCalendrier() {
             const lieuChoisi = document.getElementById('filtre-eglise').value;
             let dataFiltree = messesData;
-            
             if (lieuChoisi !== 'toutes') {
                 dataFiltree = messesData.filter(m => m.lieu === lieuChoisi);
             }
-            
-            // Effacer les anciennes messes et mettre les nouvelles
             calendar.removeAllEvents();
             calendar.addEventSource(formatterEvenements(dataFiltree));
         }
