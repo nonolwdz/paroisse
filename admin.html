@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;0,700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] } } } }
+        tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7', emeraude: '#059669' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] } } } }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
@@ -26,16 +26,18 @@
 
     <main class="max-w-6xl mx-auto px-6 py-12">
         
+        <!-- LOGIN -->
         <div id="section-login" class="bg-white p-10 rounded-3xl shadow-xl border-t-[6px] border-or max-w-md mx-auto mt-12">
             <h2 class="text-3xl font-serif font-bold text-center mb-8 text-nuit">Connexion</h2>
             <div class="space-y-5">
-                <input type="email" id="email" class="w-full border-2 border-slate-200 rounded-lg p-3 focus:border-nuit outline-none transition" placeholder="Email admin">
-                <input type="password" id="password" class="w-full border-2 border-slate-200 rounded-lg p-3 focus:border-nuit outline-none transition" placeholder="Mot de passe">
-                <button onclick="seConnecter()" class="w-full bg-nuit hover:bg-blue-900 text-white font-bold py-3 px-4 rounded-lg mt-4 shadow-md">Se connecter</button>
+                <input type="email" id="email" class="w-full border-2 border-slate-200 rounded-lg p-3 focus:border-nuit outline-none" placeholder="Email admin">
+                <input type="password" id="password" class="w-full border-2 border-slate-200 rounded-lg p-3 focus:border-nuit outline-none" placeholder="Mot de passe">
+                <button onclick="seConnecter()" class="w-full bg-nuit hover:bg-blue-900 text-white font-bold py-3 px-4 rounded-lg mt-4">Se connecter</button>
                 <p id="login-error" class="text-red-500 text-sm mt-2 text-center hidden font-semibold">Identifiants incorrects.</p>
             </div>
         </div>
 
+        <!-- DASHBOARD -->
         <div id="section-dashboard" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-8">
             
             <!-- IMAGE ACCUEIL -->
@@ -48,12 +50,12 @@
                 </div>
             </div>
 
-            <!-- OUVERTURE ÉGLISES (NOUVEAU) -->
+            <!-- OUVERTURE ÉGLISES -->
             <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-blue-400 lg:col-span-2">
                 <h3 class="text-xl font-serif font-bold text-blue-900 mb-6">🗝️ Gérer l'ouverture d'une Église</h3>
                 <div class="space-y-4">
                     <div class="grid grid-cols-2 gap-4">
-                        <input type="text" id="eglise-nom" placeholder="Nom (ex: Église Saint-Pierre)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-blue-400 outline-none">
+                        <input type="text" id="eglise-nom" placeholder="Nom (ex: Église Notre-Dame)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-blue-400 outline-none">
                         <input type="text" id="eglise-horaires" placeholder="Horaires (ex: Ouvert de 9h à 18h)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-blue-400 outline-none">
                     </div>
                     <input type="text" id="eglise-alerte" placeholder="Alerte éventuelle (ex: Fermé pour travaux jusqu'au 15 août)" class="w-full border border-red-300 rounded-lg p-3 text-sm focus:border-red-500 outline-none placeholder-red-300">
@@ -87,6 +89,20 @@
                 </div>
                 <button id="btn-save-messe" onclick="ajouterMesse()" class="w-full bg-or hover:bg-yellow-600 text-white py-3 rounded-lg text-sm font-bold mt-4">Ajouter l'horaire</button>
                 <p id="messe-msg" class="text-sm mt-2 text-center"></p>
+            </div>
+
+            <!-- CONTACTS (NOUVEAU) -->
+            <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-emeraude lg:col-span-3">
+                <h3 class="text-xl font-serif font-bold text-emerald-900 mb-6">📞 Modifier les Contacts</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <textarea id="contact-adresse" placeholder="Adresse complète" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-emeraude"></textarea>
+                    <input type="text" id="contact-tel" placeholder="Téléphone" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-emeraude h-fit">
+                    <input type="text" id="contact-email" placeholder="Email" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-emeraude h-fit">
+                    <textarea id="contact-permanences" placeholder="Permanences d'accueil" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-emeraude"></textarea>
+                    <textarea id="contact-urgences" placeholder="Message d'urgence / Obsèques" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-emeraude md:col-span-2"></textarea>
+                </div>
+                <button onclick="sauvegarderContact()" class="w-full bg-emeraude hover:bg-emerald-800 text-white py-3 rounded-lg text-sm font-bold mt-4">💾 Sauvegarder les contacts</button>
+                <p id="contact-msg" class="text-sm mt-2 text-center"></p>
             </div>
 
             <!-- GESTION DES LISTES -->
@@ -137,16 +153,14 @@
             else { document.getElementById('login-error').classList.add('hidden'); afficherDashboard(); }
         }
 
-        async function seDeconnecter() {
-            await _supabase.auth.signOut();
-            location.reload();
-        }
+        async function seDeconnecter() { await _supabase.auth.signOut(); location.reload(); }
 
         function afficherDashboard() {
             document.getElementById('section-login').classList.add('hidden');
             document.getElementById('section-dashboard').classList.remove('hidden');
             document.getElementById('btn-logout').classList.remove('hidden');
             chargerListesAdmin();
+            chargerContactAdmin(); // Charge les contacts
         }
 
         async function changerImage() {
@@ -159,28 +173,42 @@
             else { msg.innerHTML = '<span class="text-emerald-600 font-bold">✅ Photo à jour !</span>'; input.value = ''; }
         }
 
-        /* --- NOUVEAU : AJOUTER/MODIFIER EGLISE --- */
+        async function chargerContactAdmin() {
+            const { data } = await _supabase.from('contact_info').select('*').eq('id', 1).single();
+            if(data) {
+                document.getElementById('contact-adresse').value = data.adresse || '';
+                document.getElementById('contact-tel').value = data.telephone || '';
+                document.getElementById('contact-email').value = data.email || '';
+                document.getElementById('contact-permanences').value = data.permanences || '';
+                document.getElementById('contact-urgences').value = data.urgences || '';
+            }
+        }
+
+        async function sauvegarderContact() {
+            const adresse = document.getElementById('contact-adresse').value;
+            const telephone = document.getElementById('contact-tel').value;
+            const email = document.getElementById('contact-email').value;
+            const permanences = document.getElementById('contact-permanences').value;
+            const urgences = document.getElementById('contact-urgences').value;
+            const msg = document.getElementById('contact-msg');
+            const { error } = await _supabase.from('contact_info').update({ adresse, telephone, email, permanences, urgences }).eq('id', 1);
+            if (error) msg.innerHTML = '<span class="text-red-500">Erreur de sauvegarde.</span>';
+            else msg.innerHTML = '<span class="text-emerald-600 font-bold">✅ Contacts mis à jour !</span>';
+        }
+
         async function ajouterEglise() {
             const nom = document.getElementById('eglise-nom').value;
             const horaires_base = document.getElementById('eglise-horaires').value;
             const alerte = document.getElementById('eglise-alerte').value;
             const msg = document.getElementById('eglise-msg');
-
             let error;
-            if (editEgliseId) {
-                const res = await _supabase.from('horaires_eglises').update({ nom, horaires_base, alerte }).eq('id', editEgliseId);
-                error = res.error;
-            } else {
-                const res = await _supabase.from('horaires_eglises').insert([{ nom, horaires_base, alerte }]);
-                error = res.error;
-            }
-            
+            if (editEgliseId) { error = (await _supabase.from('horaires_eglises').update({ nom, horaires_base, alerte }).eq('id', editEgliseId)).error; } 
+            else { error = (await _supabase.from('horaires_eglises').insert([{ nom, horaires_base, alerte }])).error; }
             if (error) { msg.innerHTML = '<span class="text-red-500 font-bold">Erreur (RLS désactivé ?).</span>'; } 
             else {
                 msg.innerHTML = '<span class="text-emerald-600 font-bold">✅ Enregistré !</span>';
                 document.getElementById('eglise-nom').value = ''; document.getElementById('eglise-horaires').value = ''; document.getElementById('eglise-alerte').value = '';
-                editEgliseId = null;
-                document.getElementById('btn-save-eglise').innerText = "Enregistrer l'église";
+                editEgliseId = null; document.getElementById('btn-save-eglise').innerText = "Enregistrer l'église";
                 chargerListesAdmin();
             }
         }
@@ -190,15 +218,9 @@
             const date = document.getElementById('actu-date').value;
             const contenu = quill.root.innerHTML;
             const msg = document.getElementById('actu-msg');
-
             let error;
-            if (editActuId) {
-                const res = await _supabase.from('actualites').update({ titre, date_publication: date, contenu }).eq('id', editActuId);
-                error = res.error;
-            } else {
-                const res = await _supabase.from('actualites').insert([{ titre, date_publication: date, contenu }]);
-                error = res.error;
-            }
+            if (editActuId) { error = (await _supabase.from('actualites').update({ titre, date_publication: date, contenu }).eq('id', editActuId)).error; } 
+            else { error = (await _supabase.from('actualites').insert([{ titre, date_publication: date, contenu }])).error; }
             if (error) { msg.innerHTML = '<span class="text-red-500">Erreur.</span>'; } 
             else {
                 msg.innerHTML = '<span class="text-emerald-600 font-bold">✅ Enregistré !</span>';
@@ -214,15 +236,9 @@
             const heure = document.getElementById('messe-heure').value;
             const remarques = document.getElementById('messe-remarques').value;
             const msg = document.getElementById('messe-msg');
-
             let error;
-            if (editMesseId) {
-                const res = await _supabase.from('horaires_messes').update({ lieu, jour, heure, remarques }).eq('id', editMesseId);
-                error = res.error;
-            } else {
-                const res = await _supabase.from('horaires_messes').insert([{ lieu, jour, heure, remarques }]);
-                error = res.error;
-            }
+            if (editMesseId) { error = (await _supabase.from('horaires_messes').update({ lieu, jour, heure, remarques }).eq('id', editMesseId)).error; } 
+            else { error = (await _supabase.from('horaires_messes').insert([{ lieu, jour, heure, remarques }])).error; }
             if (error) { msg.innerHTML = '<span class="text-red-500">Erreur.</span>'; } 
             else {
                 msg.innerHTML = '<span class="text-emerald-600 font-bold">✅ Enregistré !</span>';
@@ -233,7 +249,6 @@
         }
 
         async function chargerListesAdmin() {
-            // Églises
             const { data: eglises } = await _supabase.from('horaires_eglises').select('*');
             eglisesData = eglises || [];
             document.getElementById('liste-admin-eglises').innerHTML = eglisesData.map(e => `
@@ -246,7 +261,6 @@
                 </div>
             `).join('');
 
-            // Actus
             const { data: actus } = await _supabase.from('actualites').select('*').order('date_publication', { ascending: false });
             actusData = actus || [];
             document.getElementById('liste-admin-actus').innerHTML = actusData.map(a => `
@@ -259,7 +273,6 @@
                 </div>
             `).join('');
 
-            // Messes
             const { data: messes } = await _supabase.from('horaires_messes').select('*');
             messesData = messes || [];
             document.getElementById('liste-admin-messes').innerHTML = messesData.map(m => `
@@ -274,42 +287,24 @@
         }
 
         function preparerEditionEglise(id) {
-            const eglise = eglisesData.find(e => e.id === id);
-            editEgliseId = eglise.id;
-            document.getElementById('eglise-nom').value = eglise.nom;
-            document.getElementById('eglise-horaires').value = eglise.horaires_base;
-            document.getElementById('eglise-alerte').value = eglise.alerte || '';
-            document.getElementById('btn-save-eglise').innerText = "💾 Modifier l'église";
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const eglise = eglisesData.find(e => e.id === id); editEgliseId = eglise.id;
+            document.getElementById('eglise-nom').value = eglise.nom; document.getElementById('eglise-horaires').value = eglise.horaires_base; document.getElementById('eglise-alerte').value = eglise.alerte || '';
+            document.getElementById('btn-save-eglise').innerText = "💾 Modifier l'église"; window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function preparerEditionActu(id) {
-            const actu = actusData.find(a => a.id === id);
-            editActuId = actu.id;
-            document.getElementById('actu-titre').value = actu.titre;
-            document.getElementById('actu-date').value = actu.date_publication;
-            quill.root.innerHTML = actu.contenu;
-            document.getElementById('btn-save-actu').innerText = "💾 Modifier l'actualité";
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const actu = actusData.find(a => a.id === id); editActuId = actu.id;
+            document.getElementById('actu-titre').value = actu.titre; document.getElementById('actu-date').value = actu.date_publication; quill.root.innerHTML = actu.contenu;
+            document.getElementById('btn-save-actu').innerText = "💾 Modifier l'actualité"; window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function preparerEditionMesse(id) {
-            const messe = messesData.find(m => m.id === id);
-            editMesseId = messe.id;
-            document.getElementById('messe-lieu').value = messe.lieu;
-            document.getElementById('messe-jour').value = messe.jour;
-            document.getElementById('messe-heure').value = messe.heure;
-            document.getElementById('messe-remarques').value = messe.remarques || '';
-            document.getElementById('btn-save-messe').innerText = "💾 Modifier la messe";
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            const messe = messesData.find(m => m.id === id); editMesseId = messe.id;
+            document.getElementById('messe-lieu').value = messe.lieu; document.getElementById('messe-jour').value = messe.jour; document.getElementById('messe-heure').value = messe.heure; document.getElementById('messe-remarques').value = messe.remarques || '';
+            document.getElementById('btn-save-messe').innerText = "💾 Modifier la messe"; window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        async function supprimerDonnee(table, id) {
-            if(confirm("Confirmer la suppression définitive ?")) {
-                await _supabase.from(table).delete().eq('id', id);
-                chargerListesAdmin();
-            }
-        }
+        async function supprimerDonnee(table, id) { if(confirm("Confirmer la suppression définitive ?")) { await _supabase.from(table).delete().eq('id', id); chargerListesAdmin(); } }
 
         checkSession();
     </script>
