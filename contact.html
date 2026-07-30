@@ -4,32 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact - Paroisse Saint-François d'Assise</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;0,700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] }, animation: { 'fade-in-up': 'fadeInUp 0.6s ease-out forwards' }, keyframes: { fadeInUp: { '0%': { opacity: '0', transform: 'translateY(15px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } } } } }
+        tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] } } } }
     </script>
-    <style>.anim-element { opacity: 0; }</style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans">
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
     <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
             <div class="flex items-center gap-4">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v18m-6-12h12"></path></svg>                <div><span class="text-2xl font-serif font-bold text-nuit block leading-none">Saint-François d'Assise</span></div>
+                <div class="bg-nuit text-or p-2 rounded-full shadow-md"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v18m-6-12h12"></path></svg></div>
+                <span class="text-2xl font-serif font-bold text-nuit block leading-none">Saint-François d'Assise</span>
             </div>
             <nav class="mt-4 md:mt-0 flex gap-8 text-sm font-semibold text-slate-600">
-    <a href="/" class="hover:text-nuit pb-1 transition-all">Accueil</a>
-    <a href="/messes" class="hover:text-nuit pb-1 transition-all">Messes</a>
-    <a href="/horaires" class="hover:text-nuit pb-1 transition-all">Ouverture des Églises</a>
-    <a href="/contact" class="hover:text-nuit pb-1 transition-all">Contact</a>
-</nav>
+                <a href="/" class="hover:text-nuit pb-1 transition-all">Accueil</a>
+                <a href="/messes" class="hover:text-nuit pb-1 transition-all">Messes</a>
+                <a href="/horaires" class="hover:text-nuit pb-1 transition-all">Ouverture des Églises</a>
+                <a href="/contact" class="text-or border-b-2 border-or pb-1 transition-all">Contact</a>
+            </nav>
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-6 py-16 anim-element animate-fade-in-up" style="animation-delay: 0.1s;">
+    <main class="max-w-5xl mx-auto px-6 py-16 flex-grow w-full">
         <div class="text-center mb-12">
             <h1 class="text-4xl md:text-5xl font-serif font-bold text-nuit mb-4">Contact & Permanences</h1>
             <p class="text-slate-600 text-lg">Nous sommes à votre écoute pour vous accompagner.</p>
@@ -41,15 +40,15 @@
                 <div class="space-y-6 text-slate-600">
                     <p class="flex items-start gap-3">
                         <span class="text-or text-xl mt-1">📍</span>
-                        <span><strong>Maison Paroissiale</strong><br>12 Rue de l'Église<br>03410 Domérat</span>
+                        <span id="vue-adresse">Chargement de l'adresse...</span>
                     </p>
                     <p class="flex items-center gap-3">
                         <span class="text-or text-xl">📞</span>
-                        <span><strong>Téléphone :</strong> 04 70 XX XX XX</span>
+                        <span><strong>Téléphone :</strong> <span id="vue-tel">...</span></span>
                     </p>
                     <p class="flex items-center gap-3">
                         <span class="text-or text-xl">✉️</span>
-                        <span><strong>Email :</strong> contact@paroisse-domerat.fr</span>
+                        <span><strong>Email :</strong> <span id="vue-email">...</span></span>
                     </p>
                 </div>
             </div>
@@ -58,19 +57,37 @@
                 <h2 class="text-2xl font-serif font-bold mb-6">Informations Utiles</h2>
                 <div class="space-y-6">
                     <div>
-                        <h3 class="font-bold text-or mb-1">Permanences d'accueil</h3>
-                        <p class="text-sm text-blue-100">Mardi et Jeudi de 9h30 à 11h30<br>Vendredi de 16h00 à 18h00</p>
+                        <h3 class="font-bold text-or mb-2">Permanences d'accueil</h3>
+                        <p id="vue-permanences" class="text-sm text-blue-100 leading-relaxed">Chargement...</p>
                     </div>
                     <div class="w-full h-px bg-slate-700"></div>
                     <div>
-                        <h3 class="font-bold text-or mb-1">Urgences (Obsèques)</h3>
-                        <p class="text-sm text-blue-100">En cas de deuil, merci de contacter directement les pompes funèbres qui se mettront en lien avec l'équipe paroissiale.</p>
+                        <h3 class="font-bold text-or mb-2">Urgences (Obsèques)</h3>
+                        <p id="vue-urgences" class="text-sm text-blue-100 leading-relaxed">Chargement...</p>
                     </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 text-center py-10 text-sm mt-12"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
+    <footer class="bg-slate-900 text-slate-400 text-center py-10 text-sm mt-auto"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
+
+    <script>
+        const SUPABASE_URL = 'https://tyxybtrthvmyzjefziop.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function chargerContacts() {
+            const { data } = await _supabase.from('contact_info').select('*').eq('id', 1).single();
+            if(data) {
+                document.getElementById('vue-adresse').innerHTML = `<strong>Maison Paroissiale</strong><br>` + (data.adresse ? data.adresse.replace(/\n/g, '<br>') : '');
+                document.getElementById('vue-tel').innerText = data.telephone || '';
+                document.getElementById('vue-email').innerText = data.email || '';
+                document.getElementById('vue-permanences').innerHTML = data.permanences ? data.permanences.replace(/\n/g, '<br>') : '';
+                document.getElementById('vue-urgences').innerHTML = data.urgences ? data.urgences.replace(/\n/g, '<br>') : '';
+            }
+        }
+        chargerContacts();
+    </script>
 </body>
 </html>
