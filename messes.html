@@ -4,68 +4,74 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messes - Paroisse Saint-François d'Assise</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;0,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', azur: '#2563eb', or: '#f59e0b', sable: '#fef3c7' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] } } } }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.11/locales-all.global.min.js"></script>
     
     <style>
         .fc { font-family: 'Inter', sans-serif; }
-        .fc-theme-standard .fc-scrollgrid { border: none; border-radius: 1rem; overflow: hidden; }
-        .fc .fc-toolbar-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #1e3a8a; font-weight: bold; text-transform: capitalize; }
-        .fc .fc-button-primary { background-color: #1e3a8a; border-color: #1e3a8a; text-transform: capitalize; font-weight: bold; border-radius: 0.5rem; }
-        .fc .fc-button-primary:hover, .fc .fc-button-primary:not(:disabled).fc-button-active { background-color: #d97706; border-color: #d97706; }
-        
-        /* Cases du calendrier */
-        .fc-daygrid-day-number { color: #475569; font-weight: 600; padding: 8px !important; }
-        .fc-event { cursor: pointer; padding: 6px; border-radius: 6px; font-weight: 600; border: none; transition: transform 0.2s; background-color: #1e3a8a; }
-        .fc-event-main, .fc-event-title { color: #ffffff !important; } /* Texte Blanc sur les cases bleues */
-        
-        /* CORRECTION VUE LISTE (Plus de bleu sur bleu !) */
-        .fc-list-day-cushion { background-color: #f1f5f9 !important; color: #1e3a8a !important; font-weight: bold; }
-        .fc-list-event { background-color: #ffffff !important; }
-        .fc-list-event:hover td { background-color: #f8fafc !important; }
-        .fc-list-event-title a, .fc-list-event-time { color: #1e3a8a !important; } /* Texte bleu lisible sur fond blanc */
-        .fc-list-event-dot { border-color: #d97706 !important; } /* Point orange */
+        .fc-theme-standard .fc-scrollgrid { border: none; border-radius: 1.5rem; overflow: hidden; }
+        .fc .fc-toolbar-title { font-family: 'Playfair Display', serif; font-size: 2rem; color: #1e3a8a; font-weight: bold; text-transform: capitalize; letter-spacing: -0.02em; }
+        .fc .fc-button-primary { background: linear-gradient(135deg, #1e3a8a, #2563eb); border: none; text-transform: capitalize; font-weight: bold; border-radius: 0.75rem; padding: 0.5rem 1rem; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); transition: all 0.2s; }
+        .fc .fc-button-primary:hover, .fc .fc-button-primary:not(:disabled).fc-button-active { background: linear-gradient(135deg, #f59e0b, #d97706); transform: translateY(-1px); box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.3); }
+        .fc-col-header-cell { background-color: #f8fafc; padding: 16px 0; color: #1e3a8a; text-transform: capitalize; border-bottom: 2px solid #e2e8f0 !important; font-size: 0.875rem; }
+        .fc-daygrid-day-number { color: #64748b; font-weight: 600; padding: 8px !important; }
+        .fc-event { cursor: pointer; padding: 6px 8px; border-radius: 8px; font-weight: 600; border: none; transition: all 0.2s; background: linear-gradient(135deg, #1e3a8a, #2563eb); box-shadow: 0 2px 4px rgba(30, 58, 138, 0.2); }
+        .fc-event:hover { transform: scale(1.03); background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
+        .fc-day-today { background-color: #fef3c7 !important; }
+        .fc-daygrid-event-dot { display: none; }
+        .fc-event-main, .fc-event-title, .fc-list-event-title { color: #ffffff !important; }
+        .fc-list-day-cushion { background-color: #f8fafc !important; color: #1e3a8a !important; font-weight: bold; padding: 12px !important; }
+        .fc-list-event { background-color: #ffffff !important; transition: all 0.2s; }
+        .fc-list-event:hover td { background-color: #f1f5f9 !important; }
+        .fc-list-event-title a, .fc-list-event-time { color: #1e3a8a !important; font-weight: 600; }
+        .fc-list-event-dot { border-color: #f59e0b !important; border-width: 4px !important; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+<body class="bg-gradient-to-br from-slate-50 via-white to-blue-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
-    <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
+    <header class="bg-white/80 backdrop-blur-xl shadow-sm sticky top-0 z-50 border-b border-blue-100">
         <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
-            <div class="flex items-center gap-4">
-                <div class="bg-nuit text-or p-2 rounded-full shadow-md"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v18m-6-12h12"></path></svg></div>
+            <div class="flex items-center gap-4 group cursor-pointer">
+                <div class="bg-gradient-to-br from-nuit to-azur text-or p-2.5 rounded-2xl shadow-lg shadow-blue-900/20 group-hover:scale-105 transition-transform"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v18m-6-12h12"></path></svg></div>
                 <span class="text-2xl font-serif font-bold text-nuit block leading-none">Saint-François d'Assise</span>
             </div>
-            <nav class="mt-4 md:mt-0 flex gap-8 text-sm font-semibold text-slate-600">
-                <a href="/" class="hover:text-nuit pb-1 transition-all">Accueil</a>
-                <a href="/messes" class="text-or border-b-2 border-or pb-1 transition-all">Messes</a>
-                <a href="/horaires" class="hover:text-nuit pb-1 transition-all">Ouverture des Églises</a>
-                <a href="/contact" class="hover:text-nuit pb-1 transition-all">Contact</a>
+            <nav class="mt-4 md:mt-0 flex gap-8 text-sm font-bold text-slate-500">
+                <a href="/" class="hover:text-azur pb-1 transition-all">Accueil</a>
+                <a href="/messes" class="text-azur border-b-2 border-azur pb-1 transition-all">Messes</a>
+                <a href="/horaires" class="hover:text-azur pb-1 transition-all">Ouverture des Églises</a>
+                <a href="/contact" class="hover:text-azur pb-1 transition-all">Contact</a>
             </nav>
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-6 py-12 flex-grow w-full">
-        <div class="text-center mb-10">
-            <h1 class="text-4xl md:text-5xl font-serif font-bold text-nuit mb-4">Calendrier des Célébrations</h1>
+    <main class="max-w-5xl mx-auto px-6 py-16 flex-grow w-full">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl font-serif font-bold text-nuit mb-6 tracking-tight">Calendrier des Célébrations</h1>
         </div>
         
-        <div class="mb-8 flex items-center gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
-            <span class="text-3xl">⛪</span>
+        <div class="mb-8 flex items-center gap-4 bg-white/80 backdrop-blur p-5 rounded-[2rem] shadow-xl shadow-blue-900/5 border border-white">
+            <div class="bg-blue-100 p-4 rounded-2xl text-azur"><span class="text-3xl leading-none">⛪</span></div>
             <div class="w-full">
-                <label class="text-xs font-bold text-slate-400 uppercase tracking-wide">Afficher le planning de :</label>
-                <select id="filtre-eglise" onchange="filtrerCalendrier()" class="w-full text-xl font-bold text-nuit bg-transparent outline-none cursor-pointer mt-1">
+                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Filtrer par église</label>
+                <select id="filtre-eglise" onchange="filtrerCalendrier()" class="w-full text-xl font-bold text-nuit bg-transparent outline-none cursor-pointer mt-1 focus:text-azur transition-colors">
                     <option value="toutes">🌍 Toutes les églises du secteur</option>
                 </select>
             </div>
         </div>
 
-        <div class="bg-white rounded-3xl p-6 md:p-10 shadow-xl border-t-[6px] border-nuit">
-            <div id="calendrier-messes"></div>
+        <div class="bg-white rounded-[2.5rem] p-6 md:p-10 shadow-2xl shadow-blue-900/10 border-t-[8px] border-nuit relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-blue-50/50 to-transparent"></div>
+            <div id="calendrier-messes" class="relative z-10"></div>
         </div>
     </main>
+
+    <footer class="bg-white border-t border-slate-200 text-slate-500 text-center py-10 text-sm mt-auto font-medium"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
 
     <script>
         const SUPABASE_URL = 'https://tyxybtrthvmyzjefziop.supabase.co';
@@ -76,11 +82,9 @@
         async function chargerMesses() {
             const { data } = await _supabase.from('horaires_messes').select('*');
             messesData = data || [];
-            
             const eglises = [...new Set(messesData.map(m => m.lieu))].filter(Boolean).sort();
             const select = document.getElementById('filtre-eglise');
             eglises.forEach(e => select.innerHTML += `<option value="${e}">📍 ${e}</option>`);
-
             initCalendar(messesData);
         }
 
