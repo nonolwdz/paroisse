@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;0,700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7', emeraude: '#059669' } } } }
+        tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7', emeraude: '#059669', violet: '#7c3aed' } } } }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
@@ -15,33 +15,37 @@
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen">
 
-    <header class="bg-nuit text-white p-4 shadow-md flex justify-between items-center">
+    <header class="bg-nuit text-white p-4 shadow-md flex justify-between items-center sticky top-0 z-50">
         <span class="text-xl font-serif font-bold">⚙️ Back-Office</span>
         <div>
-            <a href="/" class="text-xs bg-white/20 px-3 py-2 rounded mr-2">Voir le site</a>
-            <button id="btn-logout" class="hidden text-xs bg-red-500 px-3 py-2 rounded font-bold" onclick="seDeconnecter()">Déconnexion</button>
+            <a href="/" class="text-xs bg-white/20 px-3 py-2 rounded mr-2 hover:bg-white/30 transition">Voir le site</a>
+            <button id="btn-logout" class="hidden text-xs bg-red-500 hover:bg-red-600 px-3 py-2 rounded font-bold transition" onclick="seDeconnecter()">Déconnexion</button>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-6 py-12">
-        <div id="section-login" class="bg-white p-10 rounded-3xl shadow-xl max-w-md mx-auto mt-12">
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        
+        <!-- CONNEXION -->
+        <div id="section-login" class="bg-white p-10 rounded-3xl shadow-xl border-t-[6px] border-or max-w-md mx-auto mt-12">
             <h2 class="text-3xl font-serif font-bold text-center mb-8">Connexion</h2>
             <div class="space-y-4">
-                <input type="email" id="email" class="w-full border-2 p-3 rounded-lg" placeholder="Email">
-                <input type="password" id="password" class="w-full border-2 p-3 rounded-lg" placeholder="Mot de passe">
-                <button onclick="seConnecter()" class="w-full bg-nuit text-white font-bold py-3 rounded-lg">Se connecter</button>
+                <input type="email" id="email" class="w-full border-2 p-3 rounded-lg outline-none focus:border-nuit" placeholder="Email admin">
+                <input type="password" id="password" class="w-full border-2 p-3 rounded-lg outline-none focus:border-nuit" placeholder="Mot de passe">
+                <button onclick="seConnecter()" class="w-full bg-nuit hover:bg-blue-900 text-white font-bold py-3 rounded-lg shadow-md transition">Se connecter</button>
             </div>
         </div>
 
-        <div id="section-dashboard" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- DASHBOARD : Structure solide en grille -->
+        <div id="section-dashboard" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             
-            <!-- ÉGLISES (AVEC TEMPS RÉEL) -->
+            <!-- ÉGLISES ET HORAIRES -->
             <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-blue-400">
                 <h3 class="text-xl font-serif font-bold text-blue-900 mb-4">🗝️ Gérer une Église</h3>
                 <div class="space-y-3">
-                    <input type="text" id="eglise-nom" placeholder="Nom de l'église" class="w-full border p-3 rounded-lg">
-                    <input type="text" id="eglise-horaires" placeholder="Texte des Horaires (ex: 9h-18h)" class="w-full border p-3 rounded-lg">
-                    <div class="grid grid-cols-2 gap-3">
+                    <input type="text" id="eglise-nom" placeholder="Nom de l'église (ex: Église Notre-Dame)" class="w-full border p-3 rounded-lg focus:border-blue-400 outline-none">
+                    <input type="text" id="eglise-horaires" placeholder="Texte Libre Horaires (ex: Ouvert de 9h à 18h)" class="w-full border p-3 rounded-lg focus:border-blue-400 outline-none">
+                    
+                    <div class="grid grid-cols-2 gap-3 mt-4">
                         <div>
                             <label class="text-xs font-bold text-slate-500">Heure Ouverture (Calcul)</label>
                             <input type="time" id="eglise-ouv" class="w-full border p-3 rounded-lg">
@@ -51,33 +55,74 @@
                             <input type="time" id="eglise-fer" class="w-full border p-3 rounded-lg">
                         </div>
                     </div>
-                    <label class="flex items-center gap-2 bg-red-50 p-3 rounded-lg border border-red-200 cursor-pointer">
+                    <p class="text-xs text-slate-400 italic">💡 Laisser vide si inconnu.</p>
+                    
+                    <label class="flex items-center gap-2 bg-red-50 p-3 rounded-lg border border-red-200 cursor-pointer mt-2">
                         <input type="checkbox" id="eglise-estferme" class="w-5 h-5 accent-red-600">
-                        <span class="font-bold text-red-800 text-sm">Fermeture exceptionnelle active</span>
+                        <span class="font-bold text-red-800 text-sm">Forcer en "Fermeture exceptionnelle"</span>
                     </label>
-                    <input type="text" id="eglise-alerte" placeholder="Message d'alerte (Optionnel)" class="w-full border border-red-300 p-3 rounded-lg">
-                    <button id="btn-save-eglise" onclick="ajouterEglise()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold">Enregistrer l'église</button>
+                    <input type="text" id="eglise-alerte" placeholder="Message d'alerte (ex: En travaux)" class="w-full border border-red-300 p-3 rounded-lg outline-none">
+                    <button id="btn-save-eglise" onclick="ajouterEglise()" class="w-full bg-blue-600 hover:bg-blue-800 text-white py-3 rounded-lg font-bold">Enregistrer l'église</button>
                 </div>
             </div>
 
             <!-- MESSES -->
             <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-or">
-                <h3 class="text-xl font-serif font-bold text-or mb-4">⛪ Ajouter une Messe</h3>
+                <h3 class="text-xl font-serif font-bold text-or mb-4">⛪ Ajouter / Modifier une Messe</h3>
                 <div class="space-y-3">
-                    <select id="messe-lieu" class="w-full border p-3 rounded-lg font-medium"></select>
+                    <select id="messe-lieu" class="w-full border p-3 rounded-lg font-medium outline-none cursor-pointer"></select>
                     <div class="grid grid-cols-2 gap-3">
-                        <input type="date" id="messe-jour" class="w-full border p-3 rounded-lg">
-                        <input type="time" id="messe-heure" class="w-full border p-3 rounded-lg">
+                        <input type="date" id="messe-jour" class="w-full border p-3 rounded-lg outline-none text-slate-600">
+                        <input type="time" id="messe-heure" class="w-full border p-3 rounded-lg outline-none text-slate-600">
                     </div>
-                    <input type="text" id="messe-remarques" placeholder="Remarques (ex: Messe des familles)" class="w-full border p-3 rounded-lg">
-                    <button id="btn-save-messe" onclick="ajouterMesse()" class="w-full bg-or text-white py-3 rounded-lg font-bold">Ajouter au calendrier</button>
+                    <input type="text" id="messe-remarques" placeholder="Remarques (ex: Messe des familles)" class="w-full border p-3 rounded-lg outline-none">
+                    <button id="btn-save-messe" onclick="ajouterMesse()" class="w-full bg-or hover:bg-yellow-600 text-white py-3 rounded-lg font-bold">Ajouter au calendrier</button>
                 </div>
             </div>
 
-            <!-- GESTION -->
+            <!-- ACTUALITÉS (100% VISIBLE) -->
+            <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-nuit lg:col-span-2">
+                <h3 class="text-xl font-serif font-bold text-nuit mb-4">📰 Éditer une Actualité</h3>
+                <div class="space-y-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <input type="text" id="actu-titre" placeholder="Titre de l'actualité" class="w-full border p-3 rounded-lg outline-none">
+                        <input type="date" id="actu-date" class="w-full border p-3 rounded-lg outline-none text-slate-600">
+                    </div>
+                    <div class="bg-white"><div id="editeur-actu" style="height: 180px;"></div></div>
+                    <button id="btn-save-actu" onclick="ajouterActualite()" class="w-full bg-nuit hover:bg-blue-900 text-white py-3 rounded-lg font-bold mt-2">Publier l'actualité</button>
+                </div>
+            </div>
+
+            <!-- CONTACTS PRINCIPAUX -->
+            <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-emeraude">
+                <h3 class="text-xl font-serif font-bold text-emerald-900 mb-4">📞 Contact Principal (Presbytère)</h3>
+                <div class="space-y-3">
+                    <textarea id="contact-adresse" placeholder="Adresse complète" class="w-full border p-3 rounded-lg outline-none h-20"></textarea>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="contact-tel" placeholder="Téléphone" class="w-full border p-3 rounded-lg outline-none">
+                        <input type="text" id="contact-email" placeholder="Email" class="w-full border p-3 rounded-lg outline-none">
+                    </div>
+                    <textarea id="contact-permanences" placeholder="Permanences d'accueil" class="w-full border p-3 rounded-lg outline-none h-20"></textarea>
+                    <textarea id="contact-urgences" placeholder="Urgences / Obsèques" class="w-full border p-3 rounded-lg outline-none h-20"></textarea>
+                    <button onclick="sauvegarderContact()" class="w-full bg-emeraude hover:bg-emerald-800 text-white py-3 rounded-lg font-bold">💾 Sauvegarder</button>
+                    <p id="contact-msg" class="text-sm mt-1 text-center font-bold text-emerald-600"></p>
+                </div>
+            </div>
+
+            <!-- AUTRES CONTACTS (NOUVEAU) -->
+            <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-violet">
+                <h3 class="text-xl font-serif font-bold text-violet-900 mb-4">👥 L'Équipe & Autres Contacts</h3>
+                <div class="space-y-3">
+                    <input type="text" id="autre-nom" placeholder="Nom ou Rôle (ex: Père Jean, Secrétariat)" class="w-full border p-3 rounded-lg outline-none focus:border-violet">
+                    <input type="text" id="autre-valeur" placeholder="Coordonnées (ex: 06 12 34... ou email@...)" class="w-full border p-3 rounded-lg outline-none focus:border-violet">
+                    <button id="btn-save-autre" onclick="ajouterAutreContact()" class="w-full bg-violet hover:bg-violet-800 text-white py-3 rounded-lg font-bold">Ajouter ce contact</button>
+                </div>
+            </div>
+
+            <!-- GESTION / SUPPRESSION (Toutes les listes en bas) -->
             <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-slate-800 lg:col-span-2">
-                <h3 class="text-2xl font-serif font-bold mb-6">🗑️ Suppression</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <h3 class="text-2xl font-serif font-bold mb-6">🗑️ Gestion, Modification & Suppression</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
                     <div>
                         <h4 class="font-bold border-b pb-2 mb-2 text-sm text-blue-800">Églises</h4>
                         <div id="liste-eglises" class="space-y-2 text-xs max-h-48 overflow-y-auto"></div>
@@ -85,6 +130,14 @@
                     <div>
                         <h4 class="font-bold border-b pb-2 mb-2 text-sm text-or">Messes</h4>
                         <div id="liste-messes" class="space-y-2 text-xs max-h-48 overflow-y-auto"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold border-b pb-2 mb-2 text-sm text-nuit">Actualités</h4>
+                        <div id="liste-actus" class="space-y-2 text-xs max-h-48 overflow-y-auto"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold border-b pb-2 mb-2 text-sm text-violet">Autres Contacts</h4>
+                        <div id="liste-autres" class="space-y-2 text-xs max-h-48 overflow-y-auto"></div>
                     </div>
                     <div>
                         <h4 class="font-bold border-b pb-2 mb-2 text-sm text-pink-600">Bonnes Ondes</h4>
@@ -100,61 +153,135 @@
         const SUPABASE_URL = 'https://tyxybtrthvmyzjefziop.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let editEgliseId = null, editMesseId = null;
+        
+        let eglisesData=[], messesData=[], actusData=[], autresData=[];
+        let editEgliseId = null, editMesseId = null, editActuId = null, editAutreId = null;
+
+        var quill = new Quill('#editeur-actu', { theme: 'snow', modules: { toolbar: [ [{ 'header': [2, 3, false] }], ['bold', 'italic', 'underline'], [{ 'list': 'bullet' }], ['clean'] ] } });
 
         async function checkSession() {
             const { data: { session } } = await _supabase.auth.getSession();
-            if (session) { document.getElementById('section-login').classList.add('hidden'); document.getElementById('section-dashboard').classList.remove('hidden'); document.getElementById('btn-logout').classList.remove('hidden'); chargerDonnees(); }
+            if (session) { document.getElementById('section-login').classList.add('hidden'); document.getElementById('section-dashboard').classList.remove('hidden'); document.getElementById('btn-logout').classList.remove('hidden'); chargerDonnees(); chargerContactAdmin(); }
         }
+
         async function seConnecter() {
             const email = document.getElementById('email').value, password = document.getElementById('password').value;
             const { error } = await _supabase.auth.signInWithPassword({ email, password });
-            if (!error) location.reload();
+            if (!error) location.reload(); else alert("Identifiants incorrects.");
         }
+
         async function seDeconnecter() { await _supabase.auth.signOut(); location.reload(); }
 
+        /* --- ENREGISTREMENTS --- */
         async function ajouterEglise() {
             const nom = document.getElementById('eglise-nom').value;
-            const horaires_base = document.getElementById('eglise-horaires').value;
-            const heure_ouverture = document.getElementById('eglise-ouv').value || null;
-            const heure_fermeture = document.getElementById('eglise-fer').value || null;
-            const est_ferme = document.getElementById('eglise-estferme').checked;
-            const alerte = document.getElementById('eglise-alerte').value;
-            
-            if (editEgliseId) await _supabase.from('horaires_eglises').update({ nom, horaires_base, heure_ouverture, heure_fermeture, est_ferme, alerte }).eq('id', editEgliseId);
-            else await _supabase.from('horaires_eglises').insert([{ nom, horaires_base, heure_ouverture, heure_fermeture, est_ferme, alerte }]);
+            if(!nom) return alert("Le nom est obligatoire !");
+            const payload = { 
+                nom, 
+                horaires_base: document.getElementById('eglise-horaires').value, 
+                heure_ouverture: document.getElementById('eglise-ouv').value || null, 
+                heure_fermeture: document.getElementById('eglise-fer').value || null, 
+                est_ferme: document.getElementById('eglise-estferme').checked, 
+                alerte: document.getElementById('eglise-alerte').value 
+            };
+            if (editEgliseId) await _supabase.from('horaires_eglises').update(payload).eq('id', editEgliseId);
+            else await _supabase.from('horaires_eglises').insert([payload]);
             editEgliseId = null; document.getElementById('btn-save-eglise').innerText = "Enregistrer l'église";
+            document.getElementById('eglise-nom').value=''; document.getElementById('eglise-horaires').value=''; document.getElementById('eglise-ouv').value=''; document.getElementById('eglise-fer').value=''; document.getElementById('eglise-estferme').checked=false; document.getElementById('eglise-alerte').value='';
             chargerDonnees();
         }
 
         async function ajouterMesse() {
             const lieu = document.getElementById('messe-lieu').value, jour = document.getElementById('messe-jour').value, heure = document.getElementById('messe-heure').value, remarques = document.getElementById('messe-remarques').value;
+            if(!lieu) return alert("Sélectionnez une église !");
             if (editMesseId) await _supabase.from('horaires_messes').update({ lieu, jour, heure, remarques }).eq('id', editMesseId);
             else await _supabase.from('horaires_messes').insert([{ lieu, jour, heure, remarques }]);
             editMesseId = null; document.getElementById('btn-save-messe').innerText = "Ajouter au calendrier";
+            document.getElementById('messe-jour').value=''; document.getElementById('messe-heure').value=''; document.getElementById('messe-remarques').value='';
             chargerDonnees();
+        }
+
+        async function ajouterActualite() {
+            const titre = document.getElementById('actu-titre').value, date_publication = document.getElementById('actu-date').value, contenu = quill.root.innerHTML;
+            if(!titre) return alert("Titre obligatoire");
+            if (editActuId) await _supabase.from('actualites').update({ titre, date_publication, contenu }).eq('id', editActuId);
+            else await _supabase.from('actualites').insert([{ titre, date_publication, contenu }]);
+            editActuId = null; document.getElementById('btn-save-actu').innerText = "Publier l'actualité";
+            document.getElementById('actu-titre').value=''; document.getElementById('actu-date').value=''; quill.root.innerHTML='';
+            chargerDonnees();
+        }
+
+        async function sauvegarderContact() {
+            const adresse = document.getElementById('contact-adresse').value, telephone = document.getElementById('contact-tel').value, email = document.getElementById('contact-email').value, permanences = document.getElementById('contact-permanences').value, urgences = document.getElementById('contact-urgences').value;
+            const { error } = await _supabase.from('contact_info').update({ adresse, telephone, email, permanences, urgences }).eq('id', 1);
+            if (!error) { document.getElementById('contact-msg').innerText = "Sauvegardé !"; setTimeout(()=>document.getElementById('contact-msg').innerText='', 3000); }
+        }
+
+        async function ajouterAutreContact() {
+            const nom = document.getElementById('autre-nom').value, valeur = document.getElementById('autre-valeur').value;
+            if(!nom || !valeur) return alert("Remplissez le nom et les coordonnées.");
+            if (editAutreId) await _supabase.from('autres_contacts').update({ nom, valeur }).eq('id', editAutreId);
+            else await _supabase.from('autres_contacts').insert([{ nom, valeur }]);
+            editAutreId = null; document.getElementById('btn-save-autre').innerText = "Ajouter ce contact";
+            document.getElementById('autre-nom').value=''; document.getElementById('autre-valeur').value='';
+            chargerDonnees();
+        }
+
+        /* --- CHARGEMENT --- */
+        async function chargerContactAdmin() {
+            const { data } = await _supabase.from('contact_info').select('*').eq('id', 1).single();
+            if(data) { document.getElementById('contact-adresse').value = data.adresse||''; document.getElementById('contact-tel').value = data.telephone||''; document.getElementById('contact-email').value = data.email||''; document.getElementById('contact-permanences').value = data.permanences||''; document.getElementById('contact-urgences').value = data.urgences||''; }
         }
 
         async function chargerDonnees() {
             // Eglises
-            const { data: eglises } = await _supabase.from('horaires_eglises').select('*');
-            const selectLieu = document.getElementById('messe-lieu');
-            selectLieu.innerHTML = '<option value="" disabled selected>Église...</option>';
-            document.getElementById('liste-eglises').innerHTML = (eglises||[]).map(e => {
+            const { data: eglises } = await _supabase.from('horaires_eglises').select('*'); eglisesData = eglises||[];
+            const selectLieu = document.getElementById('messe-lieu'); selectLieu.innerHTML = '<option value="" disabled selected>Église...</option>';
+            document.getElementById('liste-eglises').innerHTML = eglisesData.map(e => {
                 selectLieu.innerHTML += `<option value="${e.nom}">${e.nom}</option>`;
-                return `<div class="flex justify-between bg-white p-2 border rounded"><span>${e.nom}</span> <button onclick="supprimer('horaires_eglises', ${e.id})" class="text-red-500 font-bold">✖</button></div>`;
+                return `<div class="flex justify-between items-center bg-slate-50 p-2 border rounded"><span class="truncate pr-2" title="${e.nom}">${e.nom}</span> <div class="flex gap-2"><button onclick="editEglise(${e.id})" class="text-blue-500 font-bold">✏️</button><button onclick="supprimer('horaires_eglises', ${e.id})" class="text-red-500 font-bold">✖</button></div></div>`;
             }).join('');
 
             // Messes
-            const { data: messes } = await _supabase.from('horaires_messes').select('*');
-            document.getElementById('liste-messes').innerHTML = (messes||[]).map(m => `<div class="flex justify-between bg-white p-2 border rounded"><span>${m.lieu} - ${m.jour}</span> <button onclick="supprimer('horaires_messes', ${m.id})" class="text-red-500 font-bold">✖</button></div>`).join('');
+            const { data: messes } = await _supabase.from('horaires_messes').select('*'); messesData = messes||[];
+            document.getElementById('liste-messes').innerHTML = messesData.map(m => `<div class="flex justify-between items-center bg-slate-50 p-2 border rounded"><span class="truncate pr-2">${m.lieu.split('–')[0]} - ${m.jour}</span> <div class="flex gap-2"><button onclick="editMesse(${m.id})" class="text-blue-500 font-bold">✏️</button><button onclick="supprimer('horaires_messes', ${m.id})" class="text-red-500 font-bold">✖</button></div></div>`).join('');
 
-            // Bonnes Ondes
+            // Actus
+            const { data: actus } = await _supabase.from('actualites').select('*'); actusData = actus||[];
+            document.getElementById('liste-actus').innerHTML = actusData.map(a => `<div class="flex justify-between items-center bg-slate-50 p-2 border rounded"><span class="truncate pr-2">${a.titre}</span> <div class="flex gap-2"><button onclick="editActu(${a.id})" class="text-blue-500 font-bold">✏️</button><button onclick="supprimer('actualites', ${a.id})" class="text-red-500 font-bold">✖</button></div></div>`).join('');
+
+            // Autres contacts
+            const { data: autres } = await _supabase.from('autres_contacts').select('*'); autresData = autres||[];
+            document.getElementById('liste-autres').innerHTML = autresData.map(c => `<div class="flex justify-between items-center bg-slate-50 p-2 border rounded"><span class="truncate pr-2">${c.nom}</span> <div class="flex gap-2"><button onclick="editAutreContact(${c.id})" class="text-blue-500 font-bold">✏️</button><button onclick="supprimer('autres_contacts', ${c.id})" class="text-red-500 font-bold">✖</button></div></div>`).join('');
+
+            // Ondes
             const { data: ondes } = await _supabase.from('bonnes_ondes').select('*');
-            document.getElementById('liste-ondes').innerHTML = (ondes||[]).map(o => `<div class="flex justify-between bg-white p-2 border rounded"><span class="truncate pr-2">"${o.message}"</span> <button onclick="supprimer('bonnes_ondes', ${o.id})" class="text-red-500 font-bold">✖</button></div>`).join('');
+            document.getElementById('liste-ondes').innerHTML = (ondes||[]).map(o => `<div class="flex justify-between items-center bg-slate-50 p-2 border rounded"><span class="truncate pr-2 italic">"${o.message}"</span> <button onclick="supprimer('bonnes_ondes', ${o.id})" class="text-red-500 font-bold">✖</button></div>`).join('');
         }
 
-        async function supprimer(table, id) { if(confirm("Supprimer ?")) { await _supabase.from(table).delete().eq('id', id); chargerDonnees(); } }
+        /* --- EDITION --- */
+        function editEglise(id) {
+            const e = eglisesData.find(x => x.id === id); editEgliseId = e.id;
+            document.getElementById('eglise-nom').value = e.nom; document.getElementById('eglise-horaires').value = e.horaires_base || ''; document.getElementById('eglise-ouv').value = e.heure_ouverture||''; document.getElementById('eglise-fer').value = e.heure_fermeture||''; document.getElementById('eglise-estferme').checked = e.est_ferme; document.getElementById('eglise-alerte').value = e.alerte||'';
+            document.getElementById('btn-save-eglise').innerText = "💾 Modifier l'église"; window.scrollTo({top:0, behavior:'smooth'});
+        }
+        function editMesse(id) {
+            const m = messesData.find(x => x.id === id); editMesseId = m.id;
+            document.getElementById('messe-lieu').value = m.lieu; document.getElementById('messe-jour').value = m.jour; document.getElementById('messe-heure').value = m.heure; document.getElementById('messe-remarques').value = m.remarques||'';
+            document.getElementById('btn-save-messe').innerText = "💾 Modifier la messe"; window.scrollTo({top:0, behavior:'smooth'});
+        }
+        function editActu(id) {
+            const a = actusData.find(x => x.id === id); editActuId = a.id;
+            document.getElementById('actu-titre').value = a.titre; document.getElementById('actu-date').value = a.date_publication; quill.root.innerHTML = a.contenu;
+            document.getElementById('btn-save-actu').innerText = "💾 Modifier l'actualité"; window.scrollTo({top:0, behavior:'smooth'});
+        }
+        function editAutreContact(id) {
+            const c = autresData.find(x => x.id === id); editAutreId = c.id;
+            document.getElementById('autre-nom').value = c.nom; document.getElementById('autre-valeur').value = c.valeur;
+            document.getElementById('btn-save-autre').innerText = "💾 Modifier le contact"; window.scrollTo({top:0, behavior:'smooth'});
+        }
+
+        async function supprimer(table, id) { if(confirm("Supprimer définitivement ?")) { await _supabase.from(table).delete().eq('id', id); chargerDonnees(); } }
 
         checkSession();
     </script>
