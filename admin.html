@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;0,700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7', emeraude: '#059669' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] } } } }
+        tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7', emeraude: '#059669' } } } }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
@@ -16,115 +16,79 @@
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen">
 
     <header class="bg-nuit text-white p-4 shadow-md flex justify-between items-center">
-        <div class="flex items-center gap-3">
-            <svg class="w-6 h-6 text-or" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v18m-6-12h12"></path></svg>
-            <span class="text-xl font-serif font-bold">⚙️ Back-Office</span>
-            <a href="/" class="text-xs bg-white/20 px-3 py-1 rounded hover:bg-white/30 transition">Voir le site</a>
+        <span class="text-xl font-serif font-bold">⚙️ Back-Office</span>
+        <div>
+            <a href="/" class="text-xs bg-white/20 px-3 py-2 rounded mr-2">Voir le site</a>
+            <button id="btn-logout" class="hidden text-xs bg-red-500 px-3 py-2 rounded font-bold" onclick="seDeconnecter()">Déconnexion</button>
         </div>
-        <button id="btn-logout" class="hidden text-sm bg-red-500 hover:bg-red-600 px-4 py-2 rounded font-bold transition" onclick="seDeconnecter()">Déconnexion</button>
     </header>
 
     <main class="max-w-6xl mx-auto px-6 py-12">
-        
-        <!-- LOGIN -->
-        <div id="section-login" class="bg-white p-10 rounded-3xl shadow-xl border-t-[6px] border-or max-w-md mx-auto mt-12">
-            <h2 class="text-3xl font-serif font-bold text-center mb-8 text-nuit">Connexion</h2>
-            <div class="space-y-5">
-                <input type="email" id="email" class="w-full border-2 border-slate-200 rounded-lg p-3 focus:border-nuit outline-none" placeholder="Email admin">
-                <input type="password" id="password" class="w-full border-2 border-slate-200 rounded-lg p-3 focus:border-nuit outline-none" placeholder="Mot de passe">
-                <button onclick="seConnecter()" class="w-full bg-nuit hover:bg-blue-900 text-white font-bold py-3 px-4 rounded-lg mt-4">Se connecter</button>
-                <p id="login-error" class="text-red-500 text-sm mt-2 text-center hidden font-semibold">Identifiants incorrects.</p>
+        <div id="section-login" class="bg-white p-10 rounded-3xl shadow-xl max-w-md mx-auto mt-12">
+            <h2 class="text-3xl font-serif font-bold text-center mb-8">Connexion</h2>
+            <div class="space-y-4">
+                <input type="email" id="email" class="w-full border-2 p-3 rounded-lg" placeholder="Email">
+                <input type="password" id="password" class="w-full border-2 p-3 rounded-lg" placeholder="Mot de passe">
+                <button onclick="seConnecter()" class="w-full bg-nuit text-white font-bold py-3 rounded-lg">Se connecter</button>
             </div>
         </div>
 
-        <!-- DASHBOARD -->
-        <div id="section-dashboard" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div id="section-dashboard" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-8">
             
-            <!-- IMAGE ACCUEIL -->
-            <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-sable lg:col-span-1">
-                <h3 class="text-xl font-serif font-bold text-slate-800 mb-6">🖼️ Image d'accueil</h3>
-                <div class="space-y-4">
-                    <input type="file" id="image-accueil" accept="image/jpeg, image/png" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-sable file:text-or">
-                    <button onclick="changerImage()" class="w-full bg-slate-800 hover:bg-black text-white py-3 rounded-lg text-sm font-bold">Remplacer l'image</button>
-                    <p id="img-msg" class="text-sm mt-2 text-center"></p>
-                </div>
-            </div>
-
-            <!-- OUVERTURE ÉGLISES (Champ de texte libre) -->
-            <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-blue-400 lg:col-span-2">
-                <h3 class="text-xl font-serif font-bold text-blue-900 mb-6">🗝️ Gérer l'ouverture d'une Église</h3>
-                <div class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <input type="text" id="eglise-nom" placeholder="Nom de l'église (ex: Notre-Dame)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-blue-400 outline-none">
-                        <input type="text" id="eglise-horaires" placeholder="Horaires (ex: Ouvert de 9h à 18h)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-blue-400 outline-none">
+            <!-- ÉGLISES (AVEC TEMPS RÉEL) -->
+            <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-blue-400">
+                <h3 class="text-xl font-serif font-bold text-blue-900 mb-4">🗝️ Gérer une Église</h3>
+                <div class="space-y-3">
+                    <input type="text" id="eglise-nom" placeholder="Nom de l'église" class="w-full border p-3 rounded-lg">
+                    <input type="text" id="eglise-horaires" placeholder="Texte des Horaires (ex: 9h-18h)" class="w-full border p-3 rounded-lg">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs font-bold text-slate-500">Heure Ouverture (Calcul)</label>
+                            <input type="time" id="eglise-ouv" class="w-full border p-3 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-500">Heure Fermeture (Calcul)</label>
+                            <input type="time" id="eglise-fer" class="w-full border p-3 rounded-lg">
+                        </div>
                     </div>
-                    <input type="text" id="eglise-alerte" placeholder="Alerte éventuelle (ex: Fermé pour travaux)" class="w-full border border-red-300 rounded-lg p-3 text-sm focus:border-red-500 outline-none placeholder-red-300">
-                    <button id="btn-save-eglise" onclick="ajouterEglise()" class="w-full bg-blue-600 hover:bg-blue-800 text-white py-3 rounded-lg text-sm font-bold">Enregistrer l'église</button>
-                    <p id="eglise-msg" class="text-sm mt-2 text-center"></p>
+                    <label class="flex items-center gap-2 bg-red-50 p-3 rounded-lg border border-red-200 cursor-pointer">
+                        <input type="checkbox" id="eglise-estferme" class="w-5 h-5 accent-red-600">
+                        <span class="font-bold text-red-800 text-sm">Fermeture exceptionnelle active</span>
+                    </label>
+                    <input type="text" id="eglise-alerte" placeholder="Message d'alerte (Optionnel)" class="w-full border border-red-300 p-3 rounded-lg">
+                    <button id="btn-save-eglise" onclick="ajouterEglise()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold">Enregistrer l'église</button>
                 </div>
             </div>
 
-            <!-- ACTUALITÉS -->
-            <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-nuit lg:col-span-3">
-                <h3 class="text-xl font-serif font-bold text-nuit mb-6">📰 Éditer une Actualité</h3>
-                <div class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <input type="text" id="actu-titre" placeholder="Titre de l'actualité" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-nuit outline-none">
-                        <input type="date" id="actu-date" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-nuit outline-none">
+            <!-- MESSES -->
+            <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-or">
+                <h3 class="text-xl font-serif font-bold text-or mb-4">⛪ Ajouter une Messe</h3>
+                <div class="space-y-3">
+                    <select id="messe-lieu" class="w-full border p-3 rounded-lg font-medium"></select>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="date" id="messe-jour" class="w-full border p-3 rounded-lg">
+                        <input type="time" id="messe-heure" class="w-full border p-3 rounded-lg">
                     </div>
-                    <div class="bg-white"><div id="editeur-actu" style="height: 200px;"></div></div>
-                    <button id="btn-save-actu" onclick="ajouterActualite()" class="w-full bg-nuit hover:bg-blue-900 text-white py-3 rounded-lg text-sm font-bold">Publier l'actualité</button>
-                    <p id="actu-msg" class="text-sm mt-2 text-center"></p>
+                    <input type="text" id="messe-remarques" placeholder="Remarques (ex: Messe des familles)" class="w-full border p-3 rounded-lg">
+                    <button id="btn-save-messe" onclick="ajouterMesse()" class="w-full bg-or text-white py-3 rounded-lg font-bold">Ajouter au calendrier</button>
                 </div>
             </div>
 
-            <!-- MESSES (Menu déroulant dynamique) -->
-            <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-or lg:col-span-3">
-                <h3 class="text-xl font-serif font-bold text-or mb-6">⛪ Ajouter / Modifier une Messe</h3>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    
-                    <select id="messe-lieu" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none text-slate-700 font-medium cursor-pointer">
-                        <option value="" disabled selected>Sélectionner une église...</option>
-                        <!-- Le javascript va remplir les églises ici -->
-                    </select>
-
-                    <input type="date" id="messe-jour" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none text-slate-600" title="Date de la messe">
-                    <input type="text" id="messe-heure" placeholder="Heure (ex: 11h00)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none">
-                    <input type="text" id="messe-remarques" placeholder="Remarques (ex: Fête patronale)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none">
-                </div>
-                <button id="btn-save-messe" onclick="ajouterMesse()" class="w-full bg-or hover:bg-yellow-600 text-white py-3 rounded-lg text-sm font-bold mt-4">Ajouter l'horaire au calendrier</button>
-                <p id="messe-msg" class="text-sm mt-2 text-center"></p>
-            </div>
-
-            <!-- CONTACTS -->
-            <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-emeraude lg:col-span-3">
-                <h3 class="text-xl font-serif font-bold text-emerald-900 mb-6">📞 Modifier les Contacts</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <textarea id="contact-adresse" placeholder="Adresse complète" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-emeraude"></textarea>
-                    <input type="text" id="contact-tel" placeholder="Téléphone" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-emeraude h-fit">
-                    <input type="text" id="contact-email" placeholder="Email" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-emeraude h-fit">
-                    <textarea id="contact-permanences" placeholder="Permanences d'accueil" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-emeraude"></textarea>
-                    <textarea id="contact-urgences" placeholder="Message d'urgence / Obsèques" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-emeraude md:col-span-2"></textarea>
-                </div>
-                <button onclick="sauvegarderContact()" class="w-full bg-emeraude hover:bg-emerald-800 text-white py-3 rounded-lg text-sm font-bold mt-4">💾 Sauvegarder les contacts</button>
-                <p id="contact-msg" class="text-sm mt-2 text-center"></p>
-            </div>
-
-            <!-- GESTION DES LISTES -->
-            <div class="mt-8 bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-slate-800 lg:col-span-3">
-                <h3 class="text-2xl font-serif font-bold text-slate-800 mb-6">🗑️ Gérer, Modifier et Supprimer</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- GESTION -->
+            <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-slate-800 lg:col-span-2">
+                <h3 class="text-2xl font-serif font-bold mb-6">🗑️ Suppression</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                        <h4 class="font-bold text-blue-800 border-b pb-2 mb-4">Églises Ouvertes</h4>
-                        <div id="liste-admin-eglises" class="space-y-2 text-sm max-h-64 overflow-y-auto pr-2">Chargement...</div>
+                        <h4 class="font-bold border-b pb-2 mb-2 text-sm text-blue-800">Églises</h4>
+                        <div id="liste-eglises" class="space-y-2 text-xs max-h-48 overflow-y-auto"></div>
                     </div>
                     <div>
-                        <h4 class="font-bold text-nuit border-b pb-2 mb-4">Actualités</h4>
-                        <div id="liste-admin-actus" class="space-y-2 text-sm max-h-64 overflow-y-auto pr-2">Chargement...</div>
+                        <h4 class="font-bold border-b pb-2 mb-2 text-sm text-or">Messes</h4>
+                        <div id="liste-messes" class="space-y-2 text-xs max-h-48 overflow-y-auto"></div>
                     </div>
                     <div>
-                        <h4 class="font-bold text-or border-b pb-2 mb-4">Messes Programmées</h4>
-                        <div id="liste-admin-messes" class="space-y-2 text-sm max-h-64 overflow-y-auto pr-2">Chargement...</div>
+                        <h4 class="font-bold border-b pb-2 mb-2 text-sm text-pink-600">Bonnes Ondes</h4>
+                        <div id="liste-ondes" class="space-y-2 text-xs max-h-48 overflow-y-auto"></div>
                     </div>
                 </div>
             </div>
@@ -136,195 +100,61 @@
         const SUPABASE_URL = 'https://tyxybtrthvmyzjefziop.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        let actusData = [], messesData = [], eglisesData = [];
-        let editActuId = null, editMesseId = null, editEgliseId = null;
-
-        var quill = new Quill('#editeur-actu', {
-            theme: 'snow',
-            modules: { toolbar: [ [{ 'header': [2, 3, false] }], ['bold', 'italic', 'underline'], [{ 'color': [] }, { 'background': [] }], [{ 'list': 'bullet' }], ['clean'] ] }
-        });
+        let editEgliseId = null, editMesseId = null;
 
         async function checkSession() {
             const { data: { session } } = await _supabase.auth.getSession();
-            if (session) { afficherDashboard(); }
+            if (session) { document.getElementById('section-login').classList.add('hidden'); document.getElementById('section-dashboard').classList.remove('hidden'); document.getElementById('btn-logout').classList.remove('hidden'); chargerDonnees(); }
         }
-
         async function seConnecter() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+            const email = document.getElementById('email').value, password = document.getElementById('password').value;
             const { error } = await _supabase.auth.signInWithPassword({ email, password });
-            if (error) { document.getElementById('login-error').classList.remove('hidden'); } 
-            else { document.getElementById('login-error').classList.add('hidden'); afficherDashboard(); }
+            if (!error) location.reload();
         }
-
         async function seDeconnecter() { await _supabase.auth.signOut(); location.reload(); }
-
-        function afficherDashboard() {
-            document.getElementById('section-login').classList.add('hidden');
-            document.getElementById('section-dashboard').classList.remove('hidden');
-            document.getElementById('btn-logout').classList.remove('hidden');
-            chargerListesAdmin();
-            chargerContactAdmin(); 
-        }
-
-        async function changerImage() {
-            const input = document.getElementById('image-accueil');
-            const msg = document.getElementById('img-msg');
-            if (!input.files.length) { msg.innerHTML = '<span class="text-red-500">Sélectionnez une image.</span>'; return; }
-            msg.innerHTML = '<span class="text-slate-500 font-bold">Envoi en cours... ⏳</span>';
-            const { error } = await _supabase.storage.from('images').upload('accueil.jpg', input.files[0], { cacheControl: '0', upsert: true });
-            if (error) { msg.innerHTML = '<span class="text-red-500">Erreur.</span>'; } 
-            else { msg.innerHTML = '<span class="text-emerald-600 font-bold">✅ Photo à jour !</span>'; input.value = ''; }
-        }
-
-        async function chargerContactAdmin() {
-            const { data } = await _supabase.from('contact_info').select('*').eq('id', 1).single();
-            if(data) {
-                document.getElementById('contact-adresse').value = data.adresse || '';
-                document.getElementById('contact-tel').value = data.telephone || '';
-                document.getElementById('contact-email').value = data.email || '';
-                document.getElementById('contact-permanences').value = data.permanences || '';
-                document.getElementById('contact-urgences').value = data.urgences || '';
-            }
-        }
-
-        async function sauvegarderContact() {
-            const adresse = document.getElementById('contact-adresse').value;
-            const telephone = document.getElementById('contact-tel').value;
-            const email = document.getElementById('contact-email').value;
-            const permanences = document.getElementById('contact-permanences').value;
-            const urgences = document.getElementById('contact-urgences').value;
-            const msg = document.getElementById('contact-msg');
-            const { error } = await _supabase.from('contact_info').update({ adresse, telephone, email, permanences, urgences }).eq('id', 1);
-            if (error) msg.innerHTML = '<span class="text-red-500">Erreur de sauvegarde.</span>';
-            else msg.innerHTML = '<span class="text-emerald-600 font-bold">✅ Contacts mis à jour !</span>';
-        }
 
         async function ajouterEglise() {
             const nom = document.getElementById('eglise-nom').value;
-            if(!nom) { alert("Le nom de l'église est obligatoire !"); return; }
             const horaires_base = document.getElementById('eglise-horaires').value;
+            const heure_ouverture = document.getElementById('eglise-ouv').value || null;
+            const heure_fermeture = document.getElementById('eglise-fer').value || null;
+            const est_ferme = document.getElementById('eglise-estferme').checked;
             const alerte = document.getElementById('eglise-alerte').value;
-            const msg = document.getElementById('eglise-msg');
-            let error;
-            if (editEgliseId) { error = (await _supabase.from('horaires_eglises').update({ nom, horaires_base, alerte }).eq('id', editEgliseId)).error; } 
-            else { error = (await _supabase.from('horaires_eglises').insert([{ nom, horaires_base, alerte }])).error; }
-            if (error) { msg.innerHTML = '<span class="text-red-500 font-bold">Erreur (RLS désactivé ?).</span>'; } 
-            else {
-                msg.innerHTML = '<span class="text-emerald-600 font-bold">✅ Enregistré !</span>';
-                document.getElementById('eglise-nom').value = ''; document.getElementById('eglise-horaires').value = ''; document.getElementById('eglise-alerte').value = '';
-                editEgliseId = null; document.getElementById('btn-save-eglise').innerText = "Enregistrer l'église";
-                chargerListesAdmin();
-            }
-        }
-
-        async function ajouterActualite() {
-            const titre = document.getElementById('actu-titre').value;
-            const date = document.getElementById('actu-date').value;
-            const contenu = quill.root.innerHTML;
-            const msg = document.getElementById('actu-msg');
-            let error;
-            if (editActuId) { error = (await _supabase.from('actualites').update({ titre, date_publication: date, contenu }).eq('id', editActuId)).error; } 
-            else { error = (await _supabase.from('actualites').insert([{ titre, date_publication: date, contenu }])).error; }
-            if (error) { msg.innerHTML = '<span class="text-red-500">Erreur.</span>'; } 
-            else {
-                msg.innerHTML = '<span class="text-emerald-600 font-bold">✅ Enregistré !</span>';
-                document.getElementById('actu-titre').value = ''; document.getElementById('actu-date').value = ''; quill.root.innerHTML = '';
-                editActuId = null; document.getElementById('btn-save-actu').innerText = "Publier l'actualité";
-                chargerListesAdmin();
-            }
+            
+            if (editEgliseId) await _supabase.from('horaires_eglises').update({ nom, horaires_base, heure_ouverture, heure_fermeture, est_ferme, alerte }).eq('id', editEgliseId);
+            else await _supabase.from('horaires_eglises').insert([{ nom, horaires_base, heure_ouverture, heure_fermeture, est_ferme, alerte }]);
+            editEgliseId = null; document.getElementById('btn-save-eglise').innerText = "Enregistrer l'église";
+            chargerDonnees();
         }
 
         async function ajouterMesse() {
-            const lieu = document.getElementById('messe-lieu').value;
-            if(!lieu) { alert("Sélectionnez une église !"); return; }
-            const jour = document.getElementById('messe-jour').value;
-            const heure = document.getElementById('messe-heure').value;
-            const remarques = document.getElementById('messe-remarques').value;
-            const msg = document.getElementById('messe-msg');
-            let error;
-            if (editMesseId) { error = (await _supabase.from('horaires_messes').update({ lieu, jour, heure, remarques }).eq('id', editMesseId)).error; } 
-            else { error = (await _supabase.from('horaires_messes').insert([{ lieu, jour, heure, remarques }])).error; }
-            if (error) { msg.innerHTML = '<span class="text-red-500">Erreur.</span>'; } 
-            else {
-                msg.innerHTML = '<span class="text-emerald-600 font-bold">✅ Enregistré !</span>';
-                document.getElementById('messe-lieu').value = ''; document.getElementById('messe-jour').value = ''; document.getElementById('messe-heure').value = ''; document.getElementById('messe-remarques').value = '';
-                editMesseId = null; document.getElementById('btn-save-messe').innerText = "Ajouter l'horaire au calendrier";
-                chargerListesAdmin();
-            }
+            const lieu = document.getElementById('messe-lieu').value, jour = document.getElementById('messe-jour').value, heure = document.getElementById('messe-heure').value, remarques = document.getElementById('messe-remarques').value;
+            if (editMesseId) await _supabase.from('horaires_messes').update({ lieu, jour, heure, remarques }).eq('id', editMesseId);
+            else await _supabase.from('horaires_messes').insert([{ lieu, jour, heure, remarques }]);
+            editMesseId = null; document.getElementById('btn-save-messe').innerText = "Ajouter au calendrier";
+            chargerDonnees();
         }
 
-        async function chargerListesAdmin() {
+        async function chargerDonnees() {
+            // Eglises
             const { data: eglises } = await _supabase.from('horaires_eglises').select('*');
-            eglisesData = eglises || [];
-            
-            // Remplir le menu déroulant dynamique des messes
             const selectLieu = document.getElementById('messe-lieu');
-            selectLieu.innerHTML = '<option value="" disabled selected>Sélectionner une église...</option>';
-            eglisesData.forEach(e => {
+            selectLieu.innerHTML = '<option value="" disabled selected>Église...</option>';
+            document.getElementById('liste-eglises').innerHTML = (eglises||[]).map(e => {
                 selectLieu.innerHTML += `<option value="${e.nom}">${e.nom}</option>`;
-            });
-
-            document.getElementById('liste-admin-eglises').innerHTML = eglisesData.map(e => `
-                <div class="flex justify-between items-center p-3 bg-slate-50 border rounded-lg mb-2">
-                    <span class="truncate font-medium pr-2 text-xs" title="${e.nom}">${e.nom}</span>
-                    <div class="flex gap-4">
-                        <button onclick="preparerEditionEglise(${e.id})" class="text-blue-500 hover:text-blue-800 text-lg">✏️</button>
-                        <button onclick="supprimerDonnee('horaires_eglises', ${e.id})" class="text-red-500 hover:text-red-800 text-lg font-bold">✖</button>
-                    </div>
-                </div>
-            `).join('');
-
-            const { data: actus } = await _supabase.from('actualites').select('*').order('date_publication', { ascending: false });
-            actusData = actus || [];
-            document.getElementById('liste-admin-actus').innerHTML = actusData.map(a => `
-                <div class="flex justify-between items-center p-3 bg-slate-50 border rounded-lg mb-2">
-                    <span class="truncate font-medium pr-2 text-xs">${a.titre}</span>
-                    <div class="flex gap-4">
-                        <button onclick="preparerEditionActu(${a.id})" class="text-blue-500 hover:text-blue-800 text-lg">✏️</button>
-                        <button onclick="supprimerDonnee('actualites', ${a.id})" class="text-red-500 hover:text-red-800 text-lg font-bold">✖</button>
-                    </div>
-                </div>
-            `).join('');
-
-            const { data: messes } = await _supabase.from('horaires_messes').select('*').order('jour', { ascending: true });
-            messesData = messes || [];
-            document.getElementById('liste-admin-messes').innerHTML = messesData.map(m => {
-                let dateAffichee = m.jour;
-                if(m.jour && m.jour.includes('-')) {
-                    dateAffichee = new Date(m.jour).toLocaleDateString('fr-FR');
-                }
-                return `
-                <div class="flex justify-between items-center p-3 bg-slate-50 border rounded-lg mb-2">
-                    <span class="truncate font-medium pr-2 text-xs" title="${m.lieu}">${m.lieu} - ${dateAffichee}</span>
-                    <div class="flex gap-4">
-                        <button onclick="preparerEditionMesse(${m.id})" class="text-blue-500 hover:text-blue-800 text-lg">✏️</button>
-                        <button onclick="supprimerDonnee('horaires_messes', ${m.id})" class="text-red-500 hover:text-red-800 text-lg font-bold">✖</button>
-                    </div>
-                </div>`;
+                return `<div class="flex justify-between bg-white p-2 border rounded"><span>${e.nom}</span> <button onclick="supprimer('horaires_eglises', ${e.id})" class="text-red-500 font-bold">✖</button></div>`;
             }).join('');
+
+            // Messes
+            const { data: messes } = await _supabase.from('horaires_messes').select('*');
+            document.getElementById('liste-messes').innerHTML = (messes||[]).map(m => `<div class="flex justify-between bg-white p-2 border rounded"><span>${m.lieu} - ${m.jour}</span> <button onclick="supprimer('horaires_messes', ${m.id})" class="text-red-500 font-bold">✖</button></div>`).join('');
+
+            // Bonnes Ondes
+            const { data: ondes } = await _supabase.from('bonnes_ondes').select('*');
+            document.getElementById('liste-ondes').innerHTML = (ondes||[]).map(o => `<div class="flex justify-between bg-white p-2 border rounded"><span class="truncate pr-2">"${o.message}"</span> <button onclick="supprimer('bonnes_ondes', ${o.id})" class="text-red-500 font-bold">✖</button></div>`).join('');
         }
 
-        function preparerEditionEglise(id) {
-            const eglise = eglisesData.find(e => e.id === id); editEgliseId = eglise.id;
-            document.getElementById('eglise-nom').value = eglise.nom; document.getElementById('eglise-horaires').value = eglise.horaires_base; document.getElementById('eglise-alerte').value = eglise.alerte || '';
-            document.getElementById('btn-save-eglise').innerText = "💾 Modifier l'église"; window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function preparerEditionActu(id) {
-            const actu = actusData.find(a => a.id === id); editActuId = actu.id;
-            document.getElementById('actu-titre').value = actu.titre; document.getElementById('actu-date').value = actu.date_publication; quill.root.innerHTML = actu.contenu;
-            document.getElementById('btn-save-actu').innerText = "💾 Modifier l'actualité"; window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function preparerEditionMesse(id) {
-            const messe = messesData.find(m => m.id === id); editMesseId = messe.id;
-            document.getElementById('messe-lieu').value = messe.lieu; document.getElementById('messe-jour').value = messe.jour; document.getElementById('messe-heure').value = messe.heure; document.getElementById('messe-remarques').value = messe.remarques || '';
-            document.getElementById('btn-save-messe').innerText = "💾 Modifier la messe"; window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        async function supprimerDonnee(table, id) { if(confirm("Confirmer la suppression définitive ?")) { await _supabase.from(table).delete().eq('id', id); chargerListesAdmin(); } }
+        async function supprimer(table, id) { if(confirm("Supprimer ?")) { await _supabase.from(table).delete().eq('id', id); chargerDonnees(); } }
 
         checkSession();
     </script>
