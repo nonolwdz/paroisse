@@ -3,90 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact - Paroisse Saint-François d'Assise</title>
+    <title>Contact & Aide - Paroisse</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { ciel: '#0ea5e9', soleil: '#f97316', menthe: '#10b981', fraise: '#f43f5e', fond: '#f8fafc' }, fontFamily: { sans: ['Nunito', 'sans-serif'] } } } }
+        tailwind.config = { theme: { extend: { colors: { ciel: '#0ea5e9', soleil: '#fdba74', menthe: '#34d399', fraise: '#fb7185', fond: '#f8fafc', nuit: '#1e293b' }, fontFamily: { sans: ['Nunito', 'sans-serif'] } } } }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-fond text-slate-700 font-sans min-h-screen flex flex-col">
 
-    <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b-4 border-ciel">
+    <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b-[3px] border-ciel/20">
         <div class="max-w-6xl mx-auto px-6 py-3 flex flex-col md:flex-row justify-between items-center">
             <div class="flex items-center gap-3 group cursor-pointer hover:scale-105 transition-transform">
-                <div class="bg-soleil text-white p-2.5 rounded-full shadow-lg shadow-soleil/30 transform rotate-[-10deg] group-hover:rotate-0 transition-all">
+                <div class="bg-soleil text-nuit p-2.5 rounded-full shadow-lg shadow-soleil/30 transform rotate-[-10deg] group-hover:rotate-0 transition-all">
                     <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 3v18m-6-12h12"></path></svg>
                 </div>
-                <div><span class="text-2xl font-black text-ciel tracking-tight">Saint-François d'Assise</span></div>
+                <div><span class="text-2xl font-black text-slate-800 tracking-tight">Saint-François d'Assise</span></div>
             </div>
             <nav class="mt-4 md:mt-0 flex gap-6 text-base font-bold text-slate-500">
                 <a href="/" class="hover:text-ciel hover:-translate-y-1 transition-all">Accueil</a>
                 <a href="/messes" class="hover:text-ciel hover:-translate-y-1 transition-all">Messes</a>
                 <a href="/horaires" class="hover:text-ciel hover:-translate-y-1 transition-all">Ouverture Églises</a>
-                <a href="/contact" class="text-soleil border-b-4 border-soleil pb-1">Contact</a>
+                <a href="/contact" class="text-nuit border-b-[3px] border-soleil pb-1">Contact / Aide</a>
             </nav>
         </div>
     </header>
 
     <main class="max-w-5xl mx-auto px-6 py-12 flex-grow w-full">
-        <div class="text-center mb-12">
-            <h1 class="text-4xl md:text-6xl font-black text-slate-800 tracking-tight mb-4">Contactez-nous</h1>
-            <p class="text-slate-500 font-bold text-xl max-w-2xl mx-auto">Toute l'équipe est là pour vous accueillir et répondre à vos questions avec le sourire !</p>
-        </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-16">
             <!-- Maison Paroissiale -->
-            <div class="bg-white p-10 rounded-[3rem] shadow-xl shadow-slate-200 border-4 border-ciel/20 hover:border-ciel transition-colors">
-                <h2 class="text-3xl font-black text-ciel mb-8 flex items-center gap-3"><span class="text-4xl">🏡</span> Le Presbytère</h2>
+            <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 border-t-[6px] border-ciel">
+                <h2 class="text-3xl font-black text-slate-800 mb-8 flex items-center gap-3"><span class="text-4xl">🏡</span> Le Presbytère</h2>
                 <div class="space-y-6 text-slate-600 font-bold text-lg">
-                    <div class="flex items-start gap-4">
-                        <span class="text-soleil text-2xl mt-1">📍</span>
-                        <div id="vue-adresse" class="leading-relaxed">Chargement...</div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <span class="text-menthe text-2xl">📞</span>
-                        <div id="vue-tel">...</div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <span class="text-fraise text-2xl">✉️</span>
-                        <div id="vue-email">...</div>
-                    </div>
+                    <div class="flex items-start gap-4"><span class="text-soleil text-2xl mt-1">📍</span><div id="vue-adresse" class="leading-relaxed">...</div></div>
+                    <div class="flex items-center gap-4"><span class="text-menthe text-2xl">📞</span><div id="vue-tel">...</div></div>
+                    <div class="flex items-center gap-4"><span class="text-fraise text-2xl">✉️</span><div id="vue-email">...</div></div>
                 </div>
             </div>
 
             <!-- Infos utiles -->
-            <div class="bg-ciel text-white p-10 rounded-[3rem] shadow-xl shadow-ciel/30 relative overflow-hidden">
+            <div class="bg-slate-800 text-white p-8 rounded-[3rem] shadow-sm border-t-[6px] border-soleil relative overflow-hidden">
                 <h2 class="text-3xl font-black mb-8 relative z-10 flex items-center gap-3"><span class="text-4xl">🕰️</span> Horaires</h2>
                 <div class="space-y-6 relative z-10">
-                    <div class="bg-white/20 p-6 rounded-3xl border-2 border-white/50 shadow-inner">
-                        <h3 class="font-black text-soleil mb-2 text-xl">Accueil au Presbytère</h3>
-                        <p id="vue-permanences" class="text-white font-bold leading-relaxed">Chargement...</p>
+                    <div class="bg-white/10 p-5 rounded-3xl border border-white/20">
+                        <h3 class="font-black text-soleil mb-2 text-xl">Accueil</h3>
+                        <p id="vue-permanences" class="text-white font-bold leading-relaxed">...</p>
                     </div>
-                    <div class="bg-fraise/90 p-6 rounded-3xl shadow-lg shadow-fraise/50">
-                        <h3 class="font-black text-white mb-2 text-xl">Urgences & Obsèques</h3>
-                        <p id="vue-urgences" class="text-white font-bold leading-relaxed">Chargement...</p>
+                    <div class="bg-fraise/20 p-5 rounded-3xl border border-fraise/30">
+                        <h3 class="font-black text-fraise mb-2 text-xl">Urgences</h3>
+                        <p id="vue-urgences" class="text-white font-bold leading-relaxed">...</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- L'équipe -->
-        <div class="mt-16 bg-white p-10 rounded-[3rem] shadow-xl shadow-slate-200 border-t-8 border-soleil">
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-black text-slate-800">👋 L'Équipe Paroissiale</h2>
-            </div>
+        <div class="mb-16">
+            <h2 class="text-3xl font-black text-slate-800 text-center mb-8">👋 L'Équipe Paroissiale</h2>
             <div id="liste-autres-contacts" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
         </div>
+
+        <!-- NOUVEAU : LE SYSTEME DE TICKETS -->
+        <div class="bg-ciel/10 p-10 rounded-[3rem] border-2 border-ciel/20 relative overflow-hidden">
+            <h2 class="text-3xl font-black text-slate-800 text-center mb-2">Une question ? Une suggestion ?</h2>
+            <p class="text-slate-600 font-bold text-center mb-8">Exprimez-vous ici, nous vous répondrons dans les 24 à 48h.</p>
+            
+            <div class="flex justify-center gap-4 mb-8">
+                <button onclick="voirOnglet('creer')" id="btn-creer" class="px-6 py-2 rounded-full font-black bg-ciel text-white shadow-md">Nouveau message</button>
+                <button onclick="voirOnglet('suivre')" id="btn-suivre" class="px-6 py-2 rounded-full font-black bg-white text-ciel border-2 border-ciel/30 hover:bg-ciel/5 transition-colors">Suivre ma demande</button>
+            </div>
+
+            <!-- Onglet Créer -->
+            <div id="onglet-creer" class="max-w-2xl mx-auto space-y-4">
+                <input type="text" id="ticket-sujet" placeholder="Sujet (ex: Erreur d'horaire, Demande de document...)" class="w-full p-4 rounded-2xl border-none outline-none text-slate-800 font-bold focus:ring-4 focus:ring-ciel/30">
+                <textarea id="ticket-message" rows="5" placeholder="Votre message détaillé..." class="w-full p-4 rounded-2xl border-none outline-none text-slate-800 font-bold focus:ring-4 focus:ring-ciel/30 resize-none"></textarea>
+                <button onclick="creerTicket()" class="w-full bg-slate-800 text-white font-black text-xl py-4 rounded-2xl hover:scale-105 transition-transform shadow-md">Envoyer la demande</button>
+                <div id="ticket-creation-msg" class="text-center font-black mt-4"></div>
+            </div>
+
+            <!-- Onglet Suivre -->
+            <div id="onglet-suivre" class="hidden max-w-2xl mx-auto">
+                <div class="flex gap-3 mb-8">
+                    <input type="text" id="ticket-code" placeholder="Votre code de suivi (ex: A7B9X2)" class="w-full p-4 rounded-2xl border-none outline-none text-slate-800 font-bold focus:ring-4 focus:ring-ciel/30 text-center uppercase tracking-widest text-xl">
+                    <button onclick="chargerTicket()" class="bg-ciel text-white font-black px-8 rounded-2xl shadow-md hover:bg-blue-500 transition-colors">Voir</button>
+                </div>
+                
+                <div id="ticket-details" class="hidden bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
+                        <h3 id="td-sujet" class="text-xl font-black text-slate-800">Sujet</h3>
+                        <span id="td-statut" class="px-4 py-1 rounded-full text-xs font-black uppercase tracking-wide">Statut</span>
+                    </div>
+                    <div id="td-conversation" class="space-y-4 mb-6 max-h-64 overflow-y-auto pr-2 custom-scrollbar"></div>
+                    <div id="td-reponse-box" class="space-y-3 pt-4 border-t border-slate-100">
+                        <textarea id="td-nouvelle-reponse" rows="2" placeholder="Ajouter une réponse..." class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-ciel font-bold text-sm resize-none"></textarea>
+                        <button onclick="repondreTicket()" class="w-full bg-slate-800 text-white font-black py-3 rounded-xl">Envoyer la réponse</button>
+                    </div>
+                </div>
+                <p id="ticket-erreur" class="text-center font-black text-fraise mt-4 hidden">Ticket introuvable.</p>
+            </div>
+        </div>
+
     </main>
 
-    <footer class="bg-ciel text-white text-center py-10 mt-12 font-bold"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); border-radius: 10px;}
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px;}
+    </style>
 
     <script>
         const SUPABASE_URL = 'https://tyxybtrthvmyzjefziop.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        let ticketActuelCode = null;
 
         async function chargerContacts() {
             const { data } = await _supabase.from('contact_info').select('*').eq('id', 1).single();
@@ -102,15 +132,105 @@
             const conteneur = document.getElementById('liste-autres-contacts');
             if (autres && autres.length > 0) {
                 conteneur.innerHTML = autres.map(c => `
-                    <div class="bg-fond p-6 rounded-3xl border-4 border-slate-100 flex flex-col justify-center items-center text-center hover:scale-105 transition-transform hover:border-soleil">
-                        <span class="font-black text-ciel text-xl mb-3">${c.nom}</span>
-                        <span class="text-white font-bold bg-slate-800 px-4 py-2 rounded-full text-sm shadow-md">${c.valeur}</span>
+                    <div class="bg-white p-6 rounded-3xl border border-slate-100 flex flex-col justify-center items-center text-center shadow-sm">
+                        <span class="font-black text-slate-800 text-lg mb-2">${c.nom}</span>
+                        <span class="text-slate-600 font-bold bg-slate-50 px-4 py-2 rounded-xl text-sm border border-slate-100">${c.valeur}</span>
                     </div>
                 `).join('');
-            } else {
-                conteneur.innerHTML = '<p class="text-slate-400 font-bold text-center w-full col-span-full">Aucun autre contact renseigné.</p>';
             }
         }
+
+        function voirOnglet(onglet) {
+            document.getElementById('onglet-creer').classList.add('hidden');
+            document.getElementById('onglet-suivre').classList.add('hidden');
+            document.getElementById(`onglet-${onglet}`).classList.remove('hidden');
+            
+            if(onglet === 'creer') {
+                document.getElementById('btn-creer').className = "px-6 py-2 rounded-full font-black bg-ciel text-white shadow-md";
+                document.getElementById('btn-suivre').className = "px-6 py-2 rounded-full font-black bg-white text-ciel border-2 border-ciel/30 hover:bg-ciel/5 transition-colors";
+            } else {
+                document.getElementById('btn-suivre').className = "px-6 py-2 rounded-full font-black bg-ciel text-white shadow-md";
+                document.getElementById('btn-creer').className = "px-6 py-2 rounded-full font-black bg-white text-ciel border-2 border-ciel/30 hover:bg-ciel/5 transition-colors";
+            }
+        }
+
+        async function creerTicket() {
+            const sujet = document.getElementById('ticket-sujet').value;
+            const msg = document.getElementById('ticket-message').value;
+            if(!sujet || !msg) return alert("Veuillez remplir tous les champs.");
+            
+            const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const date = new Date().toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'});
+            const conversation = [{ auteur: 'Visiteur', texte: msg, date: date }];
+
+            const { error } = await _supabase.from('tickets').insert([{ code, sujet: sujet, statut: 'Nouveau', conversation }]);
+            const conteneurMsg = document.getElementById('ticket-creation-msg');
+            
+            if(error) {
+                conteneurMsg.innerHTML = `<span class="text-fraise">Erreur technique... Avez-vous exécuté le script SQL ?</span>`;
+            } else {
+                conteneurMsg.innerHTML = `<div class="bg-white p-6 rounded-2xl shadow-sm border-2 border-menthe text-slate-700">
+                    <span class="text-2xl block mb-2">✅</span>
+                    Votre demande a bien été envoyée.<br>Nous reviendrons vers vous dans les 24 à 48h.<br>
+                    <span class="block mt-4 text-sm text-slate-500">Votre code de suivi personnel :</span>
+                    <span class="text-3xl font-black tracking-widest text-ciel">${code}</span>
+                </div>`;
+                document.getElementById('ticket-sujet').value = '';
+                document.getElementById('ticket-message').value = '';
+            }
+        }
+
+        async function chargerTicket() {
+            const code = document.getElementById('ticket-code').value.toUpperCase().trim();
+            if(!code) return;
+            document.getElementById('ticket-erreur').classList.add('hidden');
+            document.getElementById('ticket-details').classList.add('hidden');
+            
+            const { data } = await _supabase.from('tickets').select('*').eq('code', code).single();
+            if(!data) {
+                document.getElementById('ticket-erreur').classList.remove('hidden'); return;
+            }
+
+            ticketActuelCode = code;
+            document.getElementById('ticket-details').classList.remove('hidden');
+            document.getElementById('td-sujet').innerText = data.sujet || "Ticket";
+            
+            const badge = document.getElementById('td-statut');
+            badge.innerText = data.statut;
+            badge.className = "px-4 py-1 rounded-full text-xs font-black uppercase tracking-wide ";
+            if(data.statut === 'Clos') badge.className += "bg-slate-200 text-slate-500";
+            else if(data.statut === 'Nouveau' || data.statut === 'En attente') badge.className += "bg-soleil/20 text-orange-600";
+            else badge.className += "bg-menthe/20 text-emerald-700"; // Lu, Répondu...
+
+            // Conversation
+            const convBox = document.getElementById('td-conversation');
+            convBox.innerHTML = (data.conversation || []).map(m => `
+                <div class="flex flex-col ${m.auteur === 'Visiteur' ? 'items-end' : 'items-start'}">
+                    <span class="text-[10px] font-bold text-slate-400 mb-1 px-2">${m.auteur} - ${m.date}</span>
+                    <div class="max-w-[85%] px-4 py-3 rounded-2xl text-sm font-bold shadow-sm ${m.auteur === 'Visiteur' ? 'bg-ciel text-white rounded-tr-none' : 'bg-slate-100 text-slate-700 rounded-tl-none border border-slate-200'}">
+                        ${m.texte.replace(/\n/g, '<br>')}
+                    </div>
+                </div>
+            `).join('');
+            convBox.scrollTop = convBox.scrollHeight;
+
+            if(data.statut === 'Clos') document.getElementById('td-reponse-box').classList.add('hidden');
+            else document.getElementById('td-reponse-box').classList.remove('hidden');
+        }
+
+        async function repondreTicket() {
+            const reponse = document.getElementById('td-nouvelle-reponse').value;
+            if(!reponse || !ticketActuelCode) return;
+            
+            const { data } = await _supabase.from('tickets').select('conversation').eq('code', ticketActuelCode).single();
+            let conv = data.conversation || [];
+            conv.push({ auteur: 'Visiteur', texte: reponse, date: new Date().toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'}) });
+
+            await _supabase.from('tickets').update({ conversation: conv, statut: 'En attente' }).eq('code', ticketActuelCode);
+            document.getElementById('td-nouvelle-reponse').value = '';
+            chargerTicket();
+        }
+
         chargerContacts();
     </script>
 </body>
