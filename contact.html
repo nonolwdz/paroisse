@@ -4,51 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact - Paroisse Saint-François d'Assise</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] }, animation: { 'fade-in-up': 'fadeInUp 0.6s ease-out forwards' }, keyframes: { fadeInUp: { '0%': { opacity: '0', transform: 'translateY(15px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } } } } }
+    </script>
+    <style>.anim-element { opacity: 0; }</style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans">
 
-    <header class="bg-emerald-800 text-white shadow-md">
-        <div class="max-w-6xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center">
-            <div>
-                <h1 class="text-2xl md:text-3xl font-bold">Paroisse Saint-François d'Assise</h1>
-                <p class="text-emerald-200 text-sm mt-1">Domérat, Huriel, Prémilhat et environs</p>
+    <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="bg-nuit text-or p-2 rounded-full shadow-md"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg></div>
+                <div><span class="text-2xl font-serif font-bold text-nuit block leading-none">Saint-François d'Assise</span></div>
             </div>
-            <nav class="mt-4 md:mt-0 flex gap-4 text-sm font-medium">
-                <a href="index.html" class="hover:underline">Accueil</a>
-                <a href="horaires.html" class="hover:underline">Horaires des messes</a>
-                <a href="contact.html" class="underline font-bold">Contact</a>
+            <nav class="mt-4 md:mt-0 flex gap-8 text-sm font-semibold text-slate-600">
+                <a href="/" class="hover:text-nuit hover:border-b-2 hover:border-nuit pb-1 transition-all">Accueil</a>
+                <a href="/horaires" class="hover:text-nuit hover:border-b-2 hover:border-nuit pb-1 transition-all">Horaires</a>
+                <a href="/contact" class="text-or border-b-2 border-or pb-1 transition-all">Contact</a>
             </nav>
         </div>
     </header>
 
-    <main class="max-w-4xl mx-auto px-4 py-8">
-        <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100">
-            <h2 class="text-2xl font-bold text-emerald-900 mb-6">📍 Nous contacter & Permanences</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="space-y-4 text-slate-600">
-                    <div>
-                        <h3 class="font-bold text-slate-800 text-lg mb-1">Presbytère</h3>
-                        <p class="text-sm">Permanences et accueil paroissial pour vos demandes (baptêmes, mariages, intentions de messe).</p>
-                    </div>
-                    <div>
-                        <p class="text-sm"><strong>Adresse :</strong> Secteur Domérat / Huriel (03)</p>
-                        <p class="text-sm"><strong>E-mail :</strong> paroisse.stfrancois@example.com</p>
-                    </div>
+    <main class="max-w-5xl mx-auto px-6 py-16 anim-element animate-fade-in-up" style="animation-delay: 0.1s;">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-serif font-bold text-nuit mb-4">Contact & Permanences</h1>
+            <p class="text-slate-600 text-lg">Nous sommes à votre écoute pour vous accompagner.</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white p-10 rounded-3xl shadow-lg border-t-[6px] border-or">
+                <h2 class="text-2xl font-serif font-bold text-nuit mb-6">Le Presbytère</h2>
+                <div class="space-y-6 text-slate-600">
+                    <p class="flex items-start gap-3">
+                        <span class="text-or text-xl mt-1">📍</span>
+                        <span><strong>Maison Paroissiale</strong><br>12 Rue de l'Église<br>03410 Domérat</span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <span class="text-or text-xl">📞</span>
+                        <span><strong>Téléphone :</strong> 04 70 XX XX XX</span>
+                    </p>
+                    <p class="flex items-center gap-3">
+                        <span class="text-or text-xl">✉️</span>
+                        <span><strong>Email :</strong> contact@paroisse-domerat.fr</span>
+                    </p>
                 </div>
+            </div>
 
-                <div class="bg-emerald-50 p-6 rounded-xl border border-emerald-100 flex flex-col justify-center">
-                    <h3 class="font-bold text-emerald-900 mb-2">Besoin d'une urgence ?</h3>
-                    <p class="text-emerald-700 text-sm mb-4">Pour les obsèques ou situations particulières, vous pouvez contacter directement le presbytère.</p>
+            <div class="bg-nuit text-white p-10 rounded-3xl shadow-lg relative overflow-hidden">
+                <h2 class="text-2xl font-serif font-bold mb-6">Informations Utiles</h2>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="font-bold text-or mb-1">Permanences d'accueil</h3>
+                        <p class="text-sm text-blue-100">Mardi et Jeudi de 9h30 à 11h30<br>Vendredi de 16h00 à 18h00</p>
+                    </div>
+                    <div class="w-full h-px bg-slate-700"></div>
+                    <div>
+                        <h3 class="font-bold text-or mb-1">Urgences (Obsèques)</h3>
+                        <p class="text-sm text-blue-100">En cas de deuil, merci de contacter directement les pompes funèbres qui se mettront en lien avec l'équipe paroissiale.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 text-center py-6 mt-12 text-sm">
-        <p>&copy; 2026 Paroisse Saint-François d'Assise - Tous droits réservés.</p>
-    </footer>
-
+    <footer class="bg-slate-900 text-slate-400 text-center py-10 text-sm mt-12"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
 </body>
 </html>
