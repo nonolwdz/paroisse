@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administration - Paroisse</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;0,700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] } } } }
@@ -23,46 +21,53 @@
         <button id="btn-logout" class="hidden text-sm bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white font-bold transition" onclick="seDeconnecter()">Déconnexion</button>
     </header>
 
-    <main class="max-w-5xl mx-auto px-6 py-12">
+    <main class="max-w-6xl mx-auto px-6 py-12">
         
         <!-- SECTION CONNEXION -->
         <div id="section-login" class="bg-white p-10 rounded-3xl shadow-xl border-t-[6px] border-or max-w-md mx-auto mt-12">
             <h2 class="text-3xl font-serif font-bold text-center mb-8 text-nuit">Connexion</h2>
             <div class="space-y-5">
-                <div>
-                    <label class="block text-sm font-bold mb-2 text-slate-600">Adresse E-mail</label>
-                    <input type="email" id="email" class="w-full border-2 border-slate-200 rounded-lg p-3 focus:border-nuit outline-none transition" placeholder="admin@paroisse.fr">
-                </div>
-                <div>
-                    <label class="block text-sm font-bold mb-2 text-slate-600">Mot de passe</label>
-                    <input type="password" id="password" class="w-full border-2 border-slate-200 rounded-lg p-3 focus:border-nuit outline-none transition" placeholder="••••••••">
-                </div>
+                <input type="email" id="email" class="w-full border-2 border-slate-200 rounded-lg p-3 focus:border-nuit outline-none transition" placeholder="Email admin">
+                <input type="password" id="password" class="w-full border-2 border-slate-200 rounded-lg p-3 focus:border-nuit outline-none transition" placeholder="Mot de passe">
                 <button onclick="seConnecter()" class="w-full bg-nuit hover:bg-blue-900 text-white font-bold py-3 px-4 rounded-lg mt-4 transition shadow-md">Accéder à la gestion</button>
                 <p id="login-error" class="text-red-500 text-sm mt-2 text-center hidden font-semibold">Identifiants incorrects.</p>
             </div>
         </div>
 
         <!-- SECTION DASHBOARD -->
-        <div id="section-dashboard" class="hidden grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div id="section-dashboard" class="hidden grid grid-cols-1 md:grid-cols-3 gap-8">
             
+            <!-- BLOC : MODIFIER L'IMAGE D'ACCUEIL -->
+            <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-sable">
+                <h3 class="text-xl font-serif font-bold text-slate-800 mb-6 flex items-center gap-2">🖼️ Image d'accueil</h3>
+                <div class="space-y-4">
+                    <p class="text-sm text-slate-500">Sélectionnez une nouvelle photo depuis votre ordinateur. Elle remplacera l'ancienne automatiquement.</p>
+                    <input type="file" id="image-accueil" accept="image/jpeg, image/png" class="text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-sable file:text-or hover:file:bg-yellow-200">
+                    <button onclick="changerImage()" class="w-full bg-slate-800 hover:bg-black text-white py-3 rounded-lg text-sm font-bold transition shadow-sm">Remplacer l'image</button>
+                    <p id="img-msg" class="text-sm mt-2 text-center"></p>
+                </div>
+            </div>
+
+            <!-- BLOC : ACTUALITÉS -->
             <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-nuit">
                 <h3 class="text-xl font-serif font-bold text-nuit mb-6 flex items-center gap-2">📢 Ajouter une Actualité</h3>
                 <div class="space-y-4">
-                    <input type="text" id="actu-titre" placeholder="Titre (ex: Kermesse paroissiale)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-nuit outline-none">
-                    <input type="date" id="actu-date" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-nuit outline-none">
-                    <textarea id="actu-contenu" rows="4" placeholder="Contenu de l'annonce..." class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-nuit outline-none"></textarea>
+                    <input type="text" id="actu-titre" placeholder="Titre" class="w-full border border-slate-300 rounded-lg p-3 text-sm outline-none focus:border-nuit">
+                    <input type="date" id="actu-date" class="w-full border border-slate-300 rounded-lg p-3 text-sm outline-none focus:border-nuit">
+                    <textarea id="actu-contenu" rows="4" placeholder="Contenu de l'annonce..." class="w-full border border-slate-300 rounded-lg p-3 text-sm outline-none focus:border-nuit"></textarea>
                     <button onclick="ajouterActualite()" class="w-full bg-nuit hover:bg-blue-900 text-white py-3 rounded-lg text-sm font-bold transition shadow-sm">Publier l'actualité</button>
                     <p id="actu-msg" class="text-sm mt-2 text-center"></p>
                 </div>
             </div>
 
+            <!-- BLOC : MESSES -->
             <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-or">
                 <h3 class="text-xl font-serif font-bold text-or mb-6 flex items-center gap-2">⛪ Ajouter une Messe</h3>
                 <div class="space-y-4">
-                    <input type="text" id="messe-lieu" placeholder="Lieu (ex: Église de Domérat)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none">
-                    <input type="text" id="messe-jour" placeholder="Jour (ex: Dimanche 14 oct)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none">
-                    <input type="text" id="messe-heure" placeholder="Heure (ex: 11h00)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none">
-                    <input type="text" id="messe-remarques" placeholder="Remarques (ex: Messe des familles)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none">
+                    <input type="text" id="messe-lieu" placeholder="Lieu (ex: Domérat)" class="w-full border border-slate-300 rounded-lg p-3 text-sm outline-none focus:border-or">
+                    <input type="text" id="messe-jour" placeholder="Jour (ex: Dim. 14 oct)" class="w-full border border-slate-300 rounded-lg p-3 text-sm outline-none focus:border-or">
+                    <input type="text" id="messe-heure" placeholder="Heure (ex: 11h00)" class="w-full border border-slate-300 rounded-lg p-3 text-sm outline-none focus:border-or">
+                    <input type="text" id="messe-remarques" placeholder="Remarques éventuelles" class="w-full border border-slate-300 rounded-lg p-3 text-sm outline-none focus:border-or">
                     <button onclick="ajouterMesse()" class="w-full bg-or hover:bg-yellow-600 text-white py-3 rounded-lg text-sm font-bold transition shadow-sm">Ajouter l'horaire</button>
                     <p id="messe-msg" class="text-sm mt-2 text-center"></p>
                 </div>
@@ -84,7 +89,7 @@
         async function seConnecter() {
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
+            const { error } = await _supabase.auth.signInWithPassword({ email, password });
             if (error) { document.getElementById('login-error').classList.remove('hidden'); } 
             else { document.getElementById('login-error').classList.add('hidden'); afficherDashboard(); }
         }
@@ -94,7 +99,6 @@
             document.getElementById('section-login').classList.remove('hidden');
             document.getElementById('section-dashboard').classList.add('hidden');
             document.getElementById('btn-logout').classList.add('hidden');
-            document.getElementById('email').value = ''; document.getElementById('password').value = '';
         }
 
         function afficherDashboard() {
@@ -103,18 +107,37 @@
             document.getElementById('btn-logout').classList.remove('hidden');
         }
 
+        // Fonction pour uploader l'image vers Supabase
+        async function changerImage() {
+            const input = document.getElementById('image-accueil');
+            const msg = document.getElementById('img-msg');
+            if (!input.files || input.files.length === 0) {
+                msg.innerHTML = '<span class="text-red-500">Veuillez sélectionner une image.</span>';
+                return;
+            }
+            
+            msg.innerHTML = '<span class="text-slate-500 font-bold">Envoi de l\'image en cours... ⏳</span>';
+            const file = input.files[0];
+            
+            // Le paramètre upsert: true permet d'écraser l'ancienne image
+            const { error } = await _supabase.storage.from('images').upload('accueil.jpg', file, { cacheControl: '0', upsert: true });
+
+            if (error) {
+                msg.innerHTML = '<span class="text-red-500 font-bold">Erreur : Vérifiez les règles Policies dans Supabase.</span>';
+            } else {
+                msg.innerHTML = '<span class="text-emerald-600 font-bold">✅ Photo mise à jour !</span>';
+                input.value = '';
+            }
+        }
+
         async function ajouterActualite() {
             const titre = document.getElementById('actu-titre').value;
             const date = document.getElementById('actu-date').value;
             const contenu = document.getElementById('actu-contenu').value;
             const msg = document.getElementById('actu-msg');
-            const { error } = await _supabase.from('actualites').insert([{ titre: titre, date_publication: date, contenu: contenu }]);
-            
-            if (error) { msg.innerHTML = '<span class="text-red-500 font-bold">Erreur (As-tu bien désactivé le RLS dans Supabase ?)</span>'; } 
-            else {
-                msg.innerHTML = '<span class="text-emerald-600 font-bold">Actualité ajoutée avec succès !</span>';
-                document.getElementById('actu-titre').value = ''; document.getElementById('actu-date').value = ''; document.getElementById('actu-contenu').value = '';
-            }
+            const { error } = await _supabase.from('actualites').insert([{ titre, date_publication: date, contenu }]);
+            if (error) { msg.innerHTML = '<span class="text-red-500 font-bold">Erreur (Désactivez le RLS dans Supabase)</span>'; } 
+            else { msg.innerHTML = '<span class="text-emerald-600 font-bold">✅ Ajouté !</span>'; }
         }
 
         async function ajouterMesse() {
@@ -123,14 +146,11 @@
             const heure = document.getElementById('messe-heure').value;
             const remarques = document.getElementById('messe-remarques').value;
             const msg = document.getElementById('messe-msg');
-            const { error } = await _supabase.from('horaires_messes').insert([{ lieu: lieu, jour: jour, heure: heure, remarques: remarques }]);
-            
-            if (error) { msg.innerHTML = '<span class="text-red-500 font-bold">Erreur (As-tu bien désactivé le RLS dans Supabase ?)</span>'; } 
-            else {
-                msg.innerHTML = '<span class="text-emerald-600 font-bold">Horaire ajouté avec succès !</span>';
-                document.getElementById('messe-lieu').value = ''; document.getElementById('messe-jour').value = ''; document.getElementById('messe-heure').value = ''; document.getElementById('messe-remarques').value = '';
-            }
+            const { error } = await _supabase.from('horaires_messes').insert([{ lieu, jour, heure, remarques }]);
+            if (error) { msg.innerHTML = '<span class="text-red-500 font-bold">Erreur (Désactivez le RLS dans Supabase)</span>'; } 
+            else { msg.innerHTML = '<span class="text-emerald-600 font-bold">✅ Ajouté !</span>'; }
         }
+
         checkSession();
     </script>
 </body>
