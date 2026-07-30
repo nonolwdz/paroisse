@@ -36,7 +36,7 @@
 
         <div id="section-dashboard" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
             
-            <!-- NOUVEAU : LA GESTION DES TICKETS PUBLIC -->
+            <!-- GESTION DES TICKETS PUBLIC -->
             <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 border-t-8 border-ciel lg:col-span-2">
                 <div class="flex items-center gap-4 mb-8 border-b border-slate-100 pb-4">
                     <span class="text-4xl">🎫</span>
@@ -59,7 +59,7 @@
                                 <h4 id="at-sujet" class="text-xl font-black text-slate-800">Sujet</h4>
                                 <p id="at-code" class="text-sm font-bold text-slate-400 tracking-wider mt-1">CODE</p>
                             </div>
-                            <span id="at-statut" class="px-4 py-1.5 rounded-full text-xs font-black uppercase">Statut</span>
+                            <span id="at-statut" class="px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wide">Statut</span>
                         </div>
                         
                         <div id="at-conversation" class="flex-grow overflow-y-auto custom-scrollbar space-y-4 pr-3 mb-6 bg-slate-50/50 p-4 rounded-2xl"></div>
@@ -135,7 +135,7 @@
                 </div>
             </div>
 
-            <!-- CONTACTS -->
+            <!-- CONTACTS PRINCIPAUX : LE BUG EST RÉSOLU ICI -->
             <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 border-t-8 border-slate-400 lg:col-span-2">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <div>
@@ -146,8 +146,8 @@
                             <input type="text" id="contact-email" placeholder="Email" class="w-full border-2 border-slate-200 p-4 rounded-2xl font-bold outline-none">
                             <textarea id="contact-permanences" placeholder="Permanences" class="w-full border-2 border-slate-200 p-4 rounded-2xl h-20 font-bold outline-none"></textarea>
                             <textarea id="contact-urgences" placeholder="Urgences" class="w-full border-2 border-slate-200 p-4 rounded-2xl h-20 font-bold outline-none"></textarea>
-                            <button onclick="sauvegarderContact()" class="w-full bg-slate-800 text-white font-black py-4 rounded-2xl shadow-sm">Sauvegarder</button>
-                            <p id="contact-msg" class="text-center font-bold h-4"></p>
+                            <button onclick="sauvegarderContact()" class="w-full bg-slate-800 text-white font-black py-4 rounded-2xl shadow-sm hover:bg-slate-900 transition-colors">Sauvegarder les infos</button>
+                            <div id="contact-msg" class="text-center font-black mt-2"></div>
                         </div>
                     </div>
                     <div>
@@ -207,8 +207,10 @@
 
         /* TICKETS ADMIN */
         async function chargerTicketsAdmin() {
-            const { data } = await _supabase.from('tickets').select('*').order('created_at', { ascending: false });
+            const { data, error } = await _supabase.from('tickets').select('*').order('created_at', { ascending: false });
+            if(error) { document.getElementById('admin-liste-tickets').innerHTML = '<p class="text-fraise font-bold text-center mt-10">Erreur chargement (Script SQL manquant ?)</p>'; return; }
             ticketsData = data || [];
+            
             document.getElementById('admin-liste-tickets').innerHTML = ticketsData.map(t => {
                 let badgeClass = "bg-soleil/20 text-orange-700";
                 if(t.statut === 'Clos') badgeClass = "bg-slate-200 text-slate-500";
@@ -217,10 +219,11 @@
                 return `
                 <div onclick="ouvrirTicketAdmin('${t.code}')" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-3 cursor-pointer hover:border-ciel transition-colors">
                     <div class="flex justify-between items-start mb-2">
-                        <span class="text-xs font-black text-slate-400 uppercase tracking-widest">${t.code}</span>
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">${t.code}</span>
                         <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase ${badgeClass}">${t.statut}</span>
                     </div>
                     <p class="font-black text-slate-800 text-sm truncate">${t.sujet}</p>
+                    <p class="text-xs text-slate-500 mt-1 font-bold">De : ${t.nom || 'Visiteur'}</p>
                 </div>
                 `;
             }).join('');
@@ -231,8 +234,8 @@
             ticketAdminCode = code;
             const t = ticketsData.find(x => x.code === code);
             document.getElementById('admin-ticket-view').classList.remove('hidden');
-            document.getElementById('at-sujet').innerText = t.sujet;
-            document.getElementById('at-code').innerText = "TICKET : " + t.code;
+            document.getElementById('at-sujet').innerText = t.sujet + " (de " + (t.nom || "Visiteur") + ")";
+            document.getElementById('at-code').innerText = "CODE : " + t.code;
             
             let badgeClass = "bg-soleil/20 text-orange-700";
             if(t.statut === 'Clos') badgeClass = "bg-slate-200 text-slate-500";
@@ -256,7 +259,7 @@
         }
 
         async function repondreTicketAdmin() {
-            const reponse = document.getElementById('at-reponse').value;
+            const reponse = document.getElementById('at-reponse').value.trim();
             if(!reponse || !ticketAdminCode) return;
             const t = ticketsData.find(x => x.code === ticketAdminCode);
             let conv = t.conversation || [];
@@ -274,7 +277,6 @@
             await chargerTicketsAdmin();
             ouvrirTicketAdmin(ticketAdminCode);
         }
-
         /* FIN TICKETS */
 
         function toggleHoraires() {
@@ -295,8 +297,7 @@
             });
             const p = { nom, horaires_base: document.getElementById('eglise-horaires').value, horaires_json: h_json, est_ferme: document.getElementById('eglise-estferme').checked, alerte: document.getElementById('eglise-alerte').value };
             if (editEgliseId) await _supabase.from('horaires_eglises').update(p).eq('id', editEgliseId); else await _supabase.from('horaires_eglises').insert([p]);
-            editEgliseId = null; document.getElementById('btn-save-eglise').innerText = "Enregistrer l'église";
-            document.getElementById('eglise-nom').value=''; document.getElementById('eglise-horaires').value=''; document.getElementById('eglise-estferme').checked=false; document.getElementById('eglise-alerte').value='';
+            editEgliseId = null; document.getElementById('eglise-nom').value=''; document.getElementById('eglise-horaires').value=''; document.getElementById('eglise-estferme').checked=false; document.getElementById('eglise-alerte').value='';
             document.getElementById('eglise-type').value='inconnu'; toggleHoraires(); ['tous-m-s','tous-m-e','tous-a-s','tous-a-e','sem-m-s','sem-m-e','sem-a-s','sem-a-e','sam-m-s','sam-m-e','sam-a-s','sam-a-e','dim-m-s','dim-m-e','dim-a-s','dim-a-e'].forEach(id => document.getElementById(id).value = ''); chargerDonnees();
         }
 
@@ -304,32 +305,36 @@
             const l = document.getElementById('messe-lieu').value, j = document.getElementById('messe-jour').value, h = document.getElementById('messe-heure').value, r = document.getElementById('messe-remarques').value;
             if(!l) return;
             if (editMesseId) await _supabase.from('horaires_messes').update({ lieu:l, jour:j, heure:h, remarques:r }).eq('id', editMesseId); else await _supabase.from('horaires_messes').insert([{ lieu:l, jour:j, heure:h, remarques:r }]);
-            editMesseId = null; document.getElementById('btn-save-messe').innerText = "Ajouter au Calendrier";
-            document.getElementById('messe-jour').value=''; document.getElementById('messe-heure').value=''; document.getElementById('messe-remarques').value=''; chargerDonnees();
+            editMesseId = null; document.getElementById('messe-jour').value=''; document.getElementById('messe-heure').value=''; document.getElementById('messe-remarques').value=''; chargerDonnees();
         }
 
         async function ajouterActualite() {
             const t = document.getElementById('actu-titre').value, d = document.getElementById('actu-date').value, c = quill.root.innerHTML;
             if(!t) return;
             if (editActuId) await _supabase.from('actualites').update({ titre:t, date_publication:d, contenu:c }).eq('id', editActuId); else await _supabase.from('actualites').insert([{ titre:t, date_publication:d, contenu:c }]);
-            editActuId = null; document.getElementById('btn-save-actu').innerText = "Publier l'Actualité";
-            document.getElementById('actu-titre').value=''; document.getElementById('actu-date').value=''; quill.root.innerHTML=''; chargerDonnees();
+            editActuId = null; document.getElementById('actu-titre').value=''; document.getElementById('actu-date').value=''; quill.root.innerHTML=''; chargerDonnees();
         }
 
+        /* CORRECTION DÉFINITIVE SAUVEGARDE CONTACT */
         async function sauvegarderContact() {
             const a = document.getElementById('contact-adresse').value, t = document.getElementById('contact-tel').value, e = document.getElementById('contact-email').value, p = document.getElementById('contact-permanences').value, u = document.getElementById('contact-urgences').value;
             const m = document.getElementById('contact-msg');
-            const { data } = await _supabase.from('contact_info').select('id').eq('id', 1).single();
-            if (data) await _supabase.from('contact_info').update({ adresse: a, telephone: t, email: e, permanences: p, urgences: u }).eq('id', 1);
-            else await _supabase.from('contact_info').insert([{ id: 1, adresse: a, telephone: t, email: e, permanences: p, urgences: u }]);
-            m.innerHTML = '<span class="text-emerald-500">✅ Sauvegardé</span>'; setTimeout(() => m.innerHTML = '', 3000);
+            m.innerHTML = '<span class="text-slate-500">Sauvegarde en cours...</span>';
+            
+            const { error } = await _supabase.from('contact_info').upsert({ id: 1, adresse: a, telephone: t, email: e, permanences: p, urgences: u });
+            
+            if (error) { 
+                m.innerHTML = `<span class="text-fraise">❌ Erreur : ${error.message} (Exécutez le script SQL en étape 1)</span>`; 
+            } else { 
+                m.innerHTML = '<span class="text-menthe">✅ Sauvegardé avec succès !</span>'; 
+                setTimeout(() => m.innerHTML = '', 3000); 
+            }
         }
 
         async function ajouterAutreContact() {
             const n = document.getElementById('autre-nom').value, v = document.getElementById('autre-valeur').value; if(!n || !v) return;
             if (editAutreId) await _supabase.from('autres_contacts').update({ nom:n, valeur:v }).eq('id', editAutreId); else await _supabase.from('autres_contacts').insert([{ nom:n, valeur:v }]);
-            editAutreId = null; document.getElementById('btn-save-autre').innerText = "Ajouter ce Contact";
-            document.getElementById('autre-nom').value=''; document.getElementById('autre-valeur').value=''; chargerDonnees();
+            editAutreId = null; document.getElementById('autre-nom').value=''; document.getElementById('autre-valeur').value=''; chargerDonnees();
         }
 
         async function chargerContactAdmin() {
@@ -349,16 +354,16 @@
             document.getElementById('liste-actus').innerHTML = actusData.map(a => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-xl"><span class="truncate">${a.titre}</span> <div class="flex gap-2"><button onclick="editActu(${a.id})" class="text-ciel">✏️</button><button onclick="supprimer('actualites', ${a.id})" class="text-fraise">✖</button></div></div>`).join('');
 
             const { data: autres } = await _supabase.from('autres_contacts').select('*'); autresData = autres||[];
-            document.getElementById('liste-autres').innerHTML = autresData.map(c => `<div class="flex justify-between items-center bg-slate-100 text-slate-700 p-2 rounded-xl border border-slate-200"><span class="truncate">${c.nom}</span> <div class="flex gap-2"><button onclick="editAutreContact(${c.id})" class="text-blue-500">✏️</button><button onclick="supprimer('autres_contacts', ${c.id})" class="text-red-500">✖</button></div></div>`).join('');
+            document.getElementById('liste-autres').innerHTML = autresData.map(c => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-xl"><span class="truncate">${c.nom}</span> <div class="flex gap-2"><button onclick="editAutreContact(${c.id})" class="text-ciel">✏️</button><button onclick="supprimer('autres_contacts', ${c.id})" class="text-fraise">✖</button></div></div>`).join('');
 
             const { data: ondes } = await _supabase.from('bonnes_ondes').select('*');
             document.getElementById('liste-ondes').innerHTML = (ondes||[]).map(o => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-xl"><span class="truncate italic">"${o.message}"</span> <button onclick="supprimer('bonnes_ondes', ${o.id})" class="text-fraise">✖</button></div>`).join('');
         }
 
-        function editEglise(id) { const e = eglisesData.find(x => x.id === id); editEgliseId = e.id; document.getElementById('eglise-nom').value = e.nom; document.getElementById('eglise-horaires').value = e.horaires_base || ''; document.getElementById('eglise-type').value = 'inconnu'; ['tous-m-s','tous-m-e','tous-a-s','tous-a-e','sem-m-s','sem-m-e','sem-a-s','sem-a-e','sam-m-s','sam-m-e','sam-a-s','sam-a-e','dim-m-s','dim-m-e','dim-a-s','dim-a-e'].forEach(id => document.getElementById(id).value = ''); if(e.horaires_json) { try { const h = JSON.parse(e.horaires_json); document.getElementById('eglise-type').value = h.type || 'inconnu'; if(h.type) { ['tous_m_s','tous_m_e','tous_a_s','tous_a_e','sem_m_s','sem_m_e','sem_a_s','sem_a_e','sam_m_s','sam_m_e','sam_a_s','sam_a_e','dim_m_s','dim_m_e','dim_a_s','dim_a_e'].forEach(key => { if(h[key]) document.getElementById(key.replace(/_/g, '-')).value = h[key]; }); } } catch(err) {} } toggleHoraires(); document.getElementById('eglise-estferme').checked = e.est_ferme; document.getElementById('eglise-alerte').value = e.alerte || ''; document.getElementById('btn-save-eglise').innerText = "💾 Modifier l'église"; window.scrollTo({top:0, behavior:'smooth'}); }
-        function editMesse(id) { const m = messesData.find(x => x.id === id); editMesseId = m.id; document.getElementById('messe-lieu').value = m.lieu; document.getElementById('messe-jour').value = m.jour; document.getElementById('messe-heure').value = m.heure; document.getElementById('messe-remarques').value = m.remarques||''; document.getElementById('btn-save-messe').innerText = "💾 Modifier la messe"; window.scrollTo({top:0, behavior:'smooth'}); }
-        function editActu(id) { const a = actusData.find(x => x.id === id); editActuId = a.id; document.getElementById('actu-titre').value = a.titre; document.getElementById('actu-date').value = a.date_publication; quill.root.innerHTML = a.contenu; document.getElementById('btn-save-actu').innerText = "💾 Modifier l'actualité"; window.scrollTo({top:0, behavior:'smooth'}); }
-        function editAutreContact(id) { const c = autresData.find(x => x.id === id); editAutreId = c.id; document.getElementById('autre-nom').value = c.nom; document.getElementById('autre-valeur').value = c.valeur; document.getElementById('btn-save-autre').innerText = "💾 Modifier le contact"; window.scrollTo({top:0, behavior:'smooth'}); }
+        function editEglise(id) { const e = eglisesData.find(x => x.id === id); editEgliseId = e.id; document.getElementById('eglise-nom').value = e.nom; document.getElementById('eglise-horaires').value = e.horaires_base || ''; document.getElementById('eglise-type').value = 'inconnu'; ['tous-m-s','tous-m-e','tous-a-s','tous-a-e','sem-m-s','sem-m-e','sem-a-s','sem-a-e','sam-m-s','sam-m-e','sam-a-s','sam-a-e','dim-m-s','dim-m-e','dim-a-s','dim-a-e'].forEach(id => document.getElementById(id).value = ''); if(e.horaires_json) { try { const h = JSON.parse(e.horaires_json); document.getElementById('eglise-type').value = h.type || 'inconnu'; if(h.type) { ['tous_m_s','tous_m_e','tous_a_s','tous_a_e','sem_m_s','sem_m_e','sem_a_s','sem_a_e','sam_m_s','sam_m_e','sam_a_s','sam_a_e','dim_m_s','dim_m_e','dim_a_s','dim_a_e'].forEach(key => { if(h[key]) document.getElementById(key.replace(/_/g, '-')).value = h[key]; }); } } catch(err) {} } toggleHoraires(); document.getElementById('eglise-estferme').checked = e.est_ferme; document.getElementById('eglise-alerte').value = e.alerte || ''; window.scrollTo({top:0, behavior:'smooth'}); }
+        function editMesse(id) { const m = messesData.find(x => x.id === id); editMesseId = m.id; document.getElementById('messe-lieu').value = m.lieu; document.getElementById('messe-jour').value = m.jour; document.getElementById('messe-heure').value = m.heure; document.getElementById('messe-remarques').value = m.remarques||''; window.scrollTo({top:0, behavior:'smooth'}); }
+        function editActu(id) { const a = actusData.find(x => x.id === id); editActuId = a.id; document.getElementById('actu-titre').value = a.titre; document.getElementById('actu-date').value = a.date_publication; quill.root.innerHTML = a.contenu; window.scrollTo({top:0, behavior:'smooth'}); }
+        function editAutreContact(id) { const c = autresData.find(x => x.id === id); editAutreId = c.id; document.getElementById('autre-nom').value = c.nom; document.getElementById('autre-valeur').value = c.valeur; window.scrollTo({top:0, behavior:'smooth'}); }
         async function supprimer(table, id) { if(confirm("Supprimer définitivement ?")) { await _supabase.from(table).delete().eq('id', id); chargerDonnees(); } }
 
         checkSession();
