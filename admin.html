@@ -9,7 +9,9 @@
     <script>
         tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] } } } }
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Éditeur de texte avancé Quill -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen">
 
@@ -54,8 +56,10 @@
                 <div class="space-y-4">
                     <input type="text" id="actu-titre" placeholder="Titre" class="w-full border border-slate-300 rounded-lg p-3 text-sm outline-none focus:border-nuit">
                     <input type="date" id="actu-date" class="w-full border border-slate-300 rounded-lg p-3 text-sm outline-none focus:border-nuit">
-                    <textarea id="actu-contenu" rows="4" placeholder="Contenu de l'annonce..." class="w-full border border-slate-300 rounded-lg p-3 text-sm outline-none focus:border-nuit"></textarea>
-                    <button onclick="ajouterActualite()" class="w-full bg-nuit hover:bg-blue-900 text-white py-3 rounded-lg text-sm font-bold transition shadow-sm">Publier l'actualité</button>
+<div class="bg-white">
+    <div id="editeur-actu" style="height: 200px;"></div>
+</div>
+                <button onclick="ajouterActualite()" class="w-full bg-nuit hover:bg-blue-900 text-white py-3 rounded-lg text-sm font-bold transition shadow-sm">Publier l'actualité</button>
                     <p id="actu-msg" class="text-sm mt-2 text-center"></p>
                 </div>
             </div>
@@ -133,7 +137,7 @@
         async function ajouterActualite() {
             const titre = document.getElementById('actu-titre').value;
             const date = document.getElementById('actu-date').value;
-            const contenu = document.getElementById('actu-contenu').value;
+            const contenu = quill.root.innerHTML;
             const msg = document.getElementById('actu-msg');
             const { error } = await _supabase.from('actualites').insert([{ titre, date_publication: date, contenu }]);
             if (error) { msg.innerHTML = '<span class="text-red-500 font-bold">Erreur (Désactivez le RLS dans Supabase)</span>'; } 
@@ -152,6 +156,20 @@
         }
 
         checkSession();
+    // Initialisation de l'éditeur riche
+var quill = new Quill('#editeur-actu', {
+    theme: 'snow',
+    modules: {
+        toolbar: [
+            [{ 'header': [1, 2, 3, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }],
+            ['link', 'image'],
+            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+            ['clean']
+        ]
+    }
+});
     </script>
 </body>
 </html>
