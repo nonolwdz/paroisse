@@ -47,8 +47,8 @@
                         <textarea id="eglise-horaires" placeholder="Ex: Du lundi au vendredi de 9h à 18h..." class="w-full border p-3 rounded-lg focus:border-blue-400 outline-none h-20"></textarea>
                     </div>
 
-                    <!-- CONFIGURATION AVANCEE DES HORAIRES (POUR LES BADGES) -->
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <!-- CONFIGURATION AVANCEE DES HORAIRES -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
                         <label class="text-sm font-bold text-nuit block mb-2">Configuration de l'algorithme (Badges de couleurs) :</label>
                         <select id="eglise-type" onchange="toggleHoraires()" class="w-full border p-2 rounded-lg text-sm mb-4 bg-white outline-none focus:border-blue-400 cursor-pointer">
                             <option value="inconnu">Horaires inconnus (Badge gris)</option>
@@ -57,14 +57,14 @@
                         </select>
 
                         <!-- Bloc "Tous les jours" -->
-                        <div id="bloc-tous" class="hidden space-y-2">
+                        <div id="bloc-tous" class="hidden space-y-3">
                             <div class="flex items-center gap-2 text-sm">
-                                <span class="w-16 font-bold text-slate-600">Matin :</span>
-                                <input type="time" id="tous-m-s" class="border p-1 rounded outline-none"> à <input type="time" id="tous-m-e" class="border p-1 rounded outline-none">
+                                <span class="w-16 font-bold text-slate-600">Plage 1 :</span>
+                                <input type="time" id="tous-m-s" class="border p-1 rounded outline-none text-slate-700"> à <input type="time" id="tous-m-e" class="border p-1 rounded outline-none text-slate-700">
                             </div>
                             <div class="flex items-center gap-2 text-sm">
-                                <span class="w-16 font-bold text-slate-600">Aprem :</span>
-                                <input type="time" id="tous-a-s" class="border p-1 rounded outline-none"> à <input type="time" id="tous-a-e" class="border p-1 rounded outline-none">
+                                <span class="w-16 font-bold text-slate-600">Plage 2 :</span>
+                                <input type="time" id="tous-a-s" class="border p-1 rounded outline-none text-slate-700"> à <input type="time" id="tous-a-e" class="border p-1 rounded outline-none text-slate-700">
                             </div>
                         </div>
 
@@ -72,37 +72,38 @@
                         <div id="bloc-semaine" class="hidden space-y-4">
                             <div>
                                 <span class="font-bold text-blue-800 text-sm block mb-1">Du Lundi au Vendredi</span>
-                                <div class="flex items-center gap-2 text-sm">
-                                    <input type="time" id="sem-m-s" class="border p-1 rounded w-24"> à <input type="time" id="sem-m-e" class="border p-1 rounded w-24">
-                                    <span class="text-slate-300">|</span>
-                                    <input type="time" id="sem-a-s" class="border p-1 rounded w-24"> à <input type="time" id="sem-a-e" class="border p-1 rounded w-24">
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 text-sm">
+                                    <span><input type="time" id="sem-m-s" class="border p-1 rounded w-24 text-slate-700"> à <input type="time" id="sem-m-e" class="border p-1 rounded w-24 text-slate-700"></span>
+                                    <span class="text-slate-300 hidden sm:inline">|</span>
+                                    <span><input type="time" id="sem-a-s" class="border p-1 rounded w-24 text-slate-700"> à <input type="time" id="sem-a-e" class="border p-1 rounded w-24 text-slate-700"></span>
                                 </div>
                             </div>
                             <div>
                                 <span class="font-bold text-or text-sm block mb-1">Le Samedi</span>
-                                <div class="flex items-center gap-2 text-sm">
-                                    <input type="time" id="sam-m-s" class="border p-1 rounded w-24"> à <input type="time" id="sam-m-e" class="border p-1 rounded w-24">
-                                    <span class="text-slate-300">|</span>
-                                    <input type="time" id="sam-a-s" class="border p-1 rounded w-24"> à <input type="time" id="sam-a-e" class="border p-1 rounded w-24">
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 text-sm">
+                                    <span><input type="time" id="sam-m-s" class="border p-1 rounded w-24 text-slate-700"> à <input type="time" id="sam-m-e" class="border p-1 rounded w-24 text-slate-700"></span>
+                                    <span class="text-slate-300 hidden sm:inline">|</span>
+                                    <span><input type="time" id="sam-a-s" class="border p-1 rounded w-24 text-slate-700"> à <input type="time" id="sam-a-e" class="border p-1 rounded w-24 text-slate-700"></span>
                                 </div>
                             </div>
                             <div>
                                 <span class="font-bold text-red-700 text-sm block mb-1">Le Dimanche</span>
-                                <div class="flex items-center gap-2 text-sm">
-                                    <input type="time" id="dim-m-s" class="border p-1 rounded w-24"> à <input type="time" id="dim-m-e" class="border p-1 rounded w-24">
-                                    <span class="text-slate-300">|</span>
-                                    <input type="time" id="dim-a-s" class="border p-1 rounded w-24"> à <input type="time" id="dim-a-e" class="border p-1 rounded w-24">
+                                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 text-sm">
+                                    <span><input type="time" id="dim-m-s" class="border p-1 rounded w-24 text-slate-700"> à <input type="time" id="dim-m-e" class="border p-1 rounded w-24 text-slate-700"></span>
+                                    <span class="text-slate-300 hidden sm:inline">|</span>
+                                    <span><input type="time" id="dim-a-s" class="border p-1 rounded w-24 text-slate-700"> à <input type="time" id="dim-a-e" class="border p-1 rounded w-24 text-slate-700"></span>
                                 </div>
                             </div>
                         </div>
-                        <p class="text-[10px] text-slate-400 mt-3 italic">Laissez des cases vides si l'église est fermée le matin ou l'après-midi.</p>
+                        <p class="text-xs text-blue-600 mt-4 font-semibold border-t border-blue-100 pt-3">💡 Astuce journée continue : Si l'église est ouverte de 8h à 19h sans coupure le midi, remplissez uniquement la première plage (gauche) et laissez la deuxième vide.</p>
                     </div>
 
                     <label class="flex items-center gap-2 bg-red-50 p-3 rounded-lg border border-red-200 cursor-pointer mt-2">
                         <input type="checkbox" id="eglise-estferme" class="w-5 h-5 accent-red-600">
-                        <span class="font-bold text-red-800 text-sm">Fermeture exceptionnelle active</span>
+                        <span class="font-bold text-red-800 text-sm">Forcer en "Fermeture exceptionnelle"</span>
                     </label>
-                    <input type="text" id="eglise-alerte" placeholder="Message d'alerte (ex: En travaux)" class="w-full border border-red-300 p-3 rounded-lg outline-none">
+                    <input type="text" id="eglise-alerte" placeholder="Message d'alerte (ex: En travaux)" class="w-full border border-red-300 p-3 rounded-lg focus:border-red-500 outline-none">
+                    
                     <button id="btn-save-eglise" onclick="ajouterEglise()" class="w-full bg-blue-600 hover:bg-blue-800 text-white py-3 rounded-lg font-bold">Enregistrer l'église</button>
                 </div>
             </div>
@@ -227,7 +228,6 @@
             const nom = document.getElementById('eglise-nom').value;
             if(!nom) return alert("Le nom est obligatoire !");
             
-            // On compile les horaires dans un seul JSON
             const horaires_json = JSON.stringify({
                 type: document.getElementById('eglise-type').value,
                 tous_m_s: document.getElementById('tous-m-s').value, tous_m_e: document.getElementById('tous-m-e').value,
@@ -252,7 +252,6 @@
             else await _supabase.from('horaires_eglises').insert([payload]);
             editEgliseId = null; document.getElementById('btn-save-eglise').innerText = "Enregistrer l'église";
             
-            // Réinitialisation des champs
             document.getElementById('eglise-nom').value=''; document.getElementById('eglise-horaires').value=''; document.getElementById('eglise-estferme').checked=false; document.getElementById('eglise-alerte').value='';
             document.getElementById('eglise-type').value='inconnu'; toggleHoraires();
             ['tous-m-s','tous-m-e','tous-a-s','tous-a-e','sem-m-s','sem-m-e','sem-a-s','sem-a-e','sam-m-s','sam-m-e','sam-a-s','sam-a-e','dim-m-s','dim-m-e','dim-a-s','dim-a-e'].forEach(id => document.getElementById(id).value = '');
@@ -327,11 +326,9 @@
             const e = eglisesData.find(x => x.id === id); editEgliseId = e.id;
             document.getElementById('eglise-nom').value = e.nom; document.getElementById('eglise-horaires').value = e.horaires_base || ''; 
             
-            // Remise à zéro des champs de temps
             document.getElementById('eglise-type').value = 'inconnu';
             ['tous-m-s','tous-m-e','tous-a-s','tous-a-e','sem-m-s','sem-m-e','sem-a-s','sem-a-e','sam-m-s','sam-m-e','sam-a-s','sam-a-e','dim-m-s','dim-m-e','dim-a-s','dim-a-e'].forEach(id => document.getElementById(id).value = '');
             
-            // Remplissage si des données JSON existent
             if(e.horaires_json) {
                 try {
                     const h = JSON.parse(e.horaires_json);
