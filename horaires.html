@@ -55,7 +55,7 @@
         // L'algorithme qui calcule le statut en temps réel
         function getStatut(e) {
             if (e.est_ferme) return { text: "Fermeture exceptionnelle", color: "bg-red-100 text-red-800 border-red-300", isOpen: false };
-            if (!e.heure_ouverture || !e.heure_fermeture) return { text: "Horaires variables", color: "bg-slate-100 text-slate-600 border-slate-300", isOpen: true };
+            if (!e.heure_ouverture || !e.heure_fermeture) return { text: "Horaires inconnus", color: "bg-slate-100 text-slate-600 border-slate-300", isOpen: true };
 
             const now = new Date();
             const minutesNow = now.getHours() * 60 + now.getMinutes();
