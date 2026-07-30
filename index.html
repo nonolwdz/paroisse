@@ -10,7 +10,7 @@
         tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] }, animation: { 'fade-in-up': 'fadeInUp 0.8s ease-out forwards' }, keyframes: { fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } } } } } }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>.anim-element { opacity: 0; } .ql-editor { font-family: 'Inter', sans-serif; }</style>
+    <style>.anim-element { opacity: 0; } .quill-content { font-family: 'Inter', sans-serif; }</style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans">
 
@@ -85,57 +85,19 @@
 
     <footer class="bg-slate-900 text-slate-400 text-center py-10 text-sm mt-12"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
 
+    <!-- SCRIPT COMPLET ET SANS BUG -->
     <script>
         const SUPABASE_URL = 'https://tyxybtrthvmyzjefziop.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // Charger l'image d'accueil dynamiquement
+        // 1. Charger l'image d'accueil dynamiquement depuis l'Admin
         const imageUrl = `${SUPABASE_URL}/storage/v1/object/public/images/accueil.jpg?t=${new Date().getTime()}`;
         document.querySelector('.hero-section').style.backgroundImage = `linear-gradient(rgba(30, 58, 138, 0.75), rgba(30, 58, 138, 0.6)), url('${imageUrl}')`;
         document.querySelector('.hero-section').style.backgroundSize = 'cover';
         document.querySelector('.hero-section').style.backgroundPosition = 'center';
 
-        // Charger le saint du jour
-        async function chargerSaintDuJour() {
-            try {
-                const rep = await fetch('https://nameday.abalin.net/api/V1/today?country=fr');
-                const data = await rep.json();
-                document.getElementById('saint-du-jour').innerText = "Saint(e) " + data.nameday.fr;
-            } catch(e) { document.getElementById('saint-du-jour').parentElement.style.display = 'none'; }
-        }
-
-        async function chargerActualites() {
-            const container = document.getElementById('actualites-container');
-            const { data, error } = await _supabase.from('actualites').select('*').order('date_publication', { ascending: false });
-            if (error || !data.length) { container.innerHTML = '<p class="text-slate-500">Aucune actualité pour le moment.</p>'; return; }
-            container.innerHTML = data.map(actu => `
-                <article class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <div class="flex justify-between items-start mb-4">
-                        <h3 class="text-xl font-bold text-nuit font-serif">${actu.titre}</h3>
-                        <span class="bg-sable text-or text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
-                            ${actu.date_publication ? new Date(actu.date_publication).toLocaleDateString('fr-FR') : 'Nouveau'}
-                        </span>
-                    </div>
-                    <div class="text-slate-600 leading-relaxed quill-content">${actu.contenu}</div>
-                </article>
-            `).join('');
-        }
-
-        async function chargerMesses() {
-            const container = document.getElementById('messes-container');
-            const { data, error } = await _supabase.from('horaires_messes').select('*').limit(3);
-            if (error || !data.length) { container.innerHTML = '<p class="text-slate-500 text-sm">Aucun horaire.</p>'; return; }
-            container.innerHTML = data.map(m => `
-                <div class="border-b border-slate-100 pb-3 last:border-0 last:pb-0">
-                    <div class="font-bold text-slate-800 text-sm">${m.lieu}</div>
-                    <div class="text-or text-xs font-semibold mt-1">${m.jour} - <span class="text-nuit">${m.heure}</span></div>
-                    ${m.remarques ? `<div class="text-xs text-slate-500 mt-1 italic">${m.remarques}</div>` : ''}
-                </div>
-            `).join('');
-        }
-
-        // Le calendrier local, ultra-rapide et qui ne tombe jamais en panne !
+        // 2. Le calendrier des saints (Intégré, ne plante jamais)
         const saintsMois = [
             "Jour de l'An,Basile,Geneviève,Odilon,Édouard,Mélaine,Raymond,Lucien,Alix,Guillaume,Paulin,Tatiana,Yvette,Nina,Rémi,Marcel,Roseline,Prisca,Marius,Sébastien,Agnès,Vincent,Barnard,François de Sales,Conversion de Paul,Paule,Angèle,Thomas d'Aquin,Gildas,Martine,Marcelle",
             "Ella,Présentation,Blaise,Véronique,Agathe,Gaston,Eugénie,Jacqueline,Apolline,Arnaud,N.-D. de Lourdes,Félix,Béatrice,Valentin,Claude,Julienne,Alexis,Bernadette,Gabin,Aimée,Damien,Isabelle,Lazare,Modeste,Roméo,Nestor,Honorine,Romain,Auguste",
@@ -152,14 +114,64 @@
         ];
 
         function chargerSaintDuJour() {
-            const exceptions = ["Jour", "Fête", "Assomption", "Annonciation", "Transfiguration", "Nativité", "Croix", "Toussaint", "Défunts", "Présentation", "Immaculée", "Noël", "N.-D.", "Visitation", "Conversion"];
-            const date = new Date();
-            const saint = saintsMois[date.getMonth()].split(',')[date.getDate() - 1]; // On trouve le saint du jour
-            
-            // On ajoute "Saint(e)" uniquement s'il ne s'agit pas d'une grande fête (ex: Noël, Assomption...)
-            const prefixe = exceptions.some(ex => saint.includes(ex)) ? "" : "Saint(e) ";
-            document.getElementById('saint-du-jour').innerText = prefixe + saint;
+            try {
+                const exceptions = ["Jour", "Fête", "Assomption", "Annonciation", "Transfiguration", "Nativité", "Croix", "Toussaint", "Défunts", "Présentation", "Immaculée", "Noël", "N.-D.", "Visitation", "Conversion"];
+                const date = new Date();
+                const saint = saintsMois[date.getMonth()].split(',')[date.getDate() - 1]; 
+                
+                const prefixe = exceptions.some(ex => saint.includes(ex)) ? "" : "Saint(e) ";
+                document.getElementById('saint-du-jour').innerText = prefixe + saint;
+            } catch(e) {
+                document.getElementById('saint-du-jour').innerText = "Un beau jour !";
+            }
         }
+
+        // 3. Charger les actualités depuis Supabase
+        async function chargerActualites() {
+            const container = document.getElementById('actualites-container');
+            const { data, error } = await _supabase.from('actualites').select('*').order('date_publication', { ascending: false });
+            
+            if (error || !data || data.length === 0) { 
+                container.innerHTML = '<p class="text-slate-500">Aucune actualité pour le moment.</p>'; 
+                return; 
+            }
+            
+            container.innerHTML = data.map(actu => `
+                <article class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-xl font-bold text-nuit font-serif">${actu.titre}</h3>
+                        <span class="bg-sable text-or text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">
+                            ${actu.date_publication ? new Date(actu.date_publication).toLocaleDateString('fr-FR') : 'Nouveau'}
+                        </span>
+                    </div>
+                    <div class="text-slate-600 leading-relaxed quill-content">${actu.contenu}</div>
+                </article>
+            `).join('');
+        }
+
+        // 4. Charger les 3 prochaines messes depuis Supabase
+        async function chargerMesses() {
+            const container = document.getElementById('messes-container');
+            const { data, error } = await _supabase.from('horaires_messes').select('*').limit(3);
+            
+            if (error || !data || data.length === 0) { 
+                container.innerHTML = '<p class="text-slate-500 text-sm">Aucun horaire renseigné.</p>'; 
+                return; 
+            }
+            
+            container.innerHTML = data.map(m => `
+                <div class="border-b border-slate-100 pb-3 last:border-0 last:pb-0">
+                    <div class="font-bold text-slate-800 text-sm">${m.lieu}</div>
+                    <div class="text-or text-xs font-semibold mt-1">${m.jour} - <span class="text-nuit">${m.heure}</span></div>
+                    ${m.remarques ? `<div class="text-xs text-slate-500 mt-1 italic">${m.remarques}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // 5. Exécuter toutes les fonctions au chargement de la page
+        chargerSaintDuJour();
+        chargerActualites();
+        chargerMesses();
     </script>
 </body>
 </html>
