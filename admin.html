@@ -58,7 +58,7 @@
                         <input type="text" id="eglise-nom" placeholder="Nom (ex: Église Notre-Dame)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-blue-400 outline-none">
                         <input type="text" id="eglise-horaires" placeholder="Horaires (ex: Ouvert de 9h à 18h)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-blue-400 outline-none">
                     </div>
-                    <input type="text" id="eglise-alerte" placeholder="Alerte éventuelle (ex: Fermé pour travaux jusqu'au 15 août)" class="w-full border border-red-300 rounded-lg p-3 text-sm focus:border-red-500 outline-none placeholder-red-300">
+                    <input type="text" id="eglise-alerte" placeholder="Alerte éventuelle (ex: Fermé pour travaux)" class="w-full border border-red-300 rounded-lg p-3 text-sm focus:border-red-500 outline-none placeholder-red-300">
                     <button id="btn-save-eglise" onclick="ajouterEglise()" class="w-full bg-blue-600 hover:bg-blue-800 text-white py-3 rounded-lg text-sm font-bold">Enregistrer l'église</button>
                     <p id="eglise-msg" class="text-sm mt-2 text-center"></p>
                 </div>
@@ -78,20 +78,23 @@
                 </div>
             </div>
 
-            <!-- MESSES -->
+            <!-- MESSES AVEC VRAIE DATE -->
             <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-or lg:col-span-3">
                 <h3 class="text-xl font-serif font-bold text-or mb-6">⛪ Ajouter / Modifier une Messe</h3>
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <input type="text" id="messe-lieu" placeholder="Lieu" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none">
-                    <input type="text" id="messe-jour" placeholder="Jour" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none">
-                    <input type="text" id="messe-heure" placeholder="Heure" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none">
-                    <input type="text" id="messe-remarques" placeholder="Remarques" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none">
+                    <input type="text" id="messe-lieu" placeholder="Lieu (ex: Église Saint-Pierre)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none">
+                    
+                    <!-- LE NOUVEAU CHAMP DATE ! -->
+                    <input type="date" id="messe-jour" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none text-slate-600" title="Date de la messe">
+                    
+                    <input type="text" id="messe-heure" placeholder="Heure (ex: 11h00)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none">
+                    <input type="text" id="messe-remarques" placeholder="Remarques (ex: Fête patronale)" class="w-full border border-slate-300 rounded-lg p-3 text-sm focus:border-or outline-none">
                 </div>
-                <button id="btn-save-messe" onclick="ajouterMesse()" class="w-full bg-or hover:bg-yellow-600 text-white py-3 rounded-lg text-sm font-bold mt-4">Ajouter l'horaire</button>
+                <button id="btn-save-messe" onclick="ajouterMesse()" class="w-full bg-or hover:bg-yellow-600 text-white py-3 rounded-lg text-sm font-bold mt-4">Ajouter l'horaire au calendrier</button>
                 <p id="messe-msg" class="text-sm mt-2 text-center"></p>
             </div>
 
-            <!-- CONTACTS (NOUVEAU) -->
+            <!-- CONTACTS -->
             <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-emeraude lg:col-span-3">
                 <h3 class="text-xl font-serif font-bold text-emerald-900 mb-6">📞 Modifier les Contacts</h3>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -160,7 +163,7 @@
             document.getElementById('section-dashboard').classList.remove('hidden');
             document.getElementById('btn-logout').classList.remove('hidden');
             chargerListesAdmin();
-            chargerContactAdmin(); // Charge les contacts
+            chargerContactAdmin(); 
         }
 
         async function changerImage() {
@@ -243,7 +246,7 @@
             else {
                 msg.innerHTML = '<span class="text-emerald-600 font-bold">✅ Enregistré !</span>';
                 document.getElementById('messe-lieu').value = ''; document.getElementById('messe-jour').value = ''; document.getElementById('messe-heure').value = ''; document.getElementById('messe-remarques').value = '';
-                editMesseId = null; document.getElementById('btn-save-messe').innerText = "Ajouter l'horaire";
+                editMesseId = null; document.getElementById('btn-save-messe').innerText = "Ajouter l'horaire au calendrier";
                 chargerListesAdmin();
             }
         }
@@ -273,17 +276,23 @@
                 </div>
             `).join('');
 
-            const { data: messes } = await _supabase.from('horaires_messes').select('*');
+            const { data: messes } = await _supabase.from('horaires_messes').select('*').order('jour', { ascending: true });
             messesData = messes || [];
-            document.getElementById('liste-admin-messes').innerHTML = messesData.map(m => `
+            document.getElementById('liste-admin-messes').innerHTML = messesData.map(m => {
+                // Formater la date YYYY-MM-DD en format lisible FR pour l'Admin
+                let dateAffichee = m.jour;
+                if(m.jour && m.jour.includes('-')) {
+                    dateAffichee = new Date(m.jour).toLocaleDateString('fr-FR');
+                }
+                return `
                 <div class="flex justify-between items-center p-3 bg-slate-50 border rounded-lg mb-2">
-                    <span class="truncate font-medium pr-2">${m.lieu} - ${m.jour}</span>
+                    <span class="truncate font-medium pr-2">${m.lieu} - ${dateAffichee}</span>
                     <div class="flex gap-4">
                         <button onclick="preparerEditionMesse(${m.id})" class="text-blue-500 hover:text-blue-800 text-lg">✏️</button>
                         <button onclick="supprimerDonnee('horaires_messes', ${m.id})" class="text-red-500 hover:text-red-800 text-lg font-bold">✖</button>
                     </div>
-                </div>
-            `).join('');
+                </div>`;
+            }).join('');
         }
 
         function preparerEditionEglise(id) {
