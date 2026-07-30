@@ -49,11 +49,11 @@
                 <div class="space-y-6 relative z-10">
                     <div class="bg-white/10 p-5 rounded-3xl border border-white/20">
                         <h3 class="font-black text-soleil mb-2 text-xl">Accueil</h3>
-                        <p id="vue-permanences" class="text-white font-bold leading-relaxed">...</p>
+                        <p id="vue-permanences" class="text-white font-bold leading-relaxed whitespace-pre-line">...</p>
                     </div>
                     <div class="bg-fraise/20 p-5 rounded-3xl border border-fraise/30">
                         <h3 class="font-black text-fraise mb-2 text-xl">Urgences</h3>
-                        <p id="vue-urgences" class="text-white font-bold leading-relaxed">...</p>
+                        <p id="vue-urgences" class="text-white font-bold leading-relaxed whitespace-pre-line">...</p>
                     </div>
                 </div>
             </div>
@@ -64,7 +64,7 @@
             <div id="liste-autres-contacts" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
         </div>
 
-        <!-- NOUVEAU : LE SYSTEME DE TICKETS -->
+        <!-- LE SYSTEME DE TICKETS -->
         <div class="bg-ciel/10 p-10 rounded-[3rem] border-2 border-ciel/20 relative overflow-hidden">
             <h2 class="text-3xl font-black text-slate-800 text-center mb-2">Une question ? Une suggestion ?</h2>
             <p class="text-slate-600 font-bold text-center mb-8">Exprimez-vous ici, nous vous répondrons dans les 24 à 48h.</p>
@@ -76,6 +76,8 @@
 
             <!-- Onglet Créer -->
             <div id="onglet-creer" class="max-w-2xl mx-auto space-y-4">
+                <!-- NOUVEAU : Nom & Prénom -->
+                <input type="text" id="ticket-nom" placeholder="Votre Nom et Prénom..." class="w-full p-4 rounded-2xl border-none outline-none text-slate-800 font-bold focus:ring-4 focus:ring-ciel/30">
                 <input type="text" id="ticket-sujet" placeholder="Sujet (ex: Erreur d'horaire, Demande de document...)" class="w-full p-4 rounded-2xl border-none outline-none text-slate-800 font-bold focus:ring-4 focus:ring-ciel/30">
                 <textarea id="ticket-message" rows="5" placeholder="Votre message détaillé..." class="w-full p-4 rounded-2xl border-none outline-none text-slate-800 font-bold focus:ring-4 focus:ring-ciel/30 resize-none"></textarea>
                 <button onclick="creerTicket()" class="w-full bg-slate-800 text-white font-black text-xl py-4 rounded-2xl hover:scale-105 transition-transform shadow-md">Envoyer la demande</button>
@@ -85,7 +87,7 @@
             <!-- Onglet Suivre -->
             <div id="onglet-suivre" class="hidden max-w-2xl mx-auto">
                 <div class="flex gap-3 mb-8">
-                    <input type="text" id="ticket-code" placeholder="Votre code de suivi (ex: A7B9X2)" class="w-full p-4 rounded-2xl border-none outline-none text-slate-800 font-bold focus:ring-4 focus:ring-ciel/30 text-center uppercase tracking-widest text-xl">
+                    <input type="text" id="ticket-code" placeholder="Votre code de suivi (ex: MARTIN42)" class="w-full p-4 rounded-2xl border-none outline-none text-slate-800 font-bold focus:ring-4 focus:ring-ciel/30 text-center uppercase tracking-widest text-xl">
                     <button onclick="chargerTicket()" class="bg-ciel text-white font-black px-8 rounded-2xl shadow-md hover:bg-blue-500 transition-colors">Voir</button>
                 </div>
                 
@@ -100,7 +102,7 @@
                         <button onclick="repondreTicket()" class="w-full bg-slate-800 text-white font-black py-3 rounded-xl">Envoyer la réponse</button>
                     </div>
                 </div>
-                <p id="ticket-erreur" class="text-center font-black text-fraise mt-4 hidden">Ticket introuvable.</p>
+                <p id="ticket-erreur" class="text-center font-black text-fraise mt-4 hidden">Ticket introuvable, vérifiez votre code.</p>
             </div>
         </div>
 
@@ -117,6 +119,7 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let ticketActuelCode = null;
+        let ticketActuelNom = "";
 
         async function chargerContacts() {
             const { data } = await _supabase.from('contact_info').select('*').eq('id', 1).single();
@@ -155,19 +158,28 @@
         }
 
         async function creerTicket() {
-            const sujet = document.getElementById('ticket-sujet').value;
-            const msg = document.getElementById('ticket-message').value;
-            if(!sujet || !msg) return alert("Veuillez remplir tous les champs.");
+            const nom = document.getElementById('ticket-nom').value.trim();
+            const sujet = document.getElementById('ticket-sujet').value.trim();
+            const msg = document.getElementById('ticket-message').value.trim();
             
-            const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-            const date = new Date().toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'});
-            const conversation = [{ auteur: 'Visiteur', texte: msg, date: date }];
+            if(!nom || !sujet || !msg) return alert("Veuillez remplir tous les champs.");
+            
+            // Création du code : NOM (6 premières lettres max) + 2 chiffres
+            let nomSansEspace = nom.replace(/[^a-zA-Z]/g, '').substring(0, 6).toUpperCase();
+            if(nomSansEspace.length === 0) nomSansEspace = "TICKET";
+            const chiffres = Math.floor(Math.random() * 90 + 10); // de 10 à 99
+            const code = nomSansEspace + chiffres;
 
-            const { error } = await _supabase.from('tickets').insert([{ code, sujet: sujet, statut: 'Nouveau', conversation }]);
+            const date = new Date().toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'});
+            const conversation = [{ auteur: nom, texte: msg, date: date }];
+
             const conteneurMsg = document.getElementById('ticket-creation-msg');
+            conteneurMsg.innerHTML = `<span class="text-ciel">Envoi en cours...</span>`;
+
+            const { error } = await _supabase.from('tickets').insert([{ code, nom, sujet, statut: 'Nouveau', conversation }]);
             
             if(error) {
-                conteneurMsg.innerHTML = `<span class="text-fraise">Erreur technique... Avez-vous exécuté le script SQL ?</span>`;
+                conteneurMsg.innerHTML = `<span class="text-fraise">❌ Erreur de base de données. Avez-vous exécuté le script SQL ? (${error.message})</span>`;
             } else {
                 conteneurMsg.innerHTML = `<div class="bg-white p-6 rounded-2xl shadow-sm border-2 border-menthe text-slate-700">
                     <span class="text-2xl block mb-2">✅</span>
@@ -175,6 +187,7 @@
                     <span class="block mt-4 text-sm text-slate-500">Votre code de suivi personnel :</span>
                     <span class="text-3xl font-black tracking-widest text-ciel">${code}</span>
                 </div>`;
+                document.getElementById('ticket-nom').value = '';
                 document.getElementById('ticket-sujet').value = '';
                 document.getElementById('ticket-message').value = '';
             }
@@ -186,28 +199,28 @@
             document.getElementById('ticket-erreur').classList.add('hidden');
             document.getElementById('ticket-details').classList.add('hidden');
             
-            const { data } = await _supabase.from('tickets').select('*').eq('code', code).single();
-            if(!data) {
+            const { data, error } = await _supabase.from('tickets').select('*').eq('code', code).single();
+            if(error || !data) {
                 document.getElementById('ticket-erreur').classList.remove('hidden'); return;
             }
 
             ticketActuelCode = code;
+            ticketActuelNom = data.nom || "Visiteur";
             document.getElementById('ticket-details').classList.remove('hidden');
-            document.getElementById('td-sujet').innerText = data.sujet || "Ticket";
+            document.getElementById('td-sujet').innerText = data.sujet;
             
             const badge = document.getElementById('td-statut');
             badge.innerText = data.statut;
             badge.className = "px-4 py-1 rounded-full text-xs font-black uppercase tracking-wide ";
             if(data.statut === 'Clos') badge.className += "bg-slate-200 text-slate-500";
             else if(data.statut === 'Nouveau' || data.statut === 'En attente') badge.className += "bg-soleil/20 text-orange-600";
-            else badge.className += "bg-menthe/20 text-emerald-700"; // Lu, Répondu...
+            else badge.className += "bg-menthe/20 text-emerald-700";
 
-            // Conversation
             const convBox = document.getElementById('td-conversation');
             convBox.innerHTML = (data.conversation || []).map(m => `
-                <div class="flex flex-col ${m.auteur === 'Visiteur' ? 'items-end' : 'items-start'}">
+                <div class="flex flex-col ${m.auteur === 'Paroisse' ? 'items-start' : 'items-end'}">
                     <span class="text-[10px] font-bold text-slate-400 mb-1 px-2">${m.auteur} - ${m.date}</span>
-                    <div class="max-w-[85%] px-4 py-3 rounded-2xl text-sm font-bold shadow-sm ${m.auteur === 'Visiteur' ? 'bg-ciel text-white rounded-tr-none' : 'bg-slate-100 text-slate-700 rounded-tl-none border border-slate-200'}">
+                    <div class="max-w-[85%] px-4 py-3 rounded-2xl text-sm font-bold shadow-sm ${m.auteur === 'Paroisse' ? 'bg-slate-100 text-slate-700 rounded-tl-none border border-slate-200' : 'bg-ciel text-white rounded-tr-none'}">
                         ${m.texte.replace(/\n/g, '<br>')}
                     </div>
                 </div>
@@ -219,12 +232,12 @@
         }
 
         async function repondreTicket() {
-            const reponse = document.getElementById('td-nouvelle-reponse').value;
+            const reponse = document.getElementById('td-nouvelle-reponse').value.trim();
             if(!reponse || !ticketActuelCode) return;
             
             const { data } = await _supabase.from('tickets').select('conversation').eq('code', ticketActuelCode).single();
             let conv = data.conversation || [];
-            conv.push({ auteur: 'Visiteur', texte: reponse, date: new Date().toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'}) });
+            conv.push({ auteur: ticketActuelNom, texte: reponse, date: new Date().toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'}) });
 
             await _supabase.from('tickets').update({ conversation: conv, statut: 'En attente' }).eq('code', ticketActuelCode);
             document.getElementById('td-nouvelle-reponse').value = '';
