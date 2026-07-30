@@ -63,25 +63,26 @@
             if (h.type === 'inconnu' || !h.type) return { text: "Horaires inconnus", color: "bg-slate-100 text-slate-500 border-slate-200", isOpen: false };
 
             const now = new Date();
-            const day = now.getDay(); // 0: Dimanche, 1: Lundi, ..., 6: Samedi
+            const day = now.getDay(); 
             const minsNow = now.getHours() * 60 + now.getMinutes();
 
             let slots = [];
             const parseTime = (str) => { if(!str) return null; const [hh, mm] = str.split(':').map(Number); return hh * 60 + mm; };
             const addSlot = (start, end) => { const s = parseTime(start), e = parseTime(end); if(s !== null && e !== null) slots.push({s, e}); };
 
-            // Récupérer les créneaux selon le jour actuel
             if (h.type === 'tous') {
                 addSlot(h.tous_m_s, h.tous_m_e); addSlot(h.tous_a_s, h.tous_a_e);
             } else if (h.type === 'semaine_we') {
-                if (day >= 1 && day <= 5) { addSlot(h.sem_m_s, h.sem_m_e); addSlot(h.sem_a_s, h.sem_a_e); } // Lundi au Vendredi
-                else if (day === 6) { addSlot(h.sam_m_s, h.sam_m_e); addSlot(h.sam_a_s, h.sam_a_e); } // Samedi
-                else if (day === 0) { addSlot(h.dim_m_s, h.dim_m_e); addSlot(h.dim_a_s, h.dim_a_e); } // Dimanche
+                if (day >= 1 && day <= 5) { addSlot(h.sem_m_s, h.sem_m_e); addSlot(h.sem_a_s, h.sem_a_e); } 
+                else if (day === 6) { addSlot(h.sam_m_s, h.sam_m_e); addSlot(h.sam_a_s, h.sam_a_e); } 
+                else if (day === 0) { addSlot(h.dim_m_s, h.dim_m_e); addSlot(h.dim_a_s, h.dim_a_e); } 
             }
 
-            if (slots.length === 0) return { text: "Fermée aujourd'hui", color: "bg-slate-200 text-slate-600 border-slate-300", isOpen: false };
+            // MODIFICATION ICI : Le badge devient Rouge vif quand c'est fermé
+            if (slots.length === 0) return { text: "Fermée aujourd'hui", color: "bg-red-100 text-red-800 border-red-300", isOpen: false };
 
-            let status = { text: "Fermée actuellement", color: "bg-slate-200 text-slate-600 border-slate-300", isOpen: false };
+            let status = { text: "Fermée actuellement", color: "bg-red-100 text-red-800 border-red-300", isOpen: false };
+            
             for (let slot of slots) {
                 if (minsNow >= slot.s && minsNow < (slot.e - 30)) return { text: "Ouverte actuellement", color: "bg-emerald-100 text-emerald-800 border-emerald-300", isOpen: true };
                 if (minsNow >= (slot.e - 30) && minsNow < slot.e) return { text: "Ferme bientôt", color: "bg-orange-100 text-orange-800 border-orange-300", isOpen: true };
