@@ -4,48 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ouverture des Églises - Paroisse</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,600;0,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', or: '#d97706', sable: '#fef3c7' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] } } } }
+        tailwind.config = { theme: { extend: { colors: { nuit: '#1e3a8a', azur: '#2563eb', or: '#f59e0b', sable: '#fef3c7' }, fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['"Playfair Display"', 'serif'] } } } }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+<body class="bg-gradient-to-br from-slate-50 via-white to-blue-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
-    <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
+    <header class="bg-white/80 backdrop-blur-xl shadow-sm sticky top-0 z-50 border-b border-blue-100">
         <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
-            <div class="flex items-center gap-4">
-                <div class="bg-nuit text-or p-2 rounded-full shadow-md"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v18m-6-12h12"></path></svg></div>
+            <div class="flex items-center gap-4 group cursor-pointer">
+                <div class="bg-gradient-to-br from-nuit to-azur text-or p-2.5 rounded-2xl shadow-lg shadow-blue-900/20 group-hover:scale-105 transition-transform"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v18m-6-12h12"></path></svg></div>
                 <span class="text-2xl font-serif font-bold text-nuit block leading-none">Saint-François d'Assise</span>
             </div>
-            <nav class="mt-4 md:mt-0 flex gap-8 text-sm font-semibold text-slate-600">
-                <a href="/" class="hover:text-nuit pb-1 transition-all">Accueil</a>
-                <a href="/messes" class="hover:text-nuit pb-1 transition-all">Messes</a>
-                <a href="/horaires" class="text-or border-b-2 border-or pb-1 transition-all">Ouverture des Églises</a>
-                <a href="/contact" class="hover:text-nuit pb-1 transition-all">Contact</a>
+            <nav class="mt-4 md:mt-0 flex gap-8 text-sm font-bold text-slate-500">
+                <a href="/" class="hover:text-azur pb-1 transition-all">Accueil</a>
+                <a href="/messes" class="hover:text-azur pb-1 transition-all">Messes</a>
+                <a href="/horaires" class="text-azur border-b-2 border-azur pb-1 transition-all">Ouverture des Églises</a>
+                <a href="/contact" class="hover:text-azur pb-1 transition-all">Contact</a>
             </nav>
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-6 py-16 flex-grow w-full">
+    <main class="max-w-6xl mx-auto px-6 py-16 flex-grow w-full">
         <div class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-serif font-bold text-nuit mb-4">Visite et Recueillement</h1>
-            <p class="text-slate-600 text-lg">Consultez l'état d'ouverture de nos églises en temps réel.</p>
+            <h1 class="text-4xl md:text-6xl font-serif font-bold text-nuit mb-6 tracking-tight">Visite et Recueillement</h1>
+            <p class="text-slate-500 font-medium text-lg max-w-2xl mx-auto">Consultez l'état d'ouverture de nos églises en temps réel pour un moment de paix.</p>
         </div>
         
-        <div class="mb-8 max-w-2xl mx-auto space-y-4">
-            <input type="text" id="recherche-eglise" oninput="filtrerEglises()" placeholder="🔍 Rechercher une église..." class="w-full border-2 border-slate-200 rounded-xl p-4 text-slate-700 outline-none shadow-sm">
-            <label class="flex items-center gap-3 bg-white p-3 rounded-xl shadow-sm border border-slate-200 cursor-pointer hover:bg-slate-50 transition-colors">
-                <input type="checkbox" id="filtre-ouvertes" onchange="filtrerEglises()" class="w-5 h-5 accent-emerald-500 cursor-pointer">
-                <span class="font-bold text-slate-700">N'afficher que les églises ouvertes actuellement</span>
+        <div class="mb-12 max-w-2xl mx-auto space-y-4">
+            <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-2xl">🔍</span>
+                <input type="text" id="recherche-eglise" oninput="filtrerEglises()" placeholder="Rechercher une église..." class="w-full bg-white border-2 border-blue-50 rounded-2xl pl-12 pr-4 py-4 text-slate-700 outline-none shadow-lg shadow-blue-900/5 focus:border-azur transition-colors font-medium">
+            </div>
+            <label class="flex items-center gap-3 bg-white/80 backdrop-blur p-4 rounded-2xl shadow-sm border border-slate-100 cursor-pointer hover:bg-white transition-colors group">
+                <div class="relative flex items-center justify-center">
+                    <input type="checkbox" id="filtre-ouvertes" onchange="filtrerEglises()" class="w-6 h-6 rounded border-slate-300 text-azur focus:ring-azur cursor-pointer">
+                </div>
+                <span class="font-bold text-slate-700 group-hover:text-azur transition-colors">N'afficher que les églises ouvertes actuellement</span>
             </label>
         </div>
 
-        <div id="liste-eglises" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
+        <div id="liste-eglises" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
     </main>
 
-    <footer class="bg-slate-900 text-slate-400 text-center py-10 text-sm mt-auto"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
+    <footer class="bg-white border-t border-slate-200 text-slate-500 text-center py-10 text-sm mt-auto font-medium"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
 
     <script>
         const SUPABASE_URL = 'https://tyxybtrthvmyzjefziop.supabase.co';
@@ -54,54 +59,41 @@
         let eglisesData = [];
 
         function getStatut(e) {
-            if (e.est_ferme) return { text: "Fermeture exceptionnelle", color: "bg-red-100 text-red-800 border-red-300", isOpen: false };
-            if (!e.horaires_json) return { text: "Horaires inconnus", color: "bg-slate-100 text-slate-500 border-slate-200", isOpen: false };
+            if (e.est_ferme) return { text: "Fermeture exceptionnelle", color: "bg-red-50 text-red-700 border-red-200 shadow-sm", borderTop: "border-red-500", isOpen: false };
+            if (!e.horaires_json) return { text: "Horaires inconnus", color: "bg-slate-100 text-slate-500 border-slate-200", borderTop: "border-slate-300", isOpen: false };
 
-            let h;
-            try { h = JSON.parse(e.horaires_json); } catch(err) { return { text: "Horaires inconnus", color: "bg-slate-100 text-slate-500 border-slate-200", isOpen: false }; }
-            
-            if (h.type === 'inconnu' || !h.type) return { text: "Horaires inconnus", color: "bg-slate-100 text-slate-500 border-slate-200", isOpen: false };
+            let h; try { h = JSON.parse(e.horaires_json); } catch(err) { return { text: "Horaires inconnus", color: "bg-slate-100 text-slate-500 border-slate-200", borderTop: "border-slate-300", isOpen: false }; }
+            if (h.type === 'inconnu' || !h.type) return { text: "Horaires inconnus", color: "bg-slate-100 text-slate-500 border-slate-200", borderTop: "border-slate-300", isOpen: false };
 
-            const now = new Date();
-            const day = now.getDay(); 
-            const minsNow = now.getHours() * 60 + now.getMinutes();
-
-            let slots = [];
-            const parseTime = (str) => { if(!str) return null; const [hh, mm] = str.split(':').map(Number); return hh * 60 + mm; };
+            const now = new Date(); const day = now.getDay(); const minsNow = now.getHours() * 60 + now.getMinutes();
+            let slots = []; const parseTime = (str) => { if(!str) return null; const [hh, mm] = str.split(':').map(Number); return hh * 60 + mm; };
             const addSlot = (start, end) => { const s = parseTime(start), e = parseTime(end); if(s !== null && e !== null) slots.push({s, e}); };
 
-            if (h.type === 'tous') {
-                addSlot(h.tous_m_s, h.tous_m_e); addSlot(h.tous_a_s, h.tous_a_e);
-            } else if (h.type === 'semaine_we') {
+            if (h.type === 'tous') { addSlot(h.tous_m_s, h.tous_m_e); addSlot(h.tous_a_s, h.tous_a_e); } 
+            else if (h.type === 'semaine_we') {
                 if (day >= 1 && day <= 5) { addSlot(h.sem_m_s, h.sem_m_e); addSlot(h.sem_a_s, h.sem_a_e); } 
                 else if (day === 6) { addSlot(h.sam_m_s, h.sam_m_e); addSlot(h.sam_a_s, h.sam_a_e); } 
                 else if (day === 0) { addSlot(h.dim_m_s, h.dim_m_e); addSlot(h.dim_a_s, h.dim_a_e); } 
             }
 
-            // MODIFICATION ICI : Le badge devient Rouge vif quand c'est fermé
-            if (slots.length === 0) return { text: "Fermée aujourd'hui", color: "bg-red-100 text-red-800 border-red-300", isOpen: false };
+            if (slots.length === 0) return { text: "Fermée aujourd'hui", color: "bg-red-50 text-red-700 border-red-200", borderTop: "border-red-500", isOpen: false };
 
-            let status = { text: "Fermée actuellement", color: "bg-red-100 text-red-800 border-red-300", isOpen: false };
-            
+            let status = { text: "Fermée actuellement", color: "bg-red-50 text-red-700 border-red-200", borderTop: "border-red-500", isOpen: false };
             for (let slot of slots) {
-                if (minsNow >= slot.s && minsNow < (slot.e - 30)) return { text: "Ouverte actuellement", color: "bg-emerald-100 text-emerald-800 border-emerald-300", isOpen: true };
-                if (minsNow >= (slot.e - 30) && minsNow < slot.e) return { text: "Ferme bientôt", color: "bg-orange-100 text-orange-800 border-orange-300", isOpen: true };
-                if (minsNow >= (slot.s - 30) && minsNow < slot.s) status = { text: "Ouvre bientôt", color: "bg-blue-100 text-blue-800 border-blue-300", isOpen: false };
-            }
-            return status;
+                if (minsNow >= slot.s && minsNow < (slot.e - 30)) return { text: "Ouverte actuellement", color: "bg-emerald-50 text-emerald-700 border-emerald-200", borderTop: "border-emerald-500", isOpen: true };
+                if (minsNow >= (slot.e - 30) && minsNow < slot.e) return { text: "Ferme bientôt", color: "bg-orange-50 text-orange-700 border-orange-200", borderTop: "border-orange-500", isOpen: true };
+                if (minsNow >= (slot.s - 30) && minsNow < slot.s) status = { text: "Ouvre bientôt", color: "bg-blue-50 text-azur border-blue-200", borderTop: "border-azur", isOpen: false };
+            } return status;
         }
 
         async function chargerEglises() {
-            const { data } = await _supabase.from('horaires_eglises').select('*');
-            eglisesData = data || [];
-            filtrerEglises();
+            const { data } = await _supabase.from('horaires_eglises').select('*'); eglisesData = data || []; filtrerEglises();
         }
 
         function filtrerEglises() {
             const recherche = document.getElementById('recherche-eglise').value.toLowerCase();
             const filtreOuvert = document.getElementById('filtre-ouvertes').checked;
             const container = document.getElementById('liste-eglises');
-            
             let resultats = eglisesData.filter(e => e.nom.toLowerCase().includes(recherche));
 
             container.innerHTML = resultats.map(e => {
@@ -110,19 +102,19 @@
                 const texteHoraires = e.horaires_base || "Horaires non communiqués";
 
                 return `
-                <div class="bg-white p-8 rounded-3xl shadow-lg border-t-[6px] border-nuit flex flex-col h-full relative">
-                    <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-bold border ${statut.color}">${statut.text}</span>
-                    <h2 class="text-2xl font-serif font-bold text-nuit mb-4 pr-32">${e.nom}</h2>
-                    <p class="text-slate-600 font-medium mb-4 whitespace-pre-line"><span class="text-or">🕒</span> ${texteHoraires}</p>
-                    ${e.alerte ? `<div class="mt-auto bg-red-50 border-l-4 border-red-600 p-4 rounded-r-lg shadow-sm"><p class="text-red-800 text-sm font-bold flex gap-2"><span class="text-lg">⚠️</span> <span>${e.alerte}</span></p></div>` : ''}
+                <div class="bg-white p-8 rounded-[2rem] shadow-lg shadow-blue-900/5 border-t-[8px] ${statut.borderTop} flex flex-col h-full relative group hover:-translate-y-2 hover:shadow-2xl transition-all duration-300">
+                    <span class="absolute top-5 right-5 px-4 py-1.5 rounded-full text-xs font-bold border ${statut.color} shadow-sm">${statut.text}</span>
+                    <div class="bg-blue-50 w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-6">⛪</div>
+                    <h2 class="text-2xl font-serif font-bold text-nuit mb-4 leading-tight">${e.nom}</h2>
+                    <p class="text-slate-600 font-medium mb-6 whitespace-pre-line leading-relaxed"><span class="text-azur mr-2">🕒</span> ${texteHoraires}</p>
+                    ${e.alerte ? `<div class="mt-auto bg-red-50 border-l-4 border-red-500 p-4 rounded-xl shadow-sm"><p class="text-red-800 text-sm font-bold flex gap-3"><span class="text-xl">⚠️</span> <span>${e.alerte}</span></p></div>` : ''}
                 </div>`;
             }).join('');
 
-            if (container.innerHTML === '') container.innerHTML = '<p class="text-slate-500 text-center col-span-full py-8 italic">Aucune église ne correspond à vos critères (ou aucune n\'est ouverte actuellement).</p>';
+            if (container.innerHTML === '') container.innerHTML = '<p class="text-slate-500 text-center col-span-full py-12 font-medium text-lg">Aucune église ne correspond à vos critères.</p>';
         }
 
-        chargerEglises();
-        setInterval(filtrerEglises, 60000);
+        chargerEglises(); setInterval(filtrerEglises, 60000);
     </script>
 </body>
 </html>
