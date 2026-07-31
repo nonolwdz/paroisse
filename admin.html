@@ -72,8 +72,8 @@
                                     <button onclick="repondreTicketAdmin()" class="bg-violet text-white font-bold px-6 py-2 rounded-lg hover:bg-prune shadow-sm text-sm">Envoyer</button>
                                     <button onclick="cloturerTicket()" class="bg-slate-200 text-slate-600 font-bold px-4 py-2 rounded-lg hover:bg-slate-300 text-sm">Clôturer</button>
                                 </div>
-                                <!-- BOUTON BANNIR IP RÉSERVÉ UNIQUEMENT À n.antoinemich@gmail.com -->
-                                <button id="btn-bannir" onclick="bannirAuteurTicket()" class="hidden bg-red-100 text-red-600 hover:bg-red-200 font-bold px-4 py-2 rounded-lg text-sm transition-colors">🚨 Bannir cette personne (IP)</button>
+                                <!-- BOUTON BANNIR IP AUTOMATIQUE RÉSERVÉ UNIQUEMENT À n.antoinemich@gmail.com -->
+                                <button id="btn-bannir" onclick="bannirAuteurTicket()" class="hidden bg-red-100 text-red-600 hover:bg-red-200 font-bold px-4 py-2 rounded-lg text-sm transition-colors">🚨 Bannir cette IP</button>
                             </div>
                         </div>
                     </div>
@@ -157,7 +157,7 @@
                 </div>
             </div>
 
-            <!-- MAINTENANCE & PLAGE HORAIRE DE PAUSE -->
+            <!-- MAINTENANCE & PLAGE HORAIRE DE PAUSE (CALENDRIER DU ... AU ...) -->
             <div class="bg-red-50 p-6 rounded-2xl shadow-sm border border-red-200 border-t-4 border-red-500 lg:col-span-2">
                 <h3 class="text-xl font-extrabold text-red-800 mb-4">🛑 Gestion des Pauses et Maintenance</h3>
                 <div class="space-y-4">
@@ -168,13 +168,24 @@
                         </label>
                         <input type="text" id="site-pause-msg" placeholder="Message d'information général..." class="flex-grow w-full border border-red-300 p-3 rounded-xl outline-none font-semibold text-sm text-red-900 placeholder-red-400">
                     </div>
-                    <!-- PLAGE HORAIRE MESSAGES -->
-                    <div class="bg-white p-4 rounded-xl border border-red-200 flex flex-col md:flex-row gap-4 items-center justify-between">
-                        <span class="font-bold text-slate-700 text-sm">Suspendre la création de messages chaque jour de :</span>
-                        <div class="flex items-center gap-2 font-bold text-sm">
-                            <input type="time" id="pause-debut" class="border border-slate-300 p-2 rounded-lg"> à <input type="time" id="pause-fin" class="border border-slate-300 p-2 rounded-lg">
+                    
+                    <!-- PÉRIODE CALENDAIRE DE PAUSE DES MESSAGES -->
+                    <div class="bg-white p-4 rounded-xl border border-red-200 space-y-3">
+                        <span class="font-bold text-slate-700 text-sm block">Suspendre les nouveaux messages sur une période spécifique :</span>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-bold">
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-500 w-16">Du :</span>
+                                <input type="date" id="pause-date-debut" class="border border-slate-300 p-2 rounded-lg flex-grow">
+                                <input type="time" id="pause-heure-debut" class="border border-slate-300 p-2 rounded-lg">
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-slate-500 w-16">Au :</span>
+                                <input type="date" id="pause-date-fin" class="border border-slate-300 p-2 rounded-lg flex-grow">
+                                <input type="time" id="pause-heure-fin" class="border border-slate-300 p-2 rounded-lg">
+                            </div>
                         </div>
                     </div>
+
                     <button onclick="sauvegarderConfig()" class="w-full bg-red-600 text-white font-bold py-3 rounded-xl hover:bg-red-700 shadow-sm text-sm">Enregistrer ces paramètres de pause</button>
                 </div>
             </div>
@@ -219,7 +230,6 @@
                 currentUserEmail = session.user.email;
                 document.getElementById('admin-signature').value = session.user.user_metadata?.signature || '';
                 
-                // Afficher le bouton Bannir uniquement pour n.antoinemich@gmail.com
                 if (currentUserEmail === 'n.antoinemich@gmail.com') {
                     document.getElementById('btn-bannir').classList.remove('hidden');
                 }
@@ -241,18 +251,30 @@
             if(data) {
                 document.getElementById('site-pause').checked = data.est_en_pause;
                 document.getElementById('site-pause-msg').value = data.message_pause || '';
-                document.getElementById('pause-debut').value = data.pause_debut || '';
-                document.getElementById('pause-fin').value = data.pause_fin || '';
+                document.getElementById('pause-date-debut').value = data.pause_date_debut || '';
+                document.getElementById('pause-date-fin').value = data.pause_date_fin || '';
+                document.getElementById('pause-heure-debut').value = data.pause_heure_debut || '';
+                document.getElementById('pause-heure-fin').value = data.pause_heure_fin || '';
             }
         }
 
         async function sauvegarderConfig() {
             const p = document.getElementById('site-pause').checked;
             const m = document.getElementById('site-pause-msg').value;
-            const debut = document.getElementById('pause-debut').value;
-            const fin = document.getElementById('pause-fin').value;
+            const dDebut = document.getElementById('pause-date-debut').value;
+            const dFin = document.getElementById('pause-date-fin').value;
+            const hDebut = document.getElementById('pause-heure-debut').value;
+            const hFin = document.getElementById('pause-heure-fin').value;
             
-            await _supabase.from('site_config').upsert({ id: 1, est_en_pause: p, message_pause: m, pause_debut: debut, pause_fin: fin });
+            await _supabase.from('site_config').upsert({ 
+                id: 1, 
+                est_en_pause: p, 
+                message_pause: m, 
+                pause_date_debut: dDebut, 
+                pause_date_fin: dFin, 
+                pause_heure_debut: hDebut, 
+                pause_heure_fin: hFin 
+            });
             alert("Paramètres de pause enregistrés avec succès !");
         }
 
@@ -337,17 +359,21 @@
             ouvrirTicketAdmin(ticketAdminCode);
         }
 
-        // FONCTION DE BANNISSEMENT IP (UNIQUEMENT n.antoinemich@gmail.com)
+        // BANNISSEMENT IP AUTOMATIQUE DEPUIS LE TICKET (UNIQUEMENT n.antoinemich@gmail.com)
         async function bannirAuteurTicket() {
             if (currentUserEmail !== 'n.antoinemich@gmail.com') {
                 alert("Action non autorisée."); return;
             }
-            const ipBannir = prompt("Entrez l'adresse IP à bannir (ou laisse vide pour simuler le blocage du dernier message) :");
-            if (!ipBannir) return;
+            const t = ticketsData.find(x => x.code === ticketAdminCode);
+            if (!t || !t.ip || t.ip === 'inconnue') {
+                alert("Impossible de récupérer l'adresse IP de ce message.");
+                return;
+            }
+            if (!confirm("Voulez-vous vraiment bannir l'adresse IP " + t.ip + " (" + t.nom + ") ?")) return;
 
-            const { error } = await _supabase.from('ip_bannies').insert([{ ip: ipBannir.trim() }]);
-            if (error) alert("Erreur : " + error.message);
-            else alert("Succès : L'adresse IP " + ipBannir + " a été bannie du site.");
+            const { error } = await _supabase.from('ip_bannies').insert([{ ip: t.ip }]);
+            if (error) alert("Erreur (peut-être déjà bannie) : " + error.message);
+            else alert("Succès : L'adresse IP " + t.ip + " a été bannie du site.");
         }
         /* FIN TICKETS */
 
