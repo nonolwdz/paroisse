@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messes - Paroisse Saint-François d'Assise</title>
+    <title>Messes & Événements - Paroisse</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -40,6 +40,14 @@
         <h1 class="text-4xl font-extrabold mb-4 text-center px-4">Site en maintenance</h1>
         <p id="maintenance-msg" class="text-xl font-medium text-center px-6 max-w-2xl text-violet-200">Nous revenons vite.</p>
     </div>
+    
+    <div id="banni-overlay" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center text-white hidden">
+        <div class="bg-white text-slate-800 p-8 rounded-3xl shadow-2xl max-w-md text-center border-t-8 border-red-500">
+            <span class="text-4xl mb-3 block">🚫</span>
+            <h2 class="text-2xl font-black mb-2 text-red-600">Accès restreint</h2>
+            <p class="text-slate-600 font-medium text-sm leading-relaxed">Votre accès à ce site a été suspendu suite à un non-respect des règles de la communauté paroissiale.</p>
+        </div>
+    </div>
 
     <header class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-violet/10">
         <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
@@ -49,10 +57,10 @@
                 </div>
                 <div><span class="text-2xl font-extrabold text-violet tracking-tight">Saint-François d'Assise</span></div>
             </div>
-            <nav class="mt-4 md:mt-0 flex flex-wrap justify-center gap-x-6 gap-y-2 text-base font-bold text-slate-500">
+            <nav class="mt-4 md:mt-0 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm font-bold text-slate-500">
                 <a href="/" class="hover:text-violet transition-colors">Accueil</a>
                 <a href="/actualites" class="hover:text-violet transition-colors">Actualités</a>
-                <a href="/messes" class="text-violet border-b-2 border-violet pb-1">Messes</a>
+                <a href="/messes" class="text-violet border-b-2 border-violet pb-1">Messes & autres événements</a>
                 <a href="/horaires" class="hover:text-violet transition-colors">Ouverture Églises</a>
                 <a href="/contact" class="hover:text-violet transition-colors">Contact / Aide</a>
             </nav>
@@ -61,15 +69,20 @@
 
     <main class="max-w-5xl mx-auto px-6 py-12 flex-grow w-full">
         <div class="text-center mb-10">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-800 tracking-tight">Agenda des Messes</h1>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-800 tracking-tight">Messes & Événements</h1>
             <p class="text-slate-500 font-semibold text-lg mt-2">Retrouvez toutes les célébrations de la paroisse.</p>
         </div>
         
-        <div class="mb-8 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+        <div class="mb-6 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
             <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Filtrer par église</label>
             <select id="filtre-eglise" onchange="filtrerCalendrier()" class="w-full text-lg font-bold text-violet bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none cursor-pointer focus:border-violet transition-colors">
                 <option value="toutes">🌍 Voir toutes les églises</option>
             </select>
+        </div>
+
+        <!-- PETIT MESSAGE D'ASTUCE -->
+        <div class="bg-violet/5 border border-violet/10 p-4 rounded-xl text-center mb-6">
+            <p class="text-violet font-bold text-sm">💡 Astuce : Cliquez sur un événement dans le calendrier pour afficher ses détails (remarques, informations).</p>
         </div>
 
         <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
@@ -85,17 +98,28 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let messesData = [], calendar;
 
-        async function checkMaintenance() {
+        async function checkSecurite() {
             try {
-                const { data } = await _supabase.from('site_config').select('*').eq('id', 1).single();
-                if (data && data.est_en_pause) {
-                    document.getElementById('maintenance-msg').innerText = data.message_pause || "Le site est actuellement en pause. Merci de votre patience.";
+                const { data: config } = await _supabase.from('site_config').select('*').eq('id', 1).single();
+                if (config && config.est_en_pause) {
+                    document.getElementById('maintenance-msg').innerText = config.message_pause || "Le site est en pause.";
                     document.getElementById('maintenance-overlay').classList.remove('hidden');
                     document.body.style.overflow = 'hidden';
+                    return;
                 }
+                try {
+                    let userIp = null;
+                    try { const ipReq = await fetch('https://api.ipify.org?format=json'); const ipData = await ipReq.json(); userIp = ipData.ip; } 
+                    catch(e) { const ipReq2 = await fetch('https://ipapi.co/json/'); const ipData2 = await ipReq2.json(); userIp = ipData2.ip; }
+
+                    if (userIp) {
+                        const { data: banni } = await _supabase.from('ip_bannies').select('*').eq('ip', userIp).single();
+                        if (banni) { document.getElementById('banni-overlay').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+                    }
+                } catch(e) {}
             } catch(e) {}
         }
-        checkMaintenance();
+        checkSecurite();
 
         async function chargerMesses() {
             const { data: messes } = await _supabase.from('horaires_messes').select('*');
