@@ -14,9 +14,17 @@
 <body class="bg-fond text-texte font-sans min-h-screen flex flex-col relative">
 
     <div id="maintenance-overlay" class="fixed inset-0 bg-violet z-[100] flex flex-col items-center justify-center text-white hidden">
-        <span class="text-6xl mb-6 animate-pulse">🚧</span>
-        <h1 class="text-4xl font-extrabold mb-4 text-center px-4">Site en maintenance</h1>
-        <p id="maintenance-msg" class="text-xl font-medium text-center px-6 max-w-2xl text-violet-200">Nous revenons vite.</p>
+        <span class="text-5xl mb-4">🕊️</span>
+        <h1 class="text-3xl font-extrabold mb-3 text-center px-4">Site en pause</h1>
+        <p id="maintenance-msg" class="text-lg font-medium text-center px-6 max-w-xl text-violet-200">Nous revenons très bientôt.</p>
+    </div>
+
+    <div id="banni-overlay" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center text-white hidden">
+        <div class="bg-white text-slate-800 p-8 rounded-3xl shadow-2xl max-w-md text-center border-t-8 border-red-500">
+            <span class="text-4xl mb-3 block">🚫</span>
+            <h2 class="text-2xl font-black mb-2 text-red-600">Accès restreint</h2>
+            <p class="text-slate-600 font-medium text-sm leading-relaxed">Votre accès à ce site a été suspendu suite à un non-respect des règles de la communauté paroissiale.</p>
+        </div>
     </div>
 
     <header class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-violet/10">
@@ -76,7 +84,7 @@
             <!-- Onglet Créer -->
             <div id="onglet-creer" class="max-w-xl mx-auto space-y-4">
                 <div id="pause-message-box" class="hidden bg-amber-50 border border-amber-200 p-4 rounded-xl text-amber-800 text-sm font-bold text-center mb-4">
-                    🕒 Les nouveaux messages sont temporairement suspendus pour la nuit. Vous pouvez toujours consulter vos tickets existants via l'onglet "Suivre ma demande".
+                    🕒 Les nouveaux messages sont suspendus pour la période de pause. Vous pouvez toujours consulter vos tickets existants via l'onglet "Suivre ma demande".
                 </div>
                 <div id="form-champs" class="space-y-4">
                     <input type="text" id="ticket-nom" placeholder="Votre Nom et Prénom..." class="w-full p-3 rounded-xl border border-slate-200 outline-none text-slate-800 font-semibold focus:border-violet focus:ring-1 focus:ring-violet">
@@ -136,11 +144,23 @@
                         document.body.style.overflow = 'hidden';
                         return;
                     }
-                    // Vérification de la plage horaire de pause des messages
-                    if (config.pause_debut && config.pause_fin) {
+                    // Vérification de la période calendaire de pause (ex: 23 au 29 décembre)
+                    if (config.pause_date_debut && config.pause_date_fin) {
                         const now = new Date();
-                        const currentTime = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-                        if (currentTime >= config.pause_debut && currentTime <= config.pause_fin) {
+                        const todayYMD = now.toISOString().split('T')[0]; // Format YYYY-MM-DD
+                        const currentHM = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+                        
+                        let enPause = false;
+                        if (todayYMD >= config.pause_date_debut && todayYMD <= config.pause_date_fin) {
+                            if (config.pause_heure_debut && config.pause_heure_fin) {
+                                if (currentHM >= config.pause_heure_debut && currentHM <= config.pause_fin) {
+                                    enPause = true;
+                                }
+                            } else {
+                                enPause = true;
+                            }
+                        }
+                        if (enPause) {
                             document.getElementById('pause-message-box').classList.remove('hidden');
                             document.getElementById('form-champs').classList.add('hidden');
                         }
@@ -150,8 +170,7 @@
                 const ipData = await ipReq.json();
                 const { data: banni } = await _supabase.from('ip_bannies').select('*').eq('ip', ipData.ip).single();
                 if (banni) {
-                    document.getElementById('maintenance-msg').innerText = "Accès refusé. Votre IP a été bannie.";
-                    document.getElementById('maintenance-overlay').classList.remove('hidden');
+                    document.getElementById('banni-overlay').classList.remove('hidden');
                     document.body.style.overflow = 'hidden';
                 }
             } catch(e) {}
@@ -195,13 +214,21 @@
             const chiffres = Math.floor(Math.random() * 90 + 10);
             const code = nomSansEspace + chiffres;
 
+            // Récupération automatique de l'IP du visiteur pour l'associer au ticket (permet le bannissement direct)
+            let ipVisiteur = "inconnue";
+            try {
+                const ipRes = await fetch('https://api.ipify.org?format=json');
+                const ipJson = await ipRes.json();
+                ipVisiteur = ipJson.ip;
+            } catch(e) {}
+
             const date = new Date().toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'});
             const conversation = [{ auteur: nom, texte: msg, date: date }];
 
             const conteneurMsg = document.getElementById('ticket-creation-msg');
             conteneurMsg.innerHTML = `<span class="text-violet">Envoi en cours...</span>`;
 
-            const { error } = await _supabase.from('tickets').insert([{ code, nom, sujet, statut: 'En attente de traitement', conversation }]);
+            const { error } = await _supabase.from('tickets').insert([{ code, nom, sujet, ip: ipVisiteur, statut: 'En attente de traitement', conversation }]);
             
             if(error) {
                 conteneurMsg.innerHTML = `<span class="text-red-500">❌ Erreur technique (${error.message})</span>`;
