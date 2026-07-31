@@ -35,10 +35,10 @@
                 </div>
                 <div><span class="text-2xl font-extrabold text-violet tracking-tight">Saint-François d'Assise</span></div>
             </div>
-            <nav class="mt-4 md:mt-0 flex flex-wrap justify-center gap-x-6 gap-y-2 text-base font-bold text-slate-500">
+            <nav class="mt-4 md:mt-0 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm font-bold text-slate-500">
                 <a href="/" class="hover:text-violet transition-colors">Accueil</a>
                 <a href="/actualites" class="hover:text-violet transition-colors">Actualités</a>
-                <a href="/messes" class="hover:text-violet transition-colors">Messes</a>
+                <a href="/messes" class="hover:text-violet transition-colors">Messes & autres événements</a>
                 <a href="/horaires" class="hover:text-violet transition-colors">Ouverture Églises</a>
                 <a href="/contact" class="text-violet border-b-2 border-violet pb-1">Contact / Aide</a>
             </nav>
@@ -81,7 +81,6 @@
                 <button onclick="voirOnglet('suivre')" id="btn-suivre" class="px-5 py-2 rounded-lg font-bold bg-white text-violet border border-violet/20 hover:bg-violet/5 transition-colors text-sm">Suivre ma demande</button>
             </div>
 
-            <!-- Onglet Créer -->
             <div id="onglet-creer" class="max-w-xl mx-auto space-y-4">
                 <div id="pause-message-box" class="hidden bg-amber-50 border border-amber-200 p-4 rounded-xl text-amber-800 text-sm font-bold text-center mb-4">
                     🕒 Les nouveaux messages sont temporairement suspendus. Vous pouvez toujours consulter vos requêtes existantes via l'onglet "Suivre ma demande".
@@ -95,7 +94,6 @@
                 <div id="ticket-creation-msg" class="text-center font-bold mt-4 text-sm"></div>
             </div>
 
-            <!-- Onglet Suivre -->
             <div id="onglet-suivre" class="hidden max-w-xl mx-auto">
                 <div class="flex gap-3 mb-8">
                     <input type="text" id="ticket-code" placeholder="Votre code (ex: MARTIN42)" class="w-full p-3 rounded-xl border border-slate-200 outline-none text-slate-800 font-bold focus:border-violet text-center uppercase tracking-widest">
@@ -136,7 +134,6 @@
 
         async function initSecuriteEtPause() {
             try {
-                // 1. Vérifier la configuration globale (Maintenance et Pause)
                 const { data: config } = await _supabase.from('site_config').select('*').eq('id', 1).single();
                 if (config) {
                     if (config.est_en_pause) {
@@ -146,13 +143,11 @@
                         return;
                     }
                     
-                    // Vérification de la période calendaire continue (ex: du 23 déc 20h00 au 29 déc 08h00)
                     if (config.pause_date_debut && config.pause_date_fin) {
                         const dateDebut = new Date(`${config.pause_date_debut}T${config.pause_heure_debut || '00:00'}:00`);
                         const dateFin = new Date(`${config.pause_date_fin}T${config.pause_heure_fin || '23:59'}:59`);
                         const now = new Date();
                         
-                        // Si on est dans le créneau exact, on cache le formulaire
                         if (now >= dateDebut && now <= dateFin) {
                             document.getElementById('pause-message-box').classList.remove('hidden');
                             document.getElementById('form-champs').classList.add('hidden');
@@ -160,28 +155,16 @@
                     }
                 }
                 
-                // 2. Vérifier si l'IP de l'utilisateur est bannie (avec sécurité anti-plantage)
                 try {
                     let userIp = null;
-                    try {
-                        const ipReq = await fetch('https://api.ipify.org?format=json');
-                        const ipData = await ipReq.json();
-                        userIp = ipData.ip;
-                    } catch(e) {
-                        // Plan B si ipify.org est bloqué par le navigateur
-                        const ipReq2 = await fetch('https://ipapi.co/json/');
-                        const ipData2 = await ipReq2.json();
-                        userIp = ipData2.ip;
-                    }
+                    try { const ipReq = await fetch('https://api.ipify.org?format=json'); const ipData = await ipReq.json(); userIp = ipData.ip; } 
+                    catch(e) { const ipReq2 = await fetch('https://ipapi.co/json/'); const ipData2 = await ipReq2.json(); userIp = ipData2.ip; }
 
                     if (userIp) {
                         const { data: banni } = await _supabase.from('ip_bannies').select('*').eq('ip', userIp).single();
-                        if (banni) {
-                            document.getElementById('banni-overlay').classList.remove('hidden');
-                            document.body.style.overflow = 'hidden';
-                        }
+                        if (banni) { document.getElementById('banni-overlay').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
                     }
-                } catch(e) {} // On ignore les erreurs d'IP pour ne pas bloquer les gens "propres"
+                } catch(e) {}
                 
             } catch(e) {}
         }
@@ -224,19 +207,9 @@
             const chiffres = Math.floor(Math.random() * 90 + 10);
             const code = nomSansEspace + chiffres;
 
-            // Récupération automatique de l'IP du visiteur pour l'associer au ticket en toute sécurité
             let ipVisiteur = "inconnue";
-            try {
-                const ipRes = await fetch('https://api.ipify.org?format=json');
-                const ipJson = await ipRes.json();
-                ipVisiteur = ipJson.ip;
-            } catch(e) {
-                try {
-                    const ipRes2 = await fetch('https://ipapi.co/json/');
-                    const ipJson2 = await ipRes2.json();
-                    ipVisiteur = ipJson2.ip;
-                } catch(e2) {}
-            }
+            try { const ipRes = await fetch('https://api.ipify.org?format=json'); const ipJson = await ipRes.json(); ipVisiteur = ipJson.ip; } 
+            catch(e) { try { const ipRes2 = await fetch('https://ipapi.co/json/'); const ipJson2 = await ipRes2.json(); ipVisiteur = ipJson2.ip; } catch(e2) {} }
 
             const date = new Date().toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'});
             const conversation = [{ auteur: nom, texte: msg, date: date }];
