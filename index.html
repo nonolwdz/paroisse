@@ -15,18 +15,23 @@
 <body class="bg-fond text-texte font-sans min-h-screen relative">
 
     <div id="maintenance-overlay" class="fixed inset-0 bg-violet z-[100] flex flex-col items-center justify-center text-white hidden">
-        <span class="text-6xl mb-6 animate-pulse">🚧</span>
-        <h1 class="text-4xl font-extrabold mb-4 text-center px-4">Site en maintenance</h1>
-        <p id="maintenance-msg" class="text-xl font-medium text-center px-6 max-w-2xl text-violet-200">Nous revenons vite.</p>
+        <span class="text-5xl mb-4">🕊️</span>
+        <h1 class="text-3xl font-extrabold mb-3 text-center px-4">Site en pause</h1>
+        <p id="maintenance-msg" class="text-lg font-medium text-center px-6 max-w-xl text-violet-200">Nous revenons très bientôt.</p>
     </div>
 
-    <!-- OVERLAY BANNISSEMENT (PERSONNALISÉ) -->
     <div id="banni-overlay" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center text-white hidden">
         <div class="bg-white text-slate-800 p-8 rounded-3xl shadow-2xl max-w-md text-center border-t-8 border-red-500">
             <span class="text-4xl mb-3 block">🚫</span>
             <h2 class="text-2xl font-black mb-2 text-red-600">Accès restreint</h2>
             <p class="text-slate-600 font-medium text-sm leading-relaxed">Votre accès à ce site a été suspendu suite à un non-respect des règles de la communauté paroissiale.</p>
         </div>
+    </div>
+
+    <!-- BANNIÈRE D'ACCUEIL -->
+    <div id="banner-accueil" class="hidden bg-or text-slate-900 font-bold px-6 py-3 flex justify-between items-center relative z-[60] shadow-sm">
+        <div id="banner-texte" class="flex-grow text-center text-sm md:text-base"></div>
+        <button onclick="document.getElementById('banner-accueil').style.display='none'" class="text-slate-800 hover:text-white transition-colors ml-4 text-xl">✖</button>
     </div>
 
     <header class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-violet/10">
@@ -37,10 +42,10 @@
                 </div>
                 <div><span class="text-2xl font-extrabold text-violet tracking-tight">Saint-François d'Assise</span></div>
             </div>
-            <nav class="mt-4 md:mt-0 flex flex-wrap justify-center gap-x-6 gap-y-2 text-base font-bold text-slate-500">
+            <nav class="mt-4 md:mt-0 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm font-bold text-slate-500">
                 <a href="/" class="text-violet border-b-2 border-violet pb-1">Accueil</a>
                 <a href="/actualites" class="hover:text-violet transition-colors">Actualités</a>
-                <a href="/messes" class="hover:text-violet transition-colors">Messes</a>
+                <a href="/messes" class="hover:text-violet transition-colors">Messes & autres événements</a>
                 <a href="/horaires" class="hover:text-violet transition-colors">Ouverture Églises</a>
                 <a href="/contact" class="hover:text-violet transition-colors">Contact / Aide</a>
             </nav>
@@ -96,7 +101,7 @@
             <section class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet">
                 <div class="flex items-center gap-3 mb-6">
                     <span class="text-2xl">⛪</span>
-                    <h3 class="text-xl font-extrabold text-violet">Prochaines Messes</h3>
+                    <h3 class="text-xl font-extrabold text-violet">Prochains événements</h3>
                 </div>
                 <div id="messes-container" class="space-y-4 mb-6"></div>
                 <a href="/messes" class="block text-center font-bold text-violet bg-violet/5 py-3 rounded-xl hover:bg-violet hover:text-white transition-colors">Voir l'agenda complet ➔</a>
@@ -125,34 +130,28 @@
 
         async function checkSecurite() {
             try {
-                // 1. Vérification Maintenance
                 const { data: config } = await _supabase.from('site_config').select('*').eq('id', 1).single();
-                if (config && config.est_en_pause) {
-                    document.getElementById('maintenance-msg').innerText = config.message_pause || "Le site est actuellement en pause. Merci de votre patience.";
-                    document.getElementById('maintenance-overlay').classList.remove('hidden');
-                    document.body.style.overflow = 'hidden';
-                    return;
+                if (config) {
+                    if (config.est_en_pause) {
+                        document.getElementById('maintenance-msg').innerText = config.message_pause || "Le site est actuellement en pause. Merci de votre patience.";
+                        document.getElementById('maintenance-overlay').classList.remove('hidden');
+                        document.body.style.overflow = 'hidden';
+                        return;
+                    }
+                    if (config.afficher_message_accueil && config.message_accueil) {
+                        document.getElementById('banner-texte').innerHTML = config.message_accueil.replace(/\n/g, '<br>');
+                        document.getElementById('banner-accueil').classList.remove('hidden');
+                    }
                 }
                 
-                // 2. Vérification de blocage IP souple
                 try {
                     let userIp = null;
-                    try {
-                        const ipReq = await fetch('https://api.ipify.org?format=json');
-                        const ipData = await ipReq.json();
-                        userIp = ipData.ip;
-                    } catch(e) {
-                        const ipReq2 = await fetch('https://ipapi.co/json/');
-                        const ipData2 = await ipReq2.json();
-                        userIp = ipData2.ip;
-                    }
+                    try { const ipReq = await fetch('https://api.ipify.org?format=json'); const ipData = await ipReq.json(); userIp = ipData.ip; } 
+                    catch(e) { const ipReq2 = await fetch('https://ipapi.co/json/'); const ipData2 = await ipReq2.json(); userIp = ipData2.ip; }
 
                     if (userIp) {
                         const { data: banni } = await _supabase.from('ip_bannies').select('*').eq('ip', userIp).single();
-                        if (banni) {
-                            document.getElementById('banni-overlay').classList.remove('hidden');
-                            document.body.style.overflow = 'hidden';
-                        }
+                        if (banni) { document.getElementById('banni-overlay').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
                     }
                 } catch(e) {}
 
@@ -225,9 +224,9 @@
                         </div>`;
                     }).join('');
                 } else {
-                    c.innerHTML = '<p class="text-slate-500 font-medium text-sm">Toutes les messes d\'aujourd\'hui sont passées.</p>';
+                    c.innerHTML = '<p class="text-slate-500 font-medium text-sm">Tous les événements d\'aujourd\'hui sont passés.</p>';
                 }
-            } else { c.innerHTML = '<p class="text-slate-500 font-medium text-sm">Aucune messe prévue prochainement.</p>'; }
+            } else { c.innerHTML = '<p class="text-slate-500 font-medium text-sm">Aucun événement prévu prochainement.</p>'; }
         }
 
         async function envoyerOnde() {
