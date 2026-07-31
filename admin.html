@@ -15,8 +15,15 @@
 </head>
 <body class="bg-fond text-slate-700 font-sans min-h-screen">
 
-    <header class="bg-nuit text-white p-4 shadow-sm flex justify-between items-center sticky top-0 z-50">
-        <span class="text-2xl font-black">⚙️ Espace Paroissial</span>
+    <header class="bg-nuit text-white p-4 shadow-sm flex flex-col md:flex-row justify-between items-center sticky top-0 z-50 gap-4">
+        <div class="flex items-center gap-4">
+            <span class="text-2xl font-black">⚙️ Espace Paroissial</span>
+            <!-- NOUVEAU : LA CASE DU NOM DE L'ADMIN -->
+            <div class="hidden md:flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-xl border border-white/20">
+                <span>👤</span>
+                <input type="text" id="admin-identite" placeholder="Votre nom (Signature)" class="bg-transparent outline-none text-sm font-bold text-white placeholder-white/60 w-40" onchange="localStorage.setItem('adminNom', this.value)">
+            </div>
+        </div>
         <div class="flex gap-3">
             <a href="/" class="bg-white/10 border border-white/20 px-4 py-2 rounded-xl font-bold hover:bg-white/20 transition-colors">Retour au Site</a>
             <button id="btn-logout" class="hidden bg-fraise hover:bg-red-600 px-4 py-2 rounded-xl font-bold shadow-md transition-colors" onclick="seDeconnecter()">Déconnexion</button>
@@ -42,7 +49,7 @@
                     <span class="text-4xl">🎫</span>
                     <div>
                         <h3 class="text-3xl font-black text-slate-800">Tickets & Suggestions</h3>
-                        <p class="text-slate-500 font-bold">Répondez aux demandes des paroissiens.</p>
+                        <p class="text-slate-500 font-bold">Répondez aux demandes (Votre signature sera ajoutée automatiquement).</p>
                     </div>
                 </div>
 
@@ -65,7 +72,7 @@
                         <div id="at-conversation" class="flex-grow overflow-y-auto custom-scrollbar space-y-4 pr-3 mb-6 bg-slate-50/50 p-4 rounded-2xl"></div>
                         
                         <div id="at-actions" class="mt-auto space-y-3">
-                            <textarea id="at-reponse" rows="3" placeholder="Rédiger une réponse officielle..." class="w-full border-2 border-slate-200 rounded-xl p-4 font-bold text-sm outline-none focus:border-ciel resize-none"></textarea>
+                            <textarea id="at-reponse" rows="3" placeholder="Rédiger une réponse..." class="w-full border-2 border-slate-200 rounded-xl p-4 font-bold text-sm outline-none focus:border-ciel resize-none"></textarea>
                             <div class="flex gap-3">
                                 <button onclick="repondreTicketAdmin()" class="flex-grow bg-ciel text-white font-black py-3 rounded-xl hover:bg-blue-500 shadow-sm">Envoyer la réponse</button>
                                 <button onclick="cloturerTicket()" class="bg-slate-200 text-slate-600 font-black px-6 py-3 rounded-xl hover:bg-slate-300">Clôturer ce dossier</button>
@@ -135,7 +142,7 @@
                 </div>
             </div>
 
-            <!-- CONTACTS PRINCIPAUX : LE BUG EST RÉSOLU ICI -->
+            <!-- CONTACTS PRINCIPAUX -->
             <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 border-t-8 border-slate-400 lg:col-span-2">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <div>
@@ -194,7 +201,13 @@
 
         async function checkSession() {
             const { data: { session } } = await _supabase.auth.getSession();
-            if (session) { document.getElementById('section-login').classList.add('hidden'); document.getElementById('section-dashboard').classList.remove('hidden'); document.getElementById('btn-logout').classList.remove('hidden'); chargerDonnees(); chargerContactAdmin(); chargerTicketsAdmin(); }
+            if (session) { 
+                document.getElementById('section-login').classList.add('hidden'); 
+                document.getElementById('section-dashboard').classList.remove('hidden'); 
+                document.getElementById('btn-logout').classList.remove('hidden'); 
+                document.getElementById('admin-identite').value = localStorage.getItem('adminNom') || '';
+                chargerDonnees(); chargerContactAdmin(); chargerTicketsAdmin(); 
+            }
         }
 
         async function seConnecter() {
@@ -207,14 +220,13 @@
 
         /* TICKETS ADMIN */
         async function chargerTicketsAdmin() {
-            const { data, error } = await _supabase.from('tickets').select('*').order('created_at', { ascending: false });
-            if(error) { document.getElementById('admin-liste-tickets').innerHTML = '<p class="text-fraise font-bold text-center mt-10">Erreur chargement (Script SQL manquant ?)</p>'; return; }
+            const { data } = await _supabase.from('tickets').select('*').order('created_at', { ascending: false });
             ticketsData = data || [];
             
             document.getElementById('admin-liste-tickets').innerHTML = ticketsData.map(t => {
-                let badgeClass = "bg-soleil/20 text-orange-700";
+                let badgeClass = "bg-soleil/30 text-orange-800";
                 if(t.statut === 'Clos') badgeClass = "bg-slate-200 text-slate-500";
-                else if(t.statut !== 'Nouveau' && t.statut !== 'En attente') badgeClass = "bg-menthe/20 text-emerald-700";
+                else if(t.statut !== 'En attente de traitement' && t.statut !== 'En attente') badgeClass = "bg-menthe/30 text-emerald-800";
                 
                 return `
                 <div onclick="ouvrirTicketAdmin('${t.code}')" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 mb-3 cursor-pointer hover:border-ciel transition-colors">
@@ -237,21 +249,23 @@
             document.getElementById('at-sujet').innerText = t.sujet + " (de " + (t.nom || "Visiteur") + ")";
             document.getElementById('at-code').innerText = "CODE : " + t.code;
             
-            let badgeClass = "bg-soleil/20 text-orange-700";
+            let badgeClass = "bg-soleil/30 text-orange-800";
             if(t.statut === 'Clos') badgeClass = "bg-slate-200 text-slate-500";
-            else if(t.statut !== 'Nouveau' && t.statut !== 'En attente') badgeClass = "bg-menthe/20 text-emerald-700";
-            document.getElementById('at-statut').className = `px-4 py-1.5 rounded-full text-xs font-black uppercase ${badgeClass}`;
+            else if(t.statut !== 'En attente de traitement' && t.statut !== 'En attente') badgeClass = "bg-menthe/30 text-emerald-800";
+            document.getElementById('at-statut').className = `px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wide ${badgeClass}`;
             document.getElementById('at-statut').innerText = t.statut;
 
             const convBox = document.getElementById('at-conversation');
-            convBox.innerHTML = (t.conversation || []).map(m => `
-                <div class="flex flex-col ${m.auteur === 'Paroisse' ? 'items-end' : 'items-start'}">
+            convBox.innerHTML = (t.conversation || []).map(m => {
+                const isVisiteur = (m.auteur === t.nom || m.auteur === 'Visiteur');
+                return `
+                <div class="flex flex-col ${isVisiteur ? 'items-start' : 'items-end'}">
                     <span class="text-[10px] font-bold text-slate-400 mb-1 px-2">${m.auteur} - ${m.date}</span>
-                    <div class="max-w-[90%] px-4 py-3 rounded-2xl text-sm font-bold shadow-sm ${m.auteur === 'Paroisse' ? 'bg-ciel text-white rounded-tr-none' : 'bg-white text-slate-700 border border-slate-200 rounded-tl-none'}">
+                    <div class="max-w-[90%] px-4 py-3 rounded-2xl text-sm font-bold shadow-sm ${isVisiteur ? 'bg-white text-slate-700 border border-slate-200 rounded-tl-none' : 'bg-ciel text-white rounded-tr-none'}">
                         ${m.texte.replace(/\n/g, '<br>')}
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
             convBox.scrollTop = convBox.scrollHeight;
 
             if(t.statut === 'Clos') document.getElementById('at-actions').classList.add('hidden');
@@ -261,9 +275,16 @@
         async function repondreTicketAdmin() {
             const reponse = document.getElementById('at-reponse').value.trim();
             if(!reponse || !ticketAdminCode) return;
+            
+            // On récupère le nom de l'admin pour la signature
+            let nomAdmin = localStorage.getItem('adminNom') || 'L\'équipe paroissiale';
+            if (nomAdmin.trim() === '') nomAdmin = 'L\'équipe paroissiale';
+            
+            const texteAEnvoyer = reponse + "\n\n— " + nomAdmin;
+
             const t = ticketsData.find(x => x.code === ticketAdminCode);
             let conv = t.conversation || [];
-            conv.push({ auteur: 'Paroisse', texte: reponse, date: new Date().toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'}) });
+            conv.push({ auteur: nomAdmin, texte: texteAEnvoyer, date: new Date().toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'}) });
 
             await _supabase.from('tickets').update({ conversation: conv, statut: 'Réponse envoyée' }).eq('code', ticketAdminCode);
             document.getElementById('at-reponse').value = '';
@@ -315,20 +336,14 @@
             editActuId = null; document.getElementById('actu-titre').value=''; document.getElementById('actu-date').value=''; quill.root.innerHTML=''; chargerDonnees();
         }
 
-        /* CORRECTION DÉFINITIVE SAUVEGARDE CONTACT */
+        /* SAUVEGARDE CONTACT (RLS désactivé) */
         async function sauvegarderContact() {
             const a = document.getElementById('contact-adresse').value, t = document.getElementById('contact-tel').value, e = document.getElementById('contact-email').value, p = document.getElementById('contact-permanences').value, u = document.getElementById('contact-urgences').value;
             const m = document.getElementById('contact-msg');
-            m.innerHTML = '<span class="text-slate-500">Sauvegarde en cours...</span>';
-            
+            m.innerHTML = '<span class="text-slate-500">En cours...</span>';
             const { error } = await _supabase.from('contact_info').upsert({ id: 1, adresse: a, telephone: t, email: e, permanences: p, urgences: u });
-            
-            if (error) { 
-                m.innerHTML = `<span class="text-fraise">❌ Erreur : ${error.message} (Exécutez le script SQL en étape 1)</span>`; 
-            } else { 
-                m.innerHTML = '<span class="text-menthe">✅ Sauvegardé avec succès !</span>'; 
-                setTimeout(() => m.innerHTML = '', 3000); 
-            }
+            if (error) { m.innerHTML = `<span class="text-fraise">❌ Erreur</span>`; } 
+            else { m.innerHTML = '<span class="text-menthe">✅ Sauvegardé avec succès !</span>'; setTimeout(() => m.innerHTML = '', 3000); }
         }
 
         async function ajouterAutreContact() {
