@@ -19,6 +19,14 @@
         <h1 class="text-4xl font-extrabold mb-4 text-center px-4">Site en maintenance</h1>
         <p id="maintenance-msg" class="text-xl font-medium text-center px-6 max-w-2xl text-violet-200">Nous revenons vite.</p>
     </div>
+    
+    <div id="banni-overlay" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center text-white hidden">
+        <div class="bg-white text-slate-800 p-8 rounded-3xl shadow-2xl max-w-md text-center border-t-8 border-red-500">
+            <span class="text-4xl mb-3 block">🚫</span>
+            <h2 class="text-2xl font-black mb-2 text-red-600">Accès restreint</h2>
+            <p class="text-slate-600 font-medium text-sm leading-relaxed">Votre accès à ce site a été suspendu suite à un non-respect des règles de la communauté paroissiale.</p>
+        </div>
+    </div>
 
     <header class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-violet/10">
         <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
@@ -28,10 +36,10 @@
                 </div>
                 <div><span class="text-2xl font-extrabold text-violet tracking-tight">Saint-François d'Assise</span></div>
             </div>
-            <nav class="mt-4 md:mt-0 flex flex-wrap justify-center gap-x-6 gap-y-2 text-base font-bold text-slate-500">
+            <nav class="mt-4 md:mt-0 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm font-bold text-slate-500">
                 <a href="/" class="hover:text-violet transition-colors">Accueil</a>
                 <a href="/actualites" class="text-violet border-b-2 border-violet pb-1">Actualités</a>
-                <a href="/messes" class="hover:text-violet transition-colors">Messes</a>
+                <a href="/messes" class="hover:text-violet transition-colors">Messes & autres événements</a>
                 <a href="/horaires" class="hover:text-violet transition-colors">Ouverture Églises</a>
                 <a href="/contact" class="hover:text-violet transition-colors">Contact / Aide</a>
             </nav>
@@ -56,17 +64,28 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        async function checkMaintenance() {
+        async function checkSecurite() {
             try {
-                const { data } = await _supabase.from('site_config').select('*').eq('id', 1).single();
-                if (data && data.est_en_pause) {
-                    document.getElementById('maintenance-msg').innerText = data.message_pause || "Le site est actuellement en pause. Merci de votre patience.";
+                const { data: config } = await _supabase.from('site_config').select('*').eq('id', 1).single();
+                if (config && config.est_en_pause) {
+                    document.getElementById('maintenance-msg').innerText = config.message_pause || "Le site est en pause.";
                     document.getElementById('maintenance-overlay').classList.remove('hidden');
                     document.body.style.overflow = 'hidden';
+                    return;
                 }
+                try {
+                    let userIp = null;
+                    try { const ipReq = await fetch('https://api.ipify.org?format=json'); const ipData = await ipReq.json(); userIp = ipData.ip; } 
+                    catch(e) { const ipReq2 = await fetch('https://ipapi.co/json/'); const ipData2 = await ipReq2.json(); userIp = ipData2.ip; }
+
+                    if (userIp) {
+                        const { data: banni } = await _supabase.from('ip_bannies').select('*').eq('ip', userIp).single();
+                        if (banni) { document.getElementById('banni-overlay').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+                    }
+                } catch(e) {}
             } catch(e) {}
         }
-        checkMaintenance();
+        checkSecurite();
 
         async function chargerToutesActualites() {
             const { data } = await _supabase.from('actualites').select('*').order('date_publication', { ascending: false });
