@@ -36,6 +36,18 @@
 
         <div id="section-dashboard" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             
+            <div class="bg-amber-50 p-6 rounded-2xl shadow-sm border border-amber-200 border-t-4 border-amber-500 lg:col-span-2">
+                <h3 class="text-xl font-extrabold text-amber-800 mb-4">📣 Bannière d'Accueil</h3>
+                <div class="flex flex-col md:flex-row gap-4 items-center">
+                    <label class="flex items-center gap-3 bg-white p-3 rounded-xl border border-amber-300 cursor-pointer shadow-sm w-full md:w-auto">
+                        <input type="checkbox" id="site-banner-toggle" class="w-6 h-6 accent-amber-600 rounded">
+                        <span class="font-bold text-amber-800 whitespace-nowrap">Afficher la bannière</span>
+                    </label>
+                    <input type="text" id="site-banner-msg" placeholder="Message affiché tout en haut de l'accueil..." class="flex-grow w-full border border-amber-300 p-3 rounded-xl outline-none focus:border-amber-500 font-semibold text-sm text-amber-900 placeholder-amber-400">
+                    <button onclick="sauvegarderConfig()" class="w-full md:w-auto bg-amber-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-amber-700 shadow-sm text-sm">Sauvegarder</button>
+                </div>
+            </div>
+
             <!-- GESTION DES TICKETS PUBLIC -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-or lg:col-span-2">
                 <div class="flex items-center gap-3 mb-6 border-b border-slate-100 pb-4">
@@ -72,7 +84,6 @@
                                     <button onclick="repondreTicketAdmin()" class="bg-violet text-white font-bold px-6 py-2 rounded-lg hover:bg-prune shadow-sm text-sm">Envoyer</button>
                                     <button onclick="cloturerTicket()" class="bg-slate-200 text-slate-600 font-bold px-4 py-2 rounded-lg hover:bg-slate-300 text-sm">Clôturer</button>
                                 </div>
-                                <!-- BOUTON BANNIR IP -->
                                 <button id="btn-bannir" onclick="bannirAuteurTicket()" class="hidden bg-red-100 text-red-600 hover:bg-red-200 font-bold px-4 py-2 rounded-lg text-sm transition-colors">🚨 Bannir cette IP</button>
                             </div>
                         </div>
@@ -80,7 +91,7 @@
                 </div>
             </div>
 
-            <!-- NOUVEAU : SECTION DÉBANNISSEMENT (RÉSERVÉE À L'ADMIN PRINCIPAL) -->
+            <!-- NOUVEAU : SECTION DÉBANNISSEMENT -->
             <div id="section-bannissements" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-red-600 lg:col-span-2">
                 <h3 class="text-xl font-extrabold text-red-600 mb-2">🛡️ Gestion des accès (IP Bannies)</h3>
                 <p class="text-sm text-slate-500 font-bold mb-4">Gérez les personnes qui ont été bloquées et ne peuvent plus accéder au site.</p>
@@ -123,7 +134,7 @@
 
             <!-- MESSES -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400">
-                <h3 class="text-xl font-extrabold text-slate-700 mb-6">⛪ Ajouter une Messe</h3>
+                <h3 class="text-xl font-extrabold text-slate-700 mb-6">⛪ Ajouter un Événement / Messe</h3>
                 <div class="space-y-4">
                     <select id="messe-lieu" class="w-full border border-slate-300 p-3 rounded-xl font-bold text-slate-800 outline-none bg-slate-50 cursor-pointer text-sm"></select>
                     <div class="grid grid-cols-2 gap-3">
@@ -150,19 +161,15 @@
 
             <!-- CONTACTS PRINCIPAUX -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400 lg:col-span-2">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                        <h3 class="text-lg font-extrabold text-slate-800 mb-4">📞 Presbytère</h3>
-                        <div class="space-y-3">
-                            <textarea id="contact-adresse" placeholder="Adresse" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm"></textarea>
-                            <input type="text" id="contact-tel" placeholder="Téléphone" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm">
-                            <input type="text" id="contact-email" placeholder="Email" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm">
-                            <textarea id="contact-permanences" placeholder="Permanences" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm"></textarea>
-                            <textarea id="contact-urgences" placeholder="Urgences" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm"></textarea>
-                            <button onclick="sauvegarderContact()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl shadow-sm hover:bg-slate-900 transition-colors text-sm">Sauvegarder les infos</button>
-                            <div id="contact-msg" class="text-center font-bold mt-2 text-xs"></div>
-                        </div>
-                    </div>
+                <h3 class="text-lg font-extrabold text-slate-800 mb-4">📞 Presbytère</h3>
+                <div class="space-y-3">
+                    <textarea id="contact-adresse" placeholder="Adresse" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm"></textarea>
+                    <input type="text" id="contact-tel" placeholder="Téléphone" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm">
+                    <input type="text" id="contact-email" placeholder="Email" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm">
+                    <textarea id="contact-permanences" placeholder="Permanences" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm"></textarea>
+                    <textarea id="contact-urgences" placeholder="Urgences" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm"></textarea>
+                    <button onclick="sauvegarderContact()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl shadow-sm hover:bg-slate-900 transition-colors text-sm">Sauvegarder les infos</button>
+                    <div id="contact-msg" class="text-center font-bold mt-2 text-xs"></div>
                 </div>
             </div>
 
@@ -201,11 +208,10 @@
             <!-- GESTION -->
             <div class="bg-slate-900 text-white p-8 rounded-2xl shadow-sm lg:col-span-2 mb-12">
                 <h3 class="text-xl font-extrabold mb-6">🗑️ Nettoyage des données</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div class="bg-white/5 p-4 rounded-xl border border-white/10"><h4 class="font-bold text-violet-300 mb-3 text-sm">Églises</h4><div id="liste-eglises" class="space-y-2 font-semibold text-xs max-h-48 overflow-y-auto custom-scrollbar"></div></div>
-                    <div class="bg-white/5 p-4 rounded-xl border border-white/10"><h4 class="font-bold text-slate-300 mb-3 text-sm">Messes</h4><div id="liste-messes" class="space-y-2 font-semibold text-xs max-h-48 overflow-y-auto custom-scrollbar"></div></div>
+                    <div class="bg-white/5 p-4 rounded-xl border border-white/10"><h4 class="font-bold text-slate-300 mb-3 text-sm">Événements</h4><div id="liste-messes" class="space-y-2 font-semibold text-xs max-h-48 overflow-y-auto custom-scrollbar"></div></div>
                     <div class="bg-white/5 p-4 rounded-xl border border-white/10"><h4 class="font-bold text-or mb-3 text-sm">Actualités</h4><div id="liste-actus" class="space-y-2 font-semibold text-xs max-h-48 overflow-y-auto custom-scrollbar"></div></div>
-                    <div class="bg-white/5 p-4 rounded-xl border border-white/10"><h4 class="font-bold text-pink-300 mb-3 text-sm">Ondes</h4><div id="liste-ondes" class="space-y-2 font-semibold text-xs max-h-48 overflow-y-auto custom-scrollbar"></div></div>
                 </div>
             </div>
 
@@ -239,7 +245,6 @@
                 currentUserEmail = session.user.email;
                 document.getElementById('admin-signature').value = session.user.user_metadata?.signature || '';
                 
-                // FONCTIONS EXCLUSIVES ADMIN PRINCIPAL
                 if (currentUserEmail === 'n.antoinemich@gmail.com') {
                     document.getElementById('btn-bannir').classList.remove('hidden');
                     document.getElementById('section-bannissements').classList.remove('hidden');
@@ -292,6 +297,8 @@
                 document.getElementById('pause-date-fin').value = data.pause_date_fin || '';
                 document.getElementById('pause-heure-debut').value = data.pause_heure_debut || '';
                 document.getElementById('pause-heure-fin').value = data.pause_heure_fin || '';
+                document.getElementById('site-banner-toggle').checked = data.afficher_message_accueil || false;
+                document.getElementById('site-banner-msg').value = data.message_accueil || '';
             }
         }
 
@@ -302,6 +309,8 @@
             const dFin = document.getElementById('pause-date-fin').value;
             const hDebut = document.getElementById('pause-heure-debut').value;
             const hFin = document.getElementById('pause-heure-fin').value;
+            const bToggle = document.getElementById('site-banner-toggle').checked;
+            const bMsg = document.getElementById('site-banner-msg').value;
             
             await _supabase.from('site_config').upsert({ 
                 id: 1, 
@@ -310,9 +319,11 @@
                 pause_date_debut: dDebut, 
                 pause_date_fin: dFin, 
                 pause_heure_debut: hDebut, 
-                pause_heure_fin: hFin 
+                pause_heure_fin: hFin,
+                afficher_message_accueil: bToggle,
+                message_accueil: bMsg
             });
-            alert("Paramètres de pause enregistrés avec succès !");
+            alert("Paramètres enregistrés avec succès !");
         }
 
         /* TICKETS ADMIN */
@@ -396,7 +407,7 @@
             ouvrirTicketAdmin(ticketAdminCode);
         }
 
-        // BANNISSEMENT IP
+        // BANNISSEMENT IP AUTOMATIQUE DEPUIS LE TICKET
         async function bannirAuteurTicket() {
             if (currentUserEmail !== 'n.antoinemich@gmail.com') {
                 alert("Action non autorisée."); return;
@@ -409,11 +420,10 @@
             if (!confirm("Voulez-vous vraiment bannir l'adresse IP " + t.ip + " (" + t.nom + ") ?")) return;
 
             const { error } = await _supabase.from('ip_bannies').insert([{ ip: t.ip }]);
-            if (error) {
-                alert("Erreur (peut-être déjà bannie) : " + error.message);
-            } else {
-                alert("Succès : L'adresse IP " + t.ip + " a été bannie du site.");
-                chargerBannis(); // On rafraîchit la liste
+            if (error) alert("Erreur (peut-être déjà bannie) : " + error.message);
+            else {
+                alert("Succès : L'adresse IP a été bannie.");
+                chargerBannis();
             }
         }
         /* FIN TICKETS */
@@ -478,9 +488,6 @@
 
             const { data: actus } = await _supabase.from('actualites').select('*'); actusData = actus||[];
             document.getElementById('liste-actus').innerHTML = actusData.map(a => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-lg"><span class="truncate">${a.titre}</span> <div class="flex gap-2"><button onclick="editActu(${a.id})" class="text-or">✏️</button><button onclick="supprimer('actualites', ${a.id})" class="text-red-400">✖</button></div></div>`).join('');
-
-            const { data: ondes } = await _supabase.from('bonnes_ondes').select('*');
-            document.getElementById('liste-ondes').innerHTML = (ondes||[]).map(o => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-lg"><span class="truncate italic text-slate-300">"${o.message}"</span> <button onclick="supprimer('bonnes_ondes', ${o.id})" class="text-red-400">✖</button></div>`).join('');
         }
 
         function editEglise(id) { const e = eglisesData.find(x => x.id === id); editEgliseId = e.id; document.getElementById('eglise-nom').value = e.nom; document.getElementById('eglise-horaires').value = e.horaires_base || ''; document.getElementById('eglise-type').value = 'inconnu'; ['tous-m-s','tous-m-e','tous-a-s','tous-a-e','sem-m-s','sem-m-e','sem-a-s','sem-a-e','sam-m-s','sam-m-e','sam-a-s','sam-a-e','dim-m-s','dim-m-e','dim-a-s','dim-a-e'].forEach(id => document.getElementById(id).value = ''); if(e.horaires_json) { try { const h = JSON.parse(e.horaires_json); document.getElementById('eglise-type').value = h.type || 'inconnu'; if(h.type) { ['tous_m_s','tous_m_e','tous_a_s','tous_a_e','sem_m_s','sem_m_e','sem_a_s','sem_a_e','sam_m_s','sam_m_e','sam_a_s','sam_a_e','dim_m_s','dim_m_e','dim_a_s','dim-a-e'].forEach(key => { if(h[key]) document.getElementById(key.replace(/_/g, '-')).value = h[key]; }); } } catch(err) {} } toggleHoraires(); document.getElementById('eglise-estferme').checked = e.est_ferme; document.getElementById('eglise-alerte').value = e.alerte || ''; window.scrollTo({top:0, behavior:'smooth'}); }
