@@ -72,11 +72,20 @@
                                     <button onclick="repondreTicketAdmin()" class="bg-violet text-white font-bold px-6 py-2 rounded-lg hover:bg-prune shadow-sm text-sm">Envoyer</button>
                                     <button onclick="cloturerTicket()" class="bg-slate-200 text-slate-600 font-bold px-4 py-2 rounded-lg hover:bg-slate-300 text-sm">Clôturer</button>
                                 </div>
-                                <!-- BOUTON BANNIR IP AUTOMATIQUE RÉSERVÉ UNIQUEMENT À n.antoinemich@gmail.com -->
+                                <!-- BOUTON BANNIR IP -->
                                 <button id="btn-bannir" onclick="bannirAuteurTicket()" class="hidden bg-red-100 text-red-600 hover:bg-red-200 font-bold px-4 py-2 rounded-lg text-sm transition-colors">🚨 Bannir cette IP</button>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- NOUVEAU : SECTION DÉBANNISSEMENT (RÉSERVÉE À L'ADMIN PRINCIPAL) -->
+            <div id="section-bannissements" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-red-600 lg:col-span-2">
+                <h3 class="text-xl font-extrabold text-red-600 mb-2">🛡️ Gestion des accès (IP Bannies)</h3>
+                <p class="text-sm text-slate-500 font-bold mb-4">Gérez les personnes qui ont été bloquées et ne peuvent plus accéder au site.</p>
+                <div id="liste-bannis" class="space-y-3 max-h-48 overflow-y-auto custom-scrollbar bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <p class="text-slate-400 font-semibold text-sm">Chargement...</p>
                 </div>
             </div>
 
@@ -157,7 +166,7 @@
                 </div>
             </div>
 
-            <!-- MAINTENANCE & PLAGE HORAIRE DE PAUSE (CALENDRIER DU ... AU ...) -->
+            <!-- MAINTENANCE & PLAGE HORAIRE DE PAUSE -->
             <div class="bg-red-50 p-6 rounded-2xl shadow-sm border border-red-200 border-t-4 border-red-500 lg:col-span-2">
                 <h3 class="text-xl font-extrabold text-red-800 mb-4">🛑 Gestion des Pauses et Maintenance</h3>
                 <div class="space-y-4">
@@ -169,7 +178,6 @@
                         <input type="text" id="site-pause-msg" placeholder="Message d'information général..." class="flex-grow w-full border border-red-300 p-3 rounded-xl outline-none font-semibold text-sm text-red-900 placeholder-red-400">
                     </div>
                     
-                    <!-- PÉRIODE CALENDAIRE DE PAUSE DES MESSAGES -->
                     <div class="bg-white p-4 rounded-xl border border-red-200 space-y-3">
                         <span class="font-bold text-slate-700 text-sm block">Suspendre les nouveaux messages sur une période spécifique :</span>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-bold">
@@ -193,10 +201,11 @@
             <!-- GESTION -->
             <div class="bg-slate-900 text-white p-8 rounded-2xl shadow-sm lg:col-span-2 mb-12">
                 <h3 class="text-xl font-extrabold mb-6">🗑️ Nettoyage des données</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div class="bg-white/5 p-4 rounded-xl border border-white/10"><h4 class="font-bold text-violet-300 mb-3 text-sm">Églises</h4><div id="liste-eglises" class="space-y-2 font-semibold text-xs max-h-48 overflow-y-auto custom-scrollbar"></div></div>
                     <div class="bg-white/5 p-4 rounded-xl border border-white/10"><h4 class="font-bold text-slate-300 mb-3 text-sm">Messes</h4><div id="liste-messes" class="space-y-2 font-semibold text-xs max-h-48 overflow-y-auto custom-scrollbar"></div></div>
                     <div class="bg-white/5 p-4 rounded-xl border border-white/10"><h4 class="font-bold text-or mb-3 text-sm">Actualités</h4><div id="liste-actus" class="space-y-2 font-semibold text-xs max-h-48 overflow-y-auto custom-scrollbar"></div></div>
+                    <div class="bg-white/5 p-4 rounded-xl border border-white/10"><h4 class="font-bold text-pink-300 mb-3 text-sm">Ondes</h4><div id="liste-ondes" class="space-y-2 font-semibold text-xs max-h-48 overflow-y-auto custom-scrollbar"></div></div>
                 </div>
             </div>
 
@@ -230,8 +239,11 @@
                 currentUserEmail = session.user.email;
                 document.getElementById('admin-signature').value = session.user.user_metadata?.signature || '';
                 
+                // FONCTIONS EXCLUSIVES ADMIN PRINCIPAL
                 if (currentUserEmail === 'n.antoinemich@gmail.com') {
                     document.getElementById('btn-bannir').classList.remove('hidden');
+                    document.getElementById('section-bannissements').classList.remove('hidden');
+                    chargerBannis();
                 }
 
                 chargerDonnees(); chargerContactAdmin(); chargerTicketsAdmin(); chargerConfig();
@@ -246,6 +258,31 @@
 
         async function seDeconnecter() { await _supabase.auth.signOut(); location.reload(); }
 
+        /* GESTION BANNISSEMENTS (Uniquement pour n.antoinemich@gmail.com) */
+        async function chargerBannis() {
+            const { data, error } = await _supabase.from('ip_bannies').select('*').order('banni_le', { ascending: false });
+            const container = document.getElementById('liste-bannis');
+            if (error) { container.innerHTML = '<p class="text-red-500 font-bold text-sm">Erreur de chargement.</p>'; return; }
+            if (!data || data.length === 0) { container.innerHTML = '<p class="text-emerald-600 font-bold text-sm">Aucune IP n\'est bannie pour le moment.</p>'; return; }
+            
+            container.innerHTML = data.map(b => `
+                <div class="flex justify-between items-center bg-white p-3 rounded-lg border border-red-100 shadow-sm">
+                    <div>
+                        <span class="font-black text-red-700">${b.ip}</span>
+                        <span class="text-xs text-slate-500 ml-2 font-bold">Bloqué le ${new Date(b.banni_le).toLocaleDateString('fr-FR')}</span>
+                    </div>
+                    <button onclick="debannir(${b.id})" class="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1.5 rounded-lg text-xs font-black transition-colors">Débannir</button>
+                </div>
+            `).join('');
+        }
+
+        async function debannir(id) {
+            if(!confirm("Êtes-vous sûr de vouloir redonner l'accès au site à cette personne ?")) return;
+            await _supabase.from('ip_bannies').delete().eq('id', id);
+            chargerBannis();
+        }
+
+        /* MAINTENANCE CONFIG */
         async function chargerConfig() {
             const { data } = await _supabase.from('site_config').select('*').eq('id', 1).single();
             if(data) {
@@ -359,7 +396,7 @@
             ouvrirTicketAdmin(ticketAdminCode);
         }
 
-        // BANNISSEMENT IP AUTOMATIQUE DEPUIS LE TICKET (UNIQUEMENT n.antoinemich@gmail.com)
+        // BANNISSEMENT IP
         async function bannirAuteurTicket() {
             if (currentUserEmail !== 'n.antoinemich@gmail.com') {
                 alert("Action non autorisée."); return;
@@ -372,8 +409,12 @@
             if (!confirm("Voulez-vous vraiment bannir l'adresse IP " + t.ip + " (" + t.nom + ") ?")) return;
 
             const { error } = await _supabase.from('ip_bannies').insert([{ ip: t.ip }]);
-            if (error) alert("Erreur (peut-être déjà bannie) : " + error.message);
-            else alert("Succès : L'adresse IP " + t.ip + " a été bannie du site.");
+            if (error) {
+                alert("Erreur (peut-être déjà bannie) : " + error.message);
+            } else {
+                alert("Succès : L'adresse IP " + t.ip + " a été bannie du site.");
+                chargerBannis(); // On rafraîchit la liste
+            }
         }
         /* FIN TICKETS */
 
@@ -437,6 +478,9 @@
 
             const { data: actus } = await _supabase.from('actualites').select('*'); actusData = actus||[];
             document.getElementById('liste-actus').innerHTML = actusData.map(a => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-lg"><span class="truncate">${a.titre}</span> <div class="flex gap-2"><button onclick="editActu(${a.id})" class="text-or">✏️</button><button onclick="supprimer('actualites', ${a.id})" class="text-red-400">✖</button></div></div>`).join('');
+
+            const { data: ondes } = await _supabase.from('bonnes_ondes').select('*');
+            document.getElementById('liste-ondes').innerHTML = (ondes||[]).map(o => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-lg"><span class="truncate italic text-slate-300">"${o.message}"</span> <button onclick="supprimer('bonnes_ondes', ${o.id})" class="text-red-400">✖</button></div>`).join('');
         }
 
         function editEglise(id) { const e = eglisesData.find(x => x.id === id); editEgliseId = e.id; document.getElementById('eglise-nom').value = e.nom; document.getElementById('eglise-horaires').value = e.horaires_base || ''; document.getElementById('eglise-type').value = 'inconnu'; ['tous-m-s','tous-m-e','tous-a-s','tous-a-e','sem-m-s','sem-m-e','sem-a-s','sem-a-e','sam-m-s','sam-m-e','sam-a-s','sam-a-e','dim-m-s','dim-m-e','dim-a-s','dim-a-e'].forEach(id => document.getElementById(id).value = ''); if(e.horaires_json) { try { const h = JSON.parse(e.horaires_json); document.getElementById('eglise-type').value = h.type || 'inconnu'; if(h.type) { ['tous_m_s','tous_m_e','tous_a_s','tous_a_e','sem_m_s','sem_m_e','sem_a_s','sem_a_e','sam_m_s','sam_m_e','sam_a_s','sam_a_e','dim_m_s','dim_m_e','dim_a_s','dim-a-e'].forEach(key => { if(h[key]) document.getElementById(key.replace(/_/g, '-')).value = h[key]; }); } } catch(err) {} } toggleHoraires(); document.getElementById('eglise-estferme').checked = e.est_ferme; document.getElementById('eglise-alerte').value = e.alerte || ''; window.scrollTo({top:0, behavior:'smooth'}); }
