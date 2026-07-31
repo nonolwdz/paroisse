@@ -4,111 +4,113 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact & Aide - Paroisse</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { ciel: '#0ea5e9', soleil: '#fdba74', menthe: '#34d399', fraise: '#fb7185', fond: '#f8fafc', nuit: '#1e293b' }, fontFamily: { sans: ['Nunito', 'sans-serif'] } } } }
+        tailwind.config = { theme: { extend: { colors: { violet: '#4c1d95', prune: '#701a75', or: '#eab308', fond: '#f8fafc', texte: '#334155' }, fontFamily: { sans: ['Nunito', 'sans-serif'] } } } }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-fond text-slate-700 font-sans min-h-screen flex flex-col">
+<body class="bg-fond text-texte font-sans min-h-screen flex flex-col">
 
-    <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b-[3px] border-ciel/20">
-        <div class="max-w-6xl mx-auto px-6 py-3 flex flex-col md:flex-row justify-between items-center">
-            <div class="flex items-center gap-3 group cursor-pointer hover:scale-105 transition-transform">
-                <div class="bg-soleil text-nuit p-2.5 rounded-full shadow-lg shadow-soleil/30 transform rotate-[-10deg] group-hover:rotate-0 transition-all">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 3v18m-6-12h12"></path></svg>
+    <header class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-violet/10">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-violet text-or p-2 rounded-xl shadow-md">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v18m-6-12h12"></path></svg>
                 </div>
-                <div><span class="text-2xl font-black text-slate-800 tracking-tight">Saint-François d'Assise</span></div>
+                <div><span class="text-2xl font-extrabold text-violet tracking-tight">Saint-François d'Assise</span></div>
             </div>
-            <nav class="mt-4 md:mt-0 flex gap-6 text-base font-bold text-slate-500">
-                <a href="/" class="hover:text-ciel hover:-translate-y-1 transition-all">Accueil</a>
-                <a href="/messes" class="hover:text-ciel hover:-translate-y-1 transition-all">Messes</a>
-                <a href="/horaires" class="hover:text-ciel hover:-translate-y-1 transition-all">Ouverture Églises</a>
-                <a href="/contact" class="text-nuit border-b-[3px] border-soleil pb-1">Contact / Aide</a>
+            <nav class="mt-4 md:mt-0 flex gap-8 text-base font-bold text-slate-500">
+                <a href="/" class="hover:text-violet transition-colors">Accueil</a>
+                <a href="/messes" class="hover:text-violet transition-colors">Messes</a>
+                <a href="/horaires" class="hover:text-violet transition-colors">Ouverture Églises</a>
+                <a href="/contact" class="text-violet border-b-2 border-violet pb-1">Contact / Aide</a>
             </nav>
         </div>
     </header>
 
     <main class="max-w-5xl mx-auto px-6 py-12 flex-grow w-full">
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-16">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             <!-- Maison Paroissiale -->
-            <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-100 border-t-[6px] border-ciel">
-                <h2 class="text-3xl font-black text-slate-800 mb-8 flex items-center gap-3"><span class="text-4xl">🏡</span> Le Presbytère</h2>
-                <div class="space-y-6 text-slate-600 font-bold text-lg">
-                    <div class="flex items-start gap-4"><span class="text-soleil text-2xl mt-1">📍</span><div id="vue-adresse" class="leading-relaxed">...</div></div>
-                    <div class="flex items-center gap-4"><span class="text-menthe text-2xl">📞</span><div id="vue-tel">...</div></div>
-                    <div class="flex items-center gap-4"><span class="text-fraise text-2xl">✉️</span><div id="vue-email">...</div></div>
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet">
+                <h2 class="text-2xl font-extrabold text-slate-800 mb-6 flex items-center gap-3">🏡 Le Presbytère</h2>
+                <div class="space-y-5 text-slate-600 font-semibold text-base">
+                    <div class="flex items-start gap-4"><span class="text-or text-xl mt-1">📍</span><div id="vue-adresse" class="leading-relaxed">...</div></div>
+                    <div class="flex items-center gap-4"><span class="text-violet text-xl">📞</span><div id="vue-tel">...</div></div>
+                    <div class="flex items-center gap-4"><span class="text-slate-400 text-xl">✉️</span><div id="vue-email">...</div></div>
                 </div>
             </div>
 
             <!-- Infos utiles -->
-            <div class="bg-slate-800 text-white p-8 rounded-[3rem] shadow-sm border-t-[6px] border-soleil relative overflow-hidden">
-                <h2 class="text-3xl font-black mb-8 relative z-10 flex items-center gap-3"><span class="text-4xl">🕰️</span> Horaires</h2>
-                <div class="space-y-6 relative z-10">
-                    <div class="bg-white/10 p-5 rounded-3xl border border-white/20">
-                        <h3 class="font-black text-soleil mb-2 text-xl">Accueil</h3>
-                        <p id="vue-permanences" class="text-white font-bold leading-relaxed whitespace-pre-line">...</p>
+            <div class="bg-slate-800 text-white p-8 rounded-2xl shadow-sm border-t-4 border-or">
+                <h2 class="text-2xl font-extrabold mb-6 flex items-center gap-3">🕰️ Horaires</h2>
+                <div class="space-y-5">
+                    <div class="bg-slate-700/50 p-4 rounded-xl border border-slate-600">
+                        <h3 class="font-bold text-or mb-2 text-sm uppercase tracking-wide">Accueil</h3>
+                        <p id="vue-permanences" class="text-slate-200 font-medium leading-relaxed whitespace-pre-line text-sm">...</p>
                     </div>
-                    <div class="bg-fraise/20 p-5 rounded-3xl border border-fraise/30">
-                        <h3 class="font-black text-fraise mb-2 text-xl">Urgences</h3>
-                        <p id="vue-urgences" class="text-white font-bold leading-relaxed whitespace-pre-line">...</p>
+                    <div class="bg-red-500/10 p-4 rounded-xl border border-red-500/20">
+                        <h3 class="font-bold text-red-400 mb-2 text-sm uppercase tracking-wide">Urgences</h3>
+                        <p id="vue-urgences" class="text-slate-200 font-medium leading-relaxed whitespace-pre-line text-sm">...</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="mb-16">
-            <h2 class="text-3xl font-black text-slate-800 text-center mb-8">👋 L'Équipe Paroissiale</h2>
-            <div id="liste-autres-contacts" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+            <h2 class="text-2xl font-extrabold text-slate-800 text-center mb-6">👥 Autres Contacts</h2>
+            <div id="liste-autres-contacts" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
         </div>
 
         <!-- LE SYSTEME DE TICKETS -->
-        <div class="bg-ciel/10 p-10 rounded-[3rem] border-2 border-ciel/20 relative overflow-hidden">
-            <h2 class="text-3xl font-black text-slate-800 text-center mb-2">Une question ? Une suggestion ?</h2>
-            <p class="text-slate-600 font-bold text-center mb-8">Exprimez-vous ici, nous vous répondrons dans les 24 à 48h.</p>
+        <div class="bg-violet/5 p-8 md:p-10 rounded-2xl border border-violet/10">
+            <h2 class="text-2xl font-extrabold text-violet text-center mb-2">Une question ? Une suggestion ?</h2>
+            <p class="text-slate-600 font-medium text-center mb-8 text-sm">Exprimez-vous ici, nous vous répondrons dans les 24 à 48h.</p>
             
-            <div class="flex justify-center gap-4 mb-8">
-                <button onclick="voirOnglet('creer')" id="btn-creer" class="px-6 py-2 rounded-full font-black bg-ciel text-white shadow-md">Nouveau message</button>
-                <button onclick="voirOnglet('suivre')" id="btn-suivre" class="px-6 py-2 rounded-full font-black bg-white text-ciel border-2 border-ciel/30 hover:bg-ciel/5 transition-colors">Suivre ma demande</button>
+            <div class="flex justify-center gap-3 mb-8">
+                <button onclick="voirOnglet('creer')" id="btn-creer" class="px-5 py-2 rounded-lg font-bold bg-violet text-white shadow-sm text-sm">Nouveau message</button>
+                <button onclick="voirOnglet('suivre')" id="btn-suivre" class="px-5 py-2 rounded-lg font-bold bg-white text-violet border border-violet/20 hover:bg-violet/5 transition-colors text-sm">Suivre ma demande</button>
             </div>
 
             <!-- Onglet Créer -->
-            <div id="onglet-creer" class="max-w-2xl mx-auto space-y-4">
-                <input type="text" id="ticket-nom" placeholder="Votre Nom et Prénom..." class="w-full p-4 rounded-2xl border-none outline-none text-slate-800 font-bold focus:ring-4 focus:ring-ciel/30">
-                <input type="text" id="ticket-sujet" placeholder="Sujet (ex: Erreur d'horaire, Demande de document...)" class="w-full p-4 rounded-2xl border-none outline-none text-slate-800 font-bold focus:ring-4 focus:ring-ciel/30">
-                <textarea id="ticket-message" rows="5" placeholder="Votre message détaillé..." class="w-full p-4 rounded-2xl border-none outline-none text-slate-800 font-bold focus:ring-4 focus:ring-ciel/30 resize-none"></textarea>
-                <button onclick="creerTicket()" class="w-full bg-slate-800 text-white font-black text-xl py-4 rounded-2xl hover:scale-105 transition-transform shadow-md">Envoyer la demande</button>
-                <div id="ticket-creation-msg" class="text-center font-black mt-4"></div>
+            <div id="onglet-creer" class="max-w-xl mx-auto space-y-4">
+                <input type="text" id="ticket-nom" placeholder="Votre Nom et Prénom..." class="w-full p-3 rounded-xl border border-slate-200 outline-none text-slate-800 font-semibold focus:border-violet focus:ring-1 focus:ring-violet">
+                <input type="text" id="ticket-sujet" placeholder="Sujet (ex: Erreur d'horaire, Demande de document...)" class="w-full p-3 rounded-xl border border-slate-200 outline-none text-slate-800 font-semibold focus:border-violet focus:ring-1 focus:ring-violet">
+                <textarea id="ticket-message" rows="5" placeholder="Votre message détaillé..." class="w-full p-3 rounded-xl border border-slate-200 outline-none text-slate-800 font-semibold focus:border-violet focus:ring-1 focus:ring-violet resize-none"></textarea>
+                <button onclick="creerTicket()" class="w-full bg-violet text-white font-bold py-3 rounded-xl hover:bg-prune transition-colors shadow-sm">Envoyer la demande</button>
+                <div id="ticket-creation-msg" class="text-center font-bold mt-4 text-sm"></div>
             </div>
 
             <!-- Onglet Suivre -->
-            <div id="onglet-suivre" class="hidden max-w-2xl mx-auto">
+            <div id="onglet-suivre" class="hidden max-w-xl mx-auto">
                 <div class="flex gap-3 mb-8">
-                    <input type="text" id="ticket-code" placeholder="Votre code de suivi (ex: MARTIN42)" class="w-full p-4 rounded-2xl border-none outline-none text-slate-800 font-bold focus:ring-4 focus:ring-ciel/30 text-center uppercase tracking-widest text-xl">
-                    <button onclick="chargerTicket()" class="bg-ciel text-white font-black px-8 rounded-2xl shadow-md hover:bg-blue-500 transition-colors">Voir</button>
+                    <input type="text" id="ticket-code" placeholder="Votre code (ex: MARTIN42)" class="w-full p-3 rounded-xl border border-slate-200 outline-none text-slate-800 font-bold focus:border-violet text-center uppercase tracking-widest">
+                    <button onclick="chargerTicket()" class="bg-violet text-white font-bold px-6 rounded-xl shadow-sm hover:bg-prune transition-colors">Voir</button>
                 </div>
                 
-                <div id="ticket-details" class="hidden bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                <div id="ticket-details" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                     <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
-                        <h3 id="td-sujet" class="text-xl font-black text-slate-800">Sujet</h3>
-                        <span id="td-statut" class="px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wide">Statut</span>
+                        <h3 id="td-sujet" class="text-lg font-extrabold text-violet">Sujet</h3>
+                        <span id="td-statut" class="px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide border">Statut</span>
                     </div>
-                    <div id="td-conversation" class="space-y-4 mb-6 max-h-64 overflow-y-auto pr-2 custom-scrollbar"></div>
+                    <div id="td-conversation" class="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar"></div>
                     <div id="td-reponse-box" class="space-y-3 pt-4 border-t border-slate-100">
-                        <textarea id="td-nouvelle-reponse" rows="2" placeholder="Ajouter une réponse..." class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-ciel font-bold text-sm resize-none"></textarea>
-                        <button onclick="repondreTicket()" class="w-full bg-slate-800 text-white font-black py-3 rounded-xl">Envoyer la réponse</button>
+                        <textarea id="td-nouvelle-reponse" rows="2" placeholder="Ajouter une réponse..." class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-violet font-semibold text-sm resize-none"></textarea>
+                        <button onclick="repondreTicket()" class="w-full bg-slate-800 text-white font-bold py-2.5 rounded-xl text-sm">Envoyer la réponse</button>
                     </div>
                 </div>
-                <p id="ticket-erreur" class="text-center font-black text-fraise mt-4 hidden">Ticket introuvable, vérifiez votre code.</p>
+                <p id="ticket-erreur" class="text-center font-bold text-red-500 mt-4 text-sm hidden">Ticket introuvable, vérifiez votre code.</p>
             </div>
         </div>
 
     </main>
 
+    <footer class="bg-slate-800 text-slate-300 text-center py-8 mt-8 font-semibold text-sm"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
+
     <style>
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); border-radius: 10px;}
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px;}
     </style>
@@ -134,9 +136,9 @@
             const conteneur = document.getElementById('liste-autres-contacts');
             if (autres && autres.length > 0) {
                 conteneur.innerHTML = autres.map(c => `
-                    <div class="bg-white p-6 rounded-3xl border border-slate-100 flex flex-col justify-center items-center text-center shadow-sm">
-                        <span class="font-black text-slate-800 text-lg mb-2">${c.nom}</span>
-                        <span class="text-slate-600 font-bold bg-slate-50 px-4 py-2 rounded-xl text-sm border border-slate-100">${c.valeur}</span>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 flex flex-col justify-center items-center text-center shadow-sm">
+                        <span class="font-extrabold text-slate-800 text-base mb-1">${c.nom}</span>
+                        <span class="text-slate-500 font-medium text-sm">${c.valeur}</span>
                     </div>
                 `).join('');
             }
@@ -148,11 +150,11 @@
             document.getElementById(`onglet-${onglet}`).classList.remove('hidden');
             
             if(onglet === 'creer') {
-                document.getElementById('btn-creer').className = "px-6 py-2 rounded-full font-black bg-ciel text-white shadow-md";
-                document.getElementById('btn-suivre').className = "px-6 py-2 rounded-full font-black bg-white text-ciel border-2 border-ciel/30 hover:bg-ciel/5 transition-colors";
+                document.getElementById('btn-creer').className = "px-5 py-2 rounded-lg font-bold bg-violet text-white shadow-sm text-sm";
+                document.getElementById('btn-suivre').className = "px-5 py-2 rounded-lg font-bold bg-white text-violet border border-violet/20 hover:bg-violet/5 transition-colors text-sm";
             } else {
-                document.getElementById('btn-suivre').className = "px-6 py-2 rounded-full font-black bg-ciel text-white shadow-md";
-                document.getElementById('btn-creer').className = "px-6 py-2 rounded-full font-black bg-white text-ciel border-2 border-ciel/30 hover:bg-ciel/5 transition-colors";
+                document.getElementById('btn-suivre').className = "px-5 py-2 rounded-lg font-bold bg-violet text-white shadow-sm text-sm";
+                document.getElementById('btn-creer').className = "px-5 py-2 rounded-lg font-bold bg-white text-violet border border-violet/20 hover:bg-violet/5 transition-colors text-sm";
             }
         }
 
@@ -172,19 +174,17 @@
             const conversation = [{ auteur: nom, texte: msg, date: date }];
 
             const conteneurMsg = document.getElementById('ticket-creation-msg');
-            conteneurMsg.innerHTML = `<span class="text-ciel">Envoi en cours...</span>`;
+            conteneurMsg.innerHTML = `<span class="text-violet">Envoi en cours...</span>`;
 
-            // Enregistrement initial avec le statut "En attente de traitement"
             const { error } = await _supabase.from('tickets').insert([{ code, nom, sujet, statut: 'En attente de traitement', conversation }]);
             
             if(error) {
-                conteneurMsg.innerHTML = `<span class="text-fraise">❌ Erreur technique. RLS de Supabase ? (${error.message})</span>`;
+                conteneurMsg.innerHTML = `<span class="text-red-500">❌ Erreur technique. RLS de Supabase ? (${error.message})</span>`;
             } else {
-                conteneurMsg.innerHTML = `<div class="bg-white p-6 rounded-2xl shadow-sm border-2 border-menthe text-slate-700">
-                    <span class="text-2xl block mb-2">✅</span>
+                conteneurMsg.innerHTML = `<div class="bg-green-50 p-4 rounded-xl border border-green-200 text-green-800 text-sm">
                     Votre demande a bien été envoyée.<br>Nous reviendrons vers vous dans les 24 à 48h.<br>
-                    <span class="block mt-4 text-sm text-slate-500">Votre code de suivi personnel :</span>
-                    <span class="text-3xl font-black tracking-widest text-ciel">${code}</span>
+                    <span class="block mt-2 text-xs text-green-700">Votre code de suivi personnel :</span>
+                    <span class="text-xl font-black tracking-widest text-green-900">${code}</span>
                 </div>`;
                 document.getElementById('ticket-nom').value = '';
                 document.getElementById('ticket-sujet').value = '';
@@ -210,18 +210,18 @@
             
             const badge = document.getElementById('td-statut');
             badge.innerText = data.statut;
-            badge.className = "px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wide ";
-            if(data.statut === 'Clos') badge.className += "bg-slate-200 text-slate-500";
-            else if(data.statut === 'En attente de traitement' || data.statut === 'En attente') badge.className += "bg-soleil/30 text-orange-800";
-            else badge.className += "bg-menthe/30 text-emerald-800";
+            badge.className = "px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide border ";
+            if(data.statut === 'Clos') badge.className += "bg-slate-100 text-slate-500 border-slate-200";
+            else if(data.statut === 'En attente de traitement' || data.statut === 'En attente') badge.className += "bg-amber-50 text-amber-700 border-amber-200";
+            else badge.className += "bg-emerald-50 text-emerald-700 border-emerald-200";
 
             const convBox = document.getElementById('td-conversation');
             convBox.innerHTML = (data.conversation || []).map(m => {
                 const isVisiteur = (m.auteur === ticketActuelNom || m.auteur === 'Visiteur');
                 return `
                 <div class="flex flex-col ${isVisiteur ? 'items-end' : 'items-start'}">
-                    <span class="text-[10px] font-bold text-slate-400 mb-1 px-2">${m.auteur} - ${m.date}</span>
-                    <div class="max-w-[85%] px-4 py-3 rounded-2xl text-sm font-bold shadow-sm ${isVisiteur ? 'bg-ciel text-white rounded-tr-none' : 'bg-slate-100 text-slate-700 rounded-tl-none border border-slate-200'}">
+                    <span class="text-[10px] font-semibold text-slate-400 mb-1 px-1">${m.auteur} - ${m.date}</span>
+                    <div class="max-w-[85%] px-3 py-2 rounded-xl text-sm shadow-sm ${isVisiteur ? 'bg-violet text-white rounded-tr-none' : 'bg-slate-100 text-slate-700 rounded-tl-none border border-slate-200'}">
                         ${m.texte.replace(/\n/g, '<br>')}
                     </div>
                 </div>
