@@ -4,102 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paroisse Saint-François d'Assise - Domérat</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { theme: { extend: { colors: { ciel: '#0ea5e9', soleil: '#fdba74', menthe: '#34d399', fraise: '#fb7185', fond: '#f8fafc', nuit: '#1e293b' }, fontFamily: { sans: ['Nunito', 'sans-serif'] } } } }
+        tailwind.config = { theme: { extend: { colors: { violet: '#4c1d95', prune: '#701a75', or: '#eab308', fond: '#f8fafc', texte: '#334155' }, fontFamily: { sans: ['Nunito', 'sans-serif'] } } } }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>.quill-content img { border-radius: 1rem; margin-top: 1rem; margin-bottom: 1rem; max-height: 400px; width: auto; }</style>
+    <style>.quill-content img { border-radius: 0.5rem; margin: 1rem 0; max-height: 400px; width: auto; }</style>
 </head>
-<body class="bg-fond text-slate-700 font-sans min-h-screen">
+<body class="bg-fond text-texte font-sans min-h-screen">
 
-    <header class="bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b-[3px] border-ciel/20">
-        <div class="max-w-6xl mx-auto px-6 py-3 flex flex-col md:flex-row justify-between items-center">
-            <div class="flex items-center gap-3 group cursor-pointer hover:scale-105 transition-transform">
-                <div class="bg-soleil text-nuit p-2.5 rounded-full shadow-lg shadow-soleil/30 transform rotate-[-10deg] group-hover:rotate-0 transition-all">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 3v18m-6-12h12"></path></svg>
+    <header class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-violet/10">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-violet text-or p-2 rounded-xl shadow-md">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v18m-6-12h12"></path></svg>
                 </div>
-                <div><span class="text-2xl font-black text-slate-800 tracking-tight">Saint-François d'Assise</span></div>
+                <div><span class="text-2xl font-extrabold text-violet tracking-tight">Saint-François d'Assise</span></div>
             </div>
-            <nav class="mt-4 md:mt-0 flex gap-6 text-base font-bold text-slate-500">
-                <a href="/" class="text-nuit border-b-[3px] border-soleil pb-1">Accueil</a>
-                <a href="/messes" class="hover:text-ciel hover:-translate-y-1 transition-all">Messes</a>
-                <a href="/horaires" class="hover:text-ciel hover:-translate-y-1 transition-all">Ouverture Églises</a>
-                <a href="/contact" class="hover:text-ciel hover:-translate-y-1 transition-all">Contact / Aide</a>
+            <nav class="mt-4 md:mt-0 flex gap-8 text-base font-bold text-slate-500">
+                <a href="/" class="text-violet border-b-2 border-violet pb-1">Accueil</a>
+                <a href="/messes" class="hover:text-violet transition-colors">Messes</a>
+                <a href="/horaires" class="hover:text-violet transition-colors">Ouverture Églises</a>
+                <a href="/contact" class="hover:text-violet transition-colors">Contact / Aide</a>
             </nav>
         </div>
     </header>
 
-    <div class="hero-section text-white py-32 px-4 text-center border-b-[8px] border-soleil relative overflow-hidden">
+    <div class="hero-section text-white py-28 px-4 text-center border-b-4 border-or relative overflow-hidden">
         <div class="relative z-10">
-            <h1 class="text-5xl md:text-7xl font-black mb-4 drop-shadow-lg tracking-tight">Bienvenue chez vous !</h1>
-            <p class="max-w-2xl mx-auto text-xl md:text-3xl text-white drop-shadow-md font-bold">Joie, prière et partage au cœur de notre région.</p>
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-4 drop-shadow-md">Bienvenue chez vous.</h1>
+            <p class="max-w-2xl mx-auto text-xl md:text-2xl text-white/90 drop-shadow font-semibold">Joie, prière et partage au cœur de notre région.</p>
         </div>
     </div>
 
     <div class="max-w-6xl mx-auto px-6 mt-8">
-        <div class="bg-white border border-slate-100 rounded-2xl px-6 py-4 flex flex-col md:flex-row items-center justify-center gap-3 text-lg font-bold text-slate-600 shadow-sm">
-            <span class="text-2xl">✨</span>
+        <div class="bg-white border border-slate-200 rounded-xl px-6 py-4 flex flex-col md:flex-row items-center justify-center gap-3 text-lg font-semibold text-slate-600 shadow-sm">
+            <span class="text-xl">🗓️</span>
             <span>Aujourd'hui nous fêtons :</span>
-            <span id="saint-du-jour" class="text-slate-800 text-xl bg-soleil/30 px-4 py-1 rounded-full">Chargement...</span>
+            <span id="saint-du-jour" class="text-violet font-bold bg-violet/5 px-4 py-1 rounded-lg">Chargement...</span>
         </div>
     </div>
 
     <main class="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-10">
+        
+        <!-- COLONNE GAUCHE -->
         <div class="lg:col-span-2 space-y-10">
             <section>
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="bg-fraise/20 text-fraise p-3 rounded-2xl"><span class="text-3xl leading-none">📢</span></div>
-                    <h2 class="text-3xl font-black text-slate-800 tracking-tight">À la une !</h2>
+                <div class="flex items-center gap-4 mb-6 border-b border-slate-200 pb-3">
+                    <span class="text-3xl">📰</span>
+                    <h2 class="text-3xl font-extrabold text-violet tracking-tight">Actualités de la paroisse</h2>
                 </div>
-                <div id="actualites-container" class="grid gap-8"><p class="text-slate-400 font-bold italic">Chargement...</p></div>
+                <div id="actualites-container" class="grid gap-6"><p class="text-slate-400 font-semibold italic">Chargement...</p></div>
             </section>
 
-            <section class="bg-ciel/10 p-8 md:p-10 rounded-[2.5rem] shadow-sm relative overflow-hidden border border-ciel/20">
-                <h3 class="text-3xl font-black mb-2 relative z-10 flex items-center gap-3 text-slate-800">Boîte à Bonnes Ondes</h3>
-                <p class="mb-8 font-bold text-slate-600 relative z-10 text-lg">Un merci, une prière... Partagez votre joie !</p>
+            <section class="bg-gradient-to-br from-violet to-prune p-8 md:p-10 rounded-2xl shadow-lg relative overflow-hidden text-white">
+                <h3 class="text-2xl font-extrabold mb-2 relative z-10 flex items-center gap-3">✨ Boîte à Bonnes Ondes</h3>
+                <p class="mb-6 font-semibold text-violet-100 relative z-10">Un merci, une prière... Partagez un instant de joie avec la communauté.</p>
                 <div class="flex flex-col md:flex-row gap-8 relative z-10">
-                    <div class="w-full md:w-2/5 space-y-4">
-                        <input type="text" id="bo-prenom" placeholder="Votre prénom" class="w-full p-4 rounded-2xl outline-none text-slate-800 font-bold focus:ring-4 focus:ring-soleil/50 transition-all border border-slate-200">
-                        <textarea id="bo-message" rows="4" placeholder="Votre petit mot ici..." class="w-full p-4 rounded-2xl outline-none text-slate-800 font-bold focus:ring-4 focus:ring-soleil/50 transition-all resize-none border border-slate-200"></textarea>
-                        <button onclick="envoyerOnde()" class="w-full bg-soleil text-nuit font-black text-xl py-4 rounded-2xl shadow-sm hover:scale-105 transition-transform">Envoyer !</button>
-                        <p id="bo-msg" class="text-lg font-black text-center text-menthe mt-2"></p>
+                    <div class="w-full md:w-2/5 space-y-3">
+                        <input type="text" id="bo-prenom" placeholder="Votre prénom" class="w-full p-3 rounded-xl outline-none text-slate-800 font-semibold focus:ring-2 focus:ring-or transition-shadow">
+                        <textarea id="bo-message" rows="3" placeholder="Votre petit mot ici..." class="w-full p-3 rounded-xl outline-none text-slate-800 font-semibold focus:ring-2 focus:ring-or transition-shadow resize-none"></textarea>
+                        <button onclick="envoyerOnde()" class="w-full bg-or text-white font-extrabold text-lg py-3 rounded-xl shadow-md hover:bg-yellow-500 transition-colors">Envoyer</button>
+                        <p id="bo-msg" class="text-sm font-bold text-center mt-2"></p>
                     </div>
-                    <div class="w-full md:w-3/5 max-h-[320px] overflow-y-auto space-y-4 pr-3 custom-scrollbar" id="bo-liste"></div>
+                    <div class="w-full md:w-3/5 max-h-[250px] overflow-y-auto space-y-3 pr-2 custom-scrollbar" id="bo-liste"></div>
                 </div>
             </section>
         </div>
 
+        <!-- COLONNE DROITE -->
         <div class="space-y-10">
-            <!-- Prochaines Messes -->
-            <section class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 border-t-[6px] border-menthe/50">
+            <section class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet">
                 <div class="flex items-center gap-3 mb-6">
-                    <div class="bg-menthe/20 text-menthe p-2 rounded-xl"><span class="text-2xl">🌿</span></div>
-                    <h3 class="text-2xl font-black text-slate-800">Prochaines Messes</h3>
+                    <span class="text-2xl">⛪</span>
+                    <h3 class="text-xl font-extrabold text-violet">Prochaines Messes</h3>
                 </div>
                 <div id="messes-container" class="space-y-4 mb-6"></div>
-                <a href="/messes" class="block text-center font-black text-menthe bg-menthe/10 py-4 rounded-2xl hover:bg-menthe hover:text-white transition-colors text-lg">Voir tout l'agenda ➔</a>
+                <a href="/messes" class="block text-center font-bold text-violet bg-violet/5 py-3 rounded-xl hover:bg-violet hover:text-white transition-colors">Voir l'agenda complet ➔</a>
             </section>
 
-            <!-- Contactez-nous -->
-            <section class="bg-gradient-to-br from-nuit to-slate-800 text-white p-8 md:p-10 rounded-[2.5rem] shadow-xl relative overflow-hidden group">
-                <div class="absolute -right-10 -bottom-10 opacity-10 group-hover:scale-110 transition-transform duration-500">
-                    <svg class="w-40 h-40" fill="currentColor" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
-                </div>
-                <h3 class="text-3xl font-black mb-3 relative z-10 flex items-center gap-3">Contactez-nous</h3>
-                <p class="text-slate-300 mb-8 font-bold leading-relaxed relative z-10">Le presbytère est à votre écoute pour toute demande de baptême, mariage, ou simplement pour échanger.</p>
-                <a href="/contact" class="inline-block bg-soleil text-nuit px-8 py-3 rounded-2xl font-black text-lg hover:bg-orange-300 transition-colors shadow-md relative z-10 hover:-translate-y-1">Nous écrire</a>
+            <section class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-or">
+                <h3 class="text-xl font-extrabold text-slate-800 mb-3 flex items-center gap-3">📞 Contactez-nous</h3>
+                <p class="text-slate-600 mb-6 font-medium leading-relaxed">Le presbytère est à votre écoute pour toute demande de baptême, mariage, ou simplement pour échanger.</p>
+                <a href="/contact" class="inline-block bg-slate-800 text-white px-6 py-3 rounded-xl font-bold hover:bg-violet transition-colors shadow-md w-full text-center">Nous écrire</a>
             </section>
         </div>
     </main>
 
-    <footer class="bg-slate-100 text-slate-500 text-center py-10 mt-12 font-bold"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
+    <footer class="bg-slate-800 text-slate-300 text-center py-8 mt-8 font-semibold text-sm"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
 
     <style>
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 10px;}
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px;}
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px;}
     </style>
 
     <script>
@@ -108,7 +106,7 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const imageUrl = `${SUPABASE_URL}/storage/v1/object/public/images/accueil.jpg?t=${new Date().getTime()}`;
-        document.querySelector('.hero-section').style.backgroundImage = `linear-gradient(to right, rgba(14, 165, 233, 0.7), rgba(253, 186, 116, 0.5)), url('${imageUrl}')`;
+        document.querySelector('.hero-section').style.backgroundImage = `linear-gradient(to right, rgba(76, 29, 149, 0.8), rgba(112, 26, 117, 0.6)), url('${imageUrl}')`;
         document.querySelector('.hero-section').style.backgroundSize = 'cover';
         document.querySelector('.hero-section').style.backgroundPosition = 'center';
 
@@ -120,20 +118,19 @@
             const c = document.getElementById('actualites-container');
             if (!data || data.length===0) { c.innerHTML = '<p class="text-slate-500">Aucune actualité.</p>'; return; }
             c.innerHTML = data.map(actu => `
-                <article class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 hover:shadow-md transition-all">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-slate-100 pb-4">
-                        <h3 class="text-2xl font-black text-slate-800">${actu.titre}</h3>
-                        <span class="bg-ciel/10 text-ciel text-sm font-bold px-4 py-2 rounded-full whitespace-nowrap">
+                <article class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-100">
+                        <h3 class="text-2xl font-bold text-violet">${actu.titre}</h3>
+                        <span class="bg-violet/5 text-violet text-xs font-bold px-3 py-1.5 rounded-lg whitespace-nowrap">
                             📅 ${actu.date_publication ? new Date(actu.date_publication).toLocaleDateString('fr-FR') : 'Récent'}
                         </span>
                     </div>
-                    <div class="text-slate-600 font-medium leading-relaxed quill-content text-lg">${actu.contenu}</div>
+                    <div class="text-slate-600 font-medium leading-relaxed quill-content">${actu.contenu}</div>
                 </article>
             `).join('');
         }
 
         async function chargerMesses() {
-            // L'INTELLIGENCE DE L'HEURE : On récupère l'heure et la minute actuelles
             const today = new Date(); 
             const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
             const currentMins = today.getHours() * 60 + today.getMinutes();
@@ -142,12 +139,11 @@
             const c = document.getElementById('messes-container');
             
             if (data && data.length > 0) {
-                // On filtre les messes pour exclure celles qui sont passées aujourd'hui
                 const messesFutures = data.filter(m => {
                     if (m.jour > todayStr) return true; 
                     if (m.jour === todayStr && m.heure) {
                         const [h, min] = m.heure.split(':').map(Number);
-                        return (h * 60 + min) >= currentMins; // Si c'est passé, on l'enlève !
+                        return (h * 60 + min) >= currentMins; 
                     }
                     return true;
                 }).slice(0, 4);
@@ -156,21 +152,21 @@
                     c.innerHTML = messesFutures.map(m => {
                         let dFr = m.jour; if(m.jour && m.jour.includes('-')) { const d = new Date(m.jour); dFr = d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }); dFr = dFr.charAt(0).toUpperCase() + dFr.slice(1); }
                         return `
-                        <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-transparent hover:border-menthe/30 transition-all cursor-default">
-                            <div class="bg-white shadow-sm border border-slate-100 text-center rounded-xl p-2 min-w-[70px]">
-                                <div class="text-menthe font-black text-sm uppercase">${dFr.split(' ')[0]}</div>
-                                <div class="text-slate-800 font-black text-xl">${dFr.split(' ')[1]}</div>
+                        <div class="flex items-center gap-4 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                            <div class="bg-white shadow-sm border border-slate-200 text-center rounded-lg p-2 min-w-[65px]">
+                                <div class="text-violet font-bold text-xs uppercase">${dFr.split(' ')[0]}</div>
+                                <div class="text-slate-800 font-extrabold text-lg">${dFr.split(' ')[1]}</div>
                             </div>
                             <div>
-                                <div class="font-black text-slate-800 text-lg">${m.heure}</div>
-                                <div class="text-slate-500 font-bold text-sm">${m.lieu.split('–')[0]}</div>
+                                <div class="font-extrabold text-slate-800">${m.heure}</div>
+                                <div class="text-slate-500 font-semibold text-sm">${m.lieu.split('–')[0]}</div>
                             </div>
                         </div>`;
                     }).join('');
                 } else {
-                    c.innerHTML = '<p class="text-slate-500 font-bold">Toutes les messes d\'aujourd\'hui sont passées.</p>';
+                    c.innerHTML = '<p class="text-slate-500 font-medium text-sm">Toutes les messes d\'aujourd\'hui sont passées.</p>';
                 }
-            } else { c.innerHTML = '<p class="text-slate-500 font-bold">Aucune messe prévue prochainement.</p>'; }
+            } else { c.innerHTML = '<p class="text-slate-500 font-medium text-sm">Aucune messe prévue prochainement.</p>'; }
         }
 
         async function envoyerOnde() {
@@ -184,12 +180,12 @@
             const c = document.getElementById('bo-liste');
             if (data && data.length > 0) {
                 c.innerHTML = data.map(o => `
-                    <div class="bg-white p-5 rounded-2xl border border-ciel/20 shadow-sm">
-                        <p class="font-bold text-lg leading-snug text-slate-700">"${o.message}"</p>
-                        <p class="text-right text-sm font-black text-soleil mt-2">— ${o.prenom}</p>
+                    <div class="bg-white/10 backdrop-blur p-4 rounded-xl border border-white/20 shadow-sm">
+                        <p class="font-semibold text-sm leading-snug">"${o.message}"</p>
+                        <p class="text-right text-xs font-bold text-or mt-2">— ${o.prenom}</p>
                     </div>
                 `).join('');
-            } else { c.innerHTML = '<p class="text-slate-500 font-bold">Soyez le premier à écrire !</p>'; }
+            } else { c.innerHTML = '<p class="text-white/60 font-medium text-sm">Soyez le premier à écrire !</p>'; }
         }
 
         chargerActualites(); chargerMesses(); chargerOndes();
