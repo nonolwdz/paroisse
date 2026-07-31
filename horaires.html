@@ -11,7 +11,13 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-fond text-texte font-sans min-h-screen flex flex-col">
+<body class="bg-fond text-texte font-sans min-h-screen flex flex-col relative">
+
+    <div id="maintenance-overlay" class="fixed inset-0 bg-violet z-[100] flex flex-col items-center justify-center text-white hidden">
+        <span class="text-6xl mb-6 animate-pulse">🚧</span>
+        <h1 class="text-4xl font-extrabold mb-4 text-center px-4">Site en maintenance</h1>
+        <p id="maintenance-msg" class="text-xl font-medium text-center px-6 max-w-2xl text-violet-200">Nous revenons vite.</p>
+    </div>
 
     <header class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-violet/10">
         <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
@@ -21,8 +27,9 @@
                 </div>
                 <div><span class="text-2xl font-extrabold text-violet tracking-tight">Saint-François d'Assise</span></div>
             </div>
-            <nav class="mt-4 md:mt-0 flex gap-8 text-base font-bold text-slate-500">
+            <nav class="mt-4 md:mt-0 flex flex-wrap justify-center gap-x-6 gap-y-2 text-base font-bold text-slate-500">
                 <a href="/" class="hover:text-violet transition-colors">Accueil</a>
+                <a href="/actualites" class="hover:text-violet transition-colors">Actualités</a>
                 <a href="/messes" class="hover:text-violet transition-colors">Messes</a>
                 <a href="/horaires" class="text-violet border-b-2 border-violet pb-1">Ouverture Églises</a>
                 <a href="/contact" class="hover:text-violet transition-colors">Contact / Aide</a>
@@ -57,6 +64,18 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let eglisesData = [];
+
+        async function checkMaintenance() {
+            try {
+                const { data } = await _supabase.from('site_config').select('*').eq('id', 1).single();
+                if (data && data.est_en_pause) {
+                    document.getElementById('maintenance-msg').innerText = data.message_pause || "Le site est actuellement en pause. Merci de votre patience.";
+                    document.getElementById('maintenance-overlay').classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                }
+            } catch(e) {}
+        }
+        checkMaintenance();
 
         function getStatut(e) {
             if (e.est_ferme) return { text: "Fermeture exceptionnelle", color: "bg-red-50 text-red-600 border border-red-200", isOpen: false };
