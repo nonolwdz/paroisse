@@ -76,7 +76,6 @@
 
             <!-- Onglet Créer -->
             <div id="onglet-creer" class="max-w-2xl mx-auto space-y-4">
-                <!-- NOUVEAU : Nom & Prénom -->
                 <input type="text" id="ticket-nom" placeholder="Votre Nom et Prénom..." class="w-full p-4 rounded-2xl border-none outline-none text-slate-800 font-bold focus:ring-4 focus:ring-ciel/30">
                 <input type="text" id="ticket-sujet" placeholder="Sujet (ex: Erreur d'horaire, Demande de document...)" class="w-full p-4 rounded-2xl border-none outline-none text-slate-800 font-bold focus:ring-4 focus:ring-ciel/30">
                 <textarea id="ticket-message" rows="5" placeholder="Votre message détaillé..." class="w-full p-4 rounded-2xl border-none outline-none text-slate-800 font-bold focus:ring-4 focus:ring-ciel/30 resize-none"></textarea>
@@ -94,7 +93,7 @@
                 <div id="ticket-details" class="hidden bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
                     <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
                         <h3 id="td-sujet" class="text-xl font-black text-slate-800">Sujet</h3>
-                        <span id="td-statut" class="px-4 py-1 rounded-full text-xs font-black uppercase tracking-wide">Statut</span>
+                        <span id="td-statut" class="px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wide">Statut</span>
                     </div>
                     <div id="td-conversation" class="space-y-4 mb-6 max-h-64 overflow-y-auto pr-2 custom-scrollbar"></div>
                     <div id="td-reponse-box" class="space-y-3 pt-4 border-t border-slate-100">
@@ -164,10 +163,9 @@
             
             if(!nom || !sujet || !msg) return alert("Veuillez remplir tous les champs.");
             
-            // Création du code : NOM (6 premières lettres max) + 2 chiffres
             let nomSansEspace = nom.replace(/[^a-zA-Z]/g, '').substring(0, 6).toUpperCase();
             if(nomSansEspace.length === 0) nomSansEspace = "TICKET";
-            const chiffres = Math.floor(Math.random() * 90 + 10); // de 10 à 99
+            const chiffres = Math.floor(Math.random() * 90 + 10);
             const code = nomSansEspace + chiffres;
 
             const date = new Date().toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'});
@@ -176,10 +174,11 @@
             const conteneurMsg = document.getElementById('ticket-creation-msg');
             conteneurMsg.innerHTML = `<span class="text-ciel">Envoi en cours...</span>`;
 
-            const { error } = await _supabase.from('tickets').insert([{ code, nom, sujet, statut: 'Nouveau', conversation }]);
+            // Enregistrement initial avec le statut "En attente de traitement"
+            const { error } = await _supabase.from('tickets').insert([{ code, nom, sujet, statut: 'En attente de traitement', conversation }]);
             
             if(error) {
-                conteneurMsg.innerHTML = `<span class="text-fraise">❌ Erreur de base de données. Avez-vous exécuté le script SQL ? (${error.message})</span>`;
+                conteneurMsg.innerHTML = `<span class="text-fraise">❌ Erreur technique. RLS de Supabase ? (${error.message})</span>`;
             } else {
                 conteneurMsg.innerHTML = `<div class="bg-white p-6 rounded-2xl shadow-sm border-2 border-menthe text-slate-700">
                     <span class="text-2xl block mb-2">✅</span>
@@ -211,20 +210,22 @@
             
             const badge = document.getElementById('td-statut');
             badge.innerText = data.statut;
-            badge.className = "px-4 py-1 rounded-full text-xs font-black uppercase tracking-wide ";
+            badge.className = "px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wide ";
             if(data.statut === 'Clos') badge.className += "bg-slate-200 text-slate-500";
-            else if(data.statut === 'Nouveau' || data.statut === 'En attente') badge.className += "bg-soleil/20 text-orange-600";
-            else badge.className += "bg-menthe/20 text-emerald-700";
+            else if(data.statut === 'En attente de traitement' || data.statut === 'En attente') badge.className += "bg-soleil/30 text-orange-800";
+            else badge.className += "bg-menthe/30 text-emerald-800";
 
             const convBox = document.getElementById('td-conversation');
-            convBox.innerHTML = (data.conversation || []).map(m => `
-                <div class="flex flex-col ${m.auteur === 'Paroisse' ? 'items-start' : 'items-end'}">
+            convBox.innerHTML = (data.conversation || []).map(m => {
+                const isVisiteur = (m.auteur === ticketActuelNom || m.auteur === 'Visiteur');
+                return `
+                <div class="flex flex-col ${isVisiteur ? 'items-end' : 'items-start'}">
                     <span class="text-[10px] font-bold text-slate-400 mb-1 px-2">${m.auteur} - ${m.date}</span>
-                    <div class="max-w-[85%] px-4 py-3 rounded-2xl text-sm font-bold shadow-sm ${m.auteur === 'Paroisse' ? 'bg-slate-100 text-slate-700 rounded-tl-none border border-slate-200' : 'bg-ciel text-white rounded-tr-none'}">
+                    <div class="max-w-[85%] px-4 py-3 rounded-2xl text-sm font-bold shadow-sm ${isVisiteur ? 'bg-ciel text-white rounded-tr-none' : 'bg-slate-100 text-slate-700 rounded-tl-none border border-slate-200'}">
                         ${m.texte.replace(/\n/g, '<br>')}
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
             convBox.scrollTop = convBox.scrollHeight;
 
             if(data.statut === 'Clos') document.getElementById('td-reponse-box').classList.add('hidden');
@@ -239,7 +240,7 @@
             let conv = data.conversation || [];
             conv.push({ auteur: ticketActuelNom, texte: reponse, date: new Date().toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'}) });
 
-            await _supabase.from('tickets').update({ conversation: conv, statut: 'En attente' }).eq('code', ticketActuelCode);
+            await _supabase.from('tickets').update({ conversation: conv, statut: 'En attente de traitement' }).eq('code', ticketActuelCode);
             document.getElementById('td-nouvelle-reponse').value = '';
             chargerTicket();
         }
