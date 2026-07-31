@@ -11,7 +11,13 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-fond text-texte font-sans min-h-screen flex flex-col">
+<body class="bg-fond text-texte font-sans min-h-screen flex flex-col relative">
+
+    <div id="maintenance-overlay" class="fixed inset-0 bg-violet z-[100] flex flex-col items-center justify-center text-white hidden">
+        <span class="text-6xl mb-6 animate-pulse">🚧</span>
+        <h1 class="text-4xl font-extrabold mb-4 text-center px-4">Site en maintenance</h1>
+        <p id="maintenance-msg" class="text-xl font-medium text-center px-6 max-w-2xl text-violet-200">Nous revenons vite.</p>
+    </div>
 
     <header class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-violet/10">
         <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
@@ -21,8 +27,9 @@
                 </div>
                 <div><span class="text-2xl font-extrabold text-violet tracking-tight">Saint-François d'Assise</span></div>
             </div>
-            <nav class="mt-4 md:mt-0 flex gap-8 text-base font-bold text-slate-500">
+            <nav class="mt-4 md:mt-0 flex flex-wrap justify-center gap-x-6 gap-y-2 text-base font-bold text-slate-500">
                 <a href="/" class="hover:text-violet transition-colors">Accueil</a>
+                <a href="/actualites" class="hover:text-violet transition-colors">Actualités</a>
                 <a href="/messes" class="hover:text-violet transition-colors">Messes</a>
                 <a href="/horaires" class="hover:text-violet transition-colors">Ouverture Églises</a>
                 <a href="/contact" class="text-violet border-b-2 border-violet pb-1">Contact / Aide</a>
@@ -65,9 +72,9 @@
         </div>
 
         <!-- LE SYSTEME DE TICKETS -->
-        <div class="bg-violet/5 p-8 md:p-10 rounded-2xl border border-violet/10">
+        <div class="bg-violet/5 p-8 md:p-10 rounded-2xl border border-violet/10" id="zone-tickets">
             <h2 class="text-2xl font-extrabold text-violet text-center mb-2">Une question ? Une suggestion ?</h2>
-            <p class="text-slate-600 font-medium text-center mb-8 text-sm">Exprimez-vous ici, nous vous répondrons dans les 24 à 48h.</p>
+            <p class="text-slate-600 font-medium text-center mb-8 text-sm">Laissez nous votre demande, une équipe reviendra vers vous dans les plus brefs délais.</p>
             
             <div class="flex justify-center gap-3 mb-8">
                 <button onclick="voirOnglet('creer')" id="btn-creer" class="px-5 py-2 rounded-lg font-bold bg-violet text-white shadow-sm text-sm">Nouveau message</button>
@@ -121,6 +128,18 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let ticketActuelCode = null;
         let ticketActuelNom = "";
+
+        async function checkMaintenance() {
+            try {
+                const { data } = await _supabase.from('site_config').select('*').eq('id', 1).single();
+                if (data && data.est_en_pause) {
+                    document.getElementById('maintenance-msg').innerText = data.message_pause || "Le site est actuellement en pause. Merci de votre patience.";
+                    document.getElementById('maintenance-overlay').classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                }
+            } catch(e) {}
+        }
+        checkMaintenance();
 
         async function chargerContacts() {
             const { data } = await _supabase.from('contact_info').select('*').eq('id', 1).single();
@@ -176,19 +195,24 @@
             const conteneurMsg = document.getElementById('ticket-creation-msg');
             conteneurMsg.innerHTML = `<span class="text-violet">Envoi en cours...</span>`;
 
+            // Enregistrement initial avec le statut "En attente de traitement"
             const { error } = await _supabase.from('tickets').insert([{ code, nom, sujet, statut: 'En attente de traitement', conversation }]);
             
             if(error) {
                 conteneurMsg.innerHTML = `<span class="text-red-500">❌ Erreur technique. RLS de Supabase ? (${error.message})</span>`;
             } else {
-                conteneurMsg.innerHTML = `<div class="bg-green-50 p-4 rounded-xl border border-green-200 text-green-800 text-sm">
-                    Votre demande a bien été envoyée.<br>Nous reviendrons vers vous dans les 24 à 48h.<br>
-                    <span class="block mt-2 text-xs text-green-700">Votre code de suivi personnel :</span>
-                    <span class="text-xl font-black tracking-widest text-green-900">${code}</span>
-                </div>`;
+                // BASCULE AUTOMATIQUE VERS L'ONGLET SUIVI
                 document.getElementById('ticket-nom').value = '';
                 document.getElementById('ticket-sujet').value = '';
                 document.getElementById('ticket-message').value = '';
+                document.getElementById('ticket-creation-msg').innerHTML = '';
+                
+                document.getElementById('ticket-code').value = code;
+                voirOnglet('suivre');
+                await chargerTicket();
+                
+                // Petit défilement vers la zone des tickets
+                document.getElementById('zone-tickets').scrollIntoView({ behavior: 'smooth' });
             }
         }
 
