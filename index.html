@@ -14,7 +14,6 @@
 </head>
 <body class="bg-fond text-texte font-sans min-h-screen relative">
 
-    <!-- OVERLAY MAINTENANCE -->
     <div id="maintenance-overlay" class="fixed inset-0 bg-violet z-[100] flex flex-col items-center justify-center text-white hidden">
         <span class="text-6xl mb-6 animate-pulse">🚧</span>
         <h1 class="text-4xl font-extrabold mb-4 text-center px-4">Site en maintenance</h1>
@@ -39,7 +38,6 @@
         </div>
     </header>
 
-    <!-- FADE IN BACKGROUND IMAGE -->
     <div class="hero-section bg-violet py-28 px-4 text-center border-b-4 border-or relative overflow-hidden">
         <div id="hero-bg" class="absolute inset-0 z-0 transition-opacity duration-1000 opacity-0"></div>
         <div class="relative z-10 text-white">
@@ -57,9 +55,7 @@
     </div>
 
     <main class="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-10">
-        
         <div class="lg:col-span-2 space-y-10">
-            <!-- ACTUALITÉS (LIMITÉ À 3) -->
             <section>
                 <div class="flex items-center gap-4 mb-6 border-b border-slate-200 pb-3">
                     <span class="text-3xl">📰</span>
@@ -71,7 +67,6 @@
                 </div>
             </section>
 
-            <!-- BOÎTE À BONNES ONDES -->
             <section class="bg-gradient-to-br from-violet to-prune p-8 md:p-10 rounded-2xl shadow-lg relative overflow-hidden text-white">
                 <h3 class="text-2xl font-extrabold mb-2 relative z-10 flex items-center gap-3">✨ Boîte à Bonnes Ondes</h3>
                 <p class="mb-6 font-semibold text-violet-100 relative z-10">Un merci, une prière... Partagez un instant de joie avec la communauté.</p>
@@ -88,7 +83,6 @@
         </div>
 
         <div class="space-y-10">
-            <!-- PROCHAINES MESSES -->
             <section class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet">
                 <div class="flex items-center gap-3 mb-6">
                     <span class="text-2xl">⛪</span>
@@ -98,11 +92,7 @@
                 <a href="/messes" class="block text-center font-bold text-violet bg-violet/5 py-3 rounded-xl hover:bg-violet hover:text-white transition-colors">Voir l'agenda complet ➔</a>
             </section>
 
-            <!-- CONTACTEZ-NOUS -->
             <section class="bg-gradient-to-br from-slate-800 to-slate-900 text-white p-8 rounded-2xl shadow-lg border-t-4 border-or relative overflow-hidden group">
-                <div class="absolute -right-10 -bottom-10 opacity-5 group-hover:scale-110 transition-transform duration-500">
-                    <svg class="w-48 h-48" fill="currentColor" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
-                </div>
                 <h3 class="text-xl font-extrabold text-white mb-4 flex items-center gap-3 relative z-10">📞 Contactez-nous</h3>
                 <p class="text-slate-300 mb-8 font-medium leading-relaxed relative z-10">Laissez nous votre demande, une équipe reviendra vers vous dans les plus brefs délais.</p>
                 <a href="/contact" class="inline-block bg-or text-slate-900 px-6 py-3 rounded-xl font-bold hover:bg-yellow-400 transition-colors shadow-md w-full text-center relative z-10">Nous écrire</a>
@@ -112,31 +102,34 @@
 
     <footer class="bg-slate-800 text-slate-300 text-center py-8 mt-8 font-semibold text-sm"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
 
-    <style>
-        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 10px;}
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px;}
-    </style>
-
     <script>
         const SUPABASE_URL = 'https://tyxybtrthvmyzjefziop.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // SYSTEME DE MAINTENANCE
-        async function checkMaintenance() {
+        async function checkSecurite() {
             try {
-                const { data } = await _supabase.from('site_config').select('*').eq('id', 1).single();
-                if (data && data.est_en_pause) {
-                    document.getElementById('maintenance-msg').innerText = data.message_pause || "Le site est actuellement en pause. Merci de votre patience.";
+                // 1. Vérification Maintenance
+                const { data: config } = await _supabase.from('site_config').select('*').eq('id', 1).single();
+                if (config && config.est_en_pause) {
+                    document.getElementById('maintenance-msg').innerText = config.message_pause || "Le site est actuellement en pause.";
+                    document.getElementById('maintenance-overlay').classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                    return;
+                }
+                // 2. Vérification IP Bannie via ipify
+                const ipReq = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipReq.json();
+                const { data: banni } = await _supabase.from('ip_bannies').select('*').eq('ip', ipData.ip).single();
+                if (banni) {
+                    document.getElementById('maintenance-msg').innerText = "Accès refusé. Votre adresse IP a été bannie de ce site.";
                     document.getElementById('maintenance-overlay').classList.remove('hidden');
                     document.body.style.overflow = 'hidden';
                 }
             } catch(e) {}
         }
-        checkMaintenance();
+        checkSecurite();
 
-        // CHARGEMENT FLUIDE DE L'IMAGE
         const bgUrl = `${SUPABASE_URL}/storage/v1/object/public/images/accueil.jpg?t=${new Date().getTime()}`;
         const img = new Image();
         img.onload = () => {
@@ -152,7 +145,6 @@
         try { const d = new Date(); const s = saintsMois[d.getMonth()].split(',')[d.getDate() - 1]; document.getElementById('saint-du-jour').innerText = (["Jour", "Fête", "Assomption", "Annonciation", "Transfiguration", "Nativité", "Croix", "Toussaint", "Défunts", "Présentation", "Immaculée", "Noël", "N.-D.", "Visitation", "Conversion"].some(ex => s.includes(ex)) ? "" : "Saint(e) ") + s; } catch(e) {}
 
         async function chargerActualites() {
-            // LIMITÉ À 3 SUR L'ACCUEIL
             const { data } = await _supabase.from('actualites').select('*').order('date_publication', { ascending: false }).limit(3);
             const c = document.getElementById('actualites-container');
             if (!data || data.length===0) { c.innerHTML = '<p class="text-slate-500">Aucune actualité.</p>'; return; }
