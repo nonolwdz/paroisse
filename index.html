@@ -14,10 +14,20 @@
 </head>
 <body class="bg-fond text-texte font-sans min-h-screen relative">
 
+    <!-- OVERLAY MAINTENANCE -->
     <div id="maintenance-overlay" class="fixed inset-0 bg-violet z-[100] flex flex-col items-center justify-center text-white hidden">
-        <span class="text-6xl mb-6 animate-pulse">🚧</span>
-        <h1 class="text-4xl font-extrabold mb-4 text-center px-4">Site en maintenance</h1>
-        <p id="maintenance-msg" class="text-xl font-medium text-center px-6 max-w-2xl text-violet-200">Nous revenons vite.</p>
+        <span class="text-5xl mb-4">🕊️</span>
+        <h1 class="text-3xl font-extrabold mb-3 text-center px-4">Site en pause</h1>
+        <p id="maintenance-msg" class="text-lg font-medium text-center px-6 max-w-xl text-violet-200">Nous revenons très bientôt.</p>
+    </div>
+
+    <!-- OVERLAY BANNISSEMENT (PERSONNALISÉ) -->
+    <div id="banni-overlay" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center text-white hidden">
+        <div class="bg-white text-slate-800 p-8 rounded-3xl shadow-2xl max-w-md text-center border-t-8 border-red-500">
+            <span class="text-4xl mb-3 block">🚫</span>
+            <h2 class="text-2xl font-black mb-2 text-red-600">Accès restreint</h2>
+            <p class="text-slate-600 font-medium text-sm leading-relaxed">Votre accès à ce site a été suspendu suite à un non-respect des règles de la communauté paroissiale.</p>
+        </div>
     </div>
 
     <header class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-violet/10">
@@ -102,6 +112,12 @@
 
     <footer class="bg-slate-800 text-slate-300 text-center py-8 mt-8 font-semibold text-sm"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
 
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 10px;}
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px;}
+    </style>
+
     <script>
         const SUPABASE_URL = 'https://tyxybtrthvmyzjefziop.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
@@ -109,7 +125,6 @@
 
         async function checkSecurite() {
             try {
-                // 1. Vérification Maintenance
                 const { data: config } = await _supabase.from('site_config').select('*').eq('id', 1).single();
                 if (config && config.est_en_pause) {
                     document.getElementById('maintenance-msg').innerText = config.message_pause || "Le site est actuellement en pause.";
@@ -117,13 +132,11 @@
                     document.body.style.overflow = 'hidden';
                     return;
                 }
-                // 2. Vérification IP Bannie via ipify
                 const ipReq = await fetch('https://api.ipify.org?format=json');
                 const ipData = await ipReq.json();
                 const { data: banni } = await _supabase.from('ip_bannies').select('*').eq('ip', ipData.ip).single();
                 if (banni) {
-                    document.getElementById('maintenance-msg').innerText = "Accès refusé. Votre adresse IP a été bannie de ce site.";
-                    document.getElementById('maintenance-overlay').classList.remove('hidden');
+                    document.getElementById('banni-overlay').classList.remove('hidden');
                     document.body.style.overflow = 'hidden';
                 }
             } catch(e) {}
