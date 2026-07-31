@@ -12,7 +12,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>.quill-content img { border-radius: 0.5rem; margin: 1rem 0; max-height: 400px; width: auto; }</style>
 </head>
-<body class="bg-fond text-texte font-sans min-h-screen">
+<body class="bg-fond text-texte font-sans min-h-screen relative">
+
+    <!-- OVERLAY MAINTENANCE -->
+    <div id="maintenance-overlay" class="fixed inset-0 bg-violet z-[100] flex flex-col items-center justify-center text-white hidden">
+        <span class="text-6xl mb-6 animate-pulse">🚧</span>
+        <h1 class="text-4xl font-extrabold mb-4 text-center px-4">Site en maintenance</h1>
+        <p id="maintenance-msg" class="text-xl font-medium text-center px-6 max-w-2xl text-violet-200">Nous revenons vite.</p>
+    </div>
 
     <header class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-violet/10">
         <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
@@ -22,8 +29,9 @@
                 </div>
                 <div><span class="text-2xl font-extrabold text-violet tracking-tight">Saint-François d'Assise</span></div>
             </div>
-            <nav class="mt-4 md:mt-0 flex gap-8 text-base font-bold text-slate-500">
+            <nav class="mt-4 md:mt-0 flex flex-wrap justify-center gap-x-6 gap-y-2 text-base font-bold text-slate-500">
                 <a href="/" class="text-violet border-b-2 border-violet pb-1">Accueil</a>
+                <a href="/actualites" class="hover:text-violet transition-colors">Actualités</a>
                 <a href="/messes" class="hover:text-violet transition-colors">Messes</a>
                 <a href="/horaires" class="hover:text-violet transition-colors">Ouverture Églises</a>
                 <a href="/contact" class="hover:text-violet transition-colors">Contact / Aide</a>
@@ -31,8 +39,10 @@
         </div>
     </header>
 
-    <div class="hero-section text-white py-28 px-4 text-center border-b-4 border-or relative overflow-hidden">
-        <div class="relative z-10">
+    <!-- FADE IN BACKGROUND IMAGE -->
+    <div class="hero-section bg-violet py-28 px-4 text-center border-b-4 border-or relative overflow-hidden">
+        <div id="hero-bg" class="absolute inset-0 z-0 transition-opacity duration-1000 opacity-0"></div>
+        <div class="relative z-10 text-white">
             <h1 class="text-5xl md:text-6xl font-extrabold mb-4 drop-shadow-md">Bienvenue chez vous.</h1>
             <p class="max-w-2xl mx-auto text-xl md:text-2xl text-white/90 drop-shadow font-semibold">Joie, prière et partage au cœur de notre région.</p>
         </div>
@@ -48,16 +58,20 @@
 
     <main class="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-3 gap-10">
         
-        <!-- COLONNE GAUCHE -->
         <div class="lg:col-span-2 space-y-10">
+            <!-- ACTUALITÉS (LIMITÉ À 3) -->
             <section>
                 <div class="flex items-center gap-4 mb-6 border-b border-slate-200 pb-3">
                     <span class="text-3xl">📰</span>
-                    <h2 class="text-3xl font-extrabold text-violet tracking-tight">Actualités de la paroisse</h2>
+                    <h2 class="text-3xl font-extrabold text-violet tracking-tight">À la une de la paroisse</h2>
                 </div>
                 <div id="actualites-container" class="grid gap-6"><p class="text-slate-400 font-semibold italic">Chargement...</p></div>
+                <div class="mt-6 text-center">
+                    <a href="/actualites" class="inline-block bg-white border border-slate-300 text-slate-700 px-6 py-2.5 rounded-xl font-bold hover:border-violet hover:text-violet transition-all shadow-sm">Toutes les actualités ➔</a>
+                </div>
             </section>
 
+            <!-- BOÎTE À BONNES ONDES -->
             <section class="bg-gradient-to-br from-violet to-prune p-8 md:p-10 rounded-2xl shadow-lg relative overflow-hidden text-white">
                 <h3 class="text-2xl font-extrabold mb-2 relative z-10 flex items-center gap-3">✨ Boîte à Bonnes Ondes</h3>
                 <p class="mb-6 font-semibold text-violet-100 relative z-10">Un merci, une prière... Partagez un instant de joie avec la communauté.</p>
@@ -73,8 +87,8 @@
             </section>
         </div>
 
-        <!-- COLONNE DROITE -->
         <div class="space-y-10">
+            <!-- PROCHAINES MESSES -->
             <section class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet">
                 <div class="flex items-center gap-3 mb-6">
                     <span class="text-2xl">⛪</span>
@@ -84,10 +98,14 @@
                 <a href="/messes" class="block text-center font-bold text-violet bg-violet/5 py-3 rounded-xl hover:bg-violet hover:text-white transition-colors">Voir l'agenda complet ➔</a>
             </section>
 
-            <section class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-or">
-                <h3 class="text-xl font-extrabold text-slate-800 mb-3 flex items-center gap-3">📞 Contactez-nous</h3>
-                <p class="text-slate-600 mb-6 font-medium leading-relaxed">Le presbytère est à votre écoute pour toute demande de baptême, mariage, ou simplement pour échanger.</p>
-                <a href="/contact" class="inline-block bg-slate-800 text-white px-6 py-3 rounded-xl font-bold hover:bg-violet transition-colors shadow-md w-full text-center">Nous écrire</a>
+            <!-- CONTACTEZ-NOUS -->
+            <section class="bg-gradient-to-br from-slate-800 to-slate-900 text-white p-8 rounded-2xl shadow-lg border-t-4 border-or relative overflow-hidden group">
+                <div class="absolute -right-10 -bottom-10 opacity-5 group-hover:scale-110 transition-transform duration-500">
+                    <svg class="w-48 h-48" fill="currentColor" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+                </div>
+                <h3 class="text-xl font-extrabold text-white mb-4 flex items-center gap-3 relative z-10">📞 Contactez-nous</h3>
+                <p class="text-slate-300 mb-8 font-medium leading-relaxed relative z-10">Laissez nous votre demande, une équipe reviendra vers vous dans les plus brefs délais.</p>
+                <a href="/contact" class="inline-block bg-or text-slate-900 px-6 py-3 rounded-xl font-bold hover:bg-yellow-400 transition-colors shadow-md w-full text-center relative z-10">Nous écrire</a>
             </section>
         </div>
     </main>
@@ -105,20 +123,41 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const imageUrl = `${SUPABASE_URL}/storage/v1/object/public/images/accueil.jpg?t=${new Date().getTime()}`;
-        document.querySelector('.hero-section').style.backgroundImage = `linear-gradient(to right, rgba(76, 29, 149, 0.8), rgba(112, 26, 117, 0.6)), url('${imageUrl}')`;
-        document.querySelector('.hero-section').style.backgroundSize = 'cover';
-        document.querySelector('.hero-section').style.backgroundPosition = 'center';
+        // SYSTEME DE MAINTENANCE
+        async function checkMaintenance() {
+            try {
+                const { data } = await _supabase.from('site_config').select('*').eq('id', 1).single();
+                if (data && data.est_en_pause) {
+                    document.getElementById('maintenance-msg').innerText = data.message_pause || "Le site est actuellement en pause. Merci de votre patience.";
+                    document.getElementById('maintenance-overlay').classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                }
+            } catch(e) {}
+        }
+        checkMaintenance();
+
+        // CHARGEMENT FLUIDE DE L'IMAGE
+        const bgUrl = `${SUPABASE_URL}/storage/v1/object/public/images/accueil.jpg?t=${new Date().getTime()}`;
+        const img = new Image();
+        img.onload = () => {
+            const heroBg = document.getElementById('hero-bg');
+            heroBg.style.backgroundImage = `linear-gradient(to right, rgba(76, 29, 149, 0.85), rgba(112, 26, 117, 0.65)), url('${bgUrl}')`;
+            heroBg.style.backgroundSize = 'cover';
+            heroBg.style.backgroundPosition = 'center';
+            heroBg.classList.remove('opacity-0');
+        };
+        img.src = bgUrl;
 
         const saintsMois = [ "Jour de l'An,Basile,Geneviève,Odilon,Édouard,Mélaine,Raymond,Lucien,Alix,Guillaume,Paulin,Tatiana,Yvette,Nina,Rémi,Marcel,Roseline,Prisca,Marius,Sébastien,Agnès,Vincent,Barnard,François de Sales,Conversion de Paul,Paule,Angèle,Thomas d'Aquin,Gildas,Martine,Marcelle", "Ella,Présentation,Blaise,Véronique,Agathe,Gaston,Eugénie,Jacqueline,Apolline,Arnaud,N.-D. de Lourdes,Félix,Béatrice,Valentin,Claude,Julienne,Alexis,Bernadette,Gabin,Aimée,Damien,Isabelle,Lazare,Modeste,Roméo,Nestor,Honorine,Romain,Auguste", "Aubin,Charles le Bon,Guénolé,Casimir,Olive,Colette,Félicité,Jean de Dieu,Françoise,Vivien,Rosine,Justine,Rodrigue,Mathilde,Louise,Bénédicte,Patrice,Cyrille,Joseph,Herbert,Clémence,Léa,Victorien,Catherine de Suède,Annonciation,Larissa,Habib,Gontran,Gwladys,Amédée,Benjamin", "Hugues,Sandrine,Richard,Isidore,Irène,Marcellin,J.-B. de la Salle,Julie,Gautier,Fulbert,Stanislas,Jules,Ida,Maxime,Paterne,Benoît-Joseph,Anicet,Parfait,Emma,Odette,Anselme,Alexandre,Georges,Fidèle,Marc,Alida,Zita,Valérie,Catherine de Sienne,Robert", "Fête du Travail,Boris,Philippe,Sylvain,Judith,Prudence,Gisèle,Désiré,Pacôme,Solange,Estelle,Achille,Rolande,Matthias,Denise,Honoré,Pascal,Éric,Yves,Bernardin,Constantin,Émile,Didier,Donatien,Sophie,Bérenger,Augustin,Germain,Aymar,Ferdinand,Visitation", "Justin,Blandine,Kévin,Clotilde,Igor,Norbert,Gilbert,Médard,Diane,Landry,Barnabé,Guy,Antoine de Padoue,Élisée,Germaine,J.-F. Régis,Hervé,Léonce,Romuald,Silvère,Rodolphe,Alban,Audrey,Jean-Baptiste,Prosper,Anthelme,Fernand,Irénée,Pierre et Paul,Martial", "Thierry,Martinien,Thomas,Florent,Antoine,Mariette,Raoul,Thibaut,Amandine,Ulrich,Benoît,Olivier,Henri,Camille,Donald,N.-D. du Mont-Carmel,Charlotte,Frédéric,Arsène,Marina,Victor,Marie-Madeleine,Brigitte,Christine,Jacques,Anne et Joa.,Nathalie,Samson,Marthe,Juliette,Ignace de L.", "Alphonse,Julien Eymard,Lydie,J.-M. Vianney,Abel,Transfiguration,Gaétan,Dominique,Amour,Laurent,Claire,Clarisse,Hippolyte,Évrard,Assomption,Armel,Hyacinthe,Hélène,Jean-Eudes,Bernard,Christophe,Fabrice,Rose de Lima,Barthélemy,Louis,Natacha,Monique,Augustin,Sabine,Fiacre,Aristide", "Gilles,Ingrid,Grégoire,Rosalie,Raïssa,Bertrand,Reine,Nativité de N.-D.,Alain,Inès,Adelphe,Apollinaire,Aimé,Croix Glorieuse,Roland,Édith,Renaud,Nadège,Émilie,Davy,Matthieu,Maurice,Constant,Thècle,Hermann,Côme et D.,Vincent de Paul,Venceslas,Michel,Jérôme", "Thérèse de l'E.J.,Léger,Gérard,François d'Assise,Fleur,Bruno,Serge,Pélagie,Denis,Ghislain,Firmin,Wilfried,Géraud,Juste,Thérèse d'Avila,Edwige,Baudouin,Luc,René,Adeline,Céline,Élodie,Jean de Capistran,Florentin,Crépin,Dimitri,Émeline,Jude,Narcisse,Bienvenue,Quentin", "Toussaint,Défunts,Hubert,Charles B.,Sylvie,Bertille,Carine,Geoffroy,Théodore,Léon,Martin,Christian,Brice,Sidoine,Albert le Grand,Marguerite,Élisabeth,Aude,Tanguy,Edmond,Présentation de Marie,Cécile,Clément,Flora,Catherine L.,Delphine,Sévrin,Jacques de la M.,Saturnin,André", "Florence,Viviane,François-Xavier,Barbara,Gérald,Nicolas,Ambroise,Immaculée Conception,Pierre Fourier,Romaric,Daniel,Jeanne F.C.,Lucie,Odile,Ninon,Alice,Gaël,Gatien,Urbain,Théophile,Pierre Canisius,Françoise-Xavière,Armand,Adèle,Noël,Étienne,Jean,Innocents,David,Roger,Sylvestre" ];
         try { const d = new Date(); const s = saintsMois[d.getMonth()].split(',')[d.getDate() - 1]; document.getElementById('saint-du-jour').innerText = (["Jour", "Fête", "Assomption", "Annonciation", "Transfiguration", "Nativité", "Croix", "Toussaint", "Défunts", "Présentation", "Immaculée", "Noël", "N.-D.", "Visitation", "Conversion"].some(ex => s.includes(ex)) ? "" : "Saint(e) ") + s; } catch(e) {}
 
         async function chargerActualites() {
-            const { data } = await _supabase.from('actualites').select('*').order('date_publication', { ascending: false });
+            // LIMITÉ À 3 SUR L'ACCUEIL
+            const { data } = await _supabase.from('actualites').select('*').order('date_publication', { ascending: false }).limit(3);
             const c = document.getElementById('actualites-container');
             if (!data || data.length===0) { c.innerHTML = '<p class="text-slate-500">Aucune actualité.</p>'; return; }
             c.innerHTML = data.map(actu => `
-                <article class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
+                <article class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-100">
                         <h3 class="text-2xl font-bold text-violet">${actu.titre}</h3>
                         <span class="bg-violet/5 text-violet text-xs font-bold px-3 py-1.5 rounded-lg whitespace-nowrap">
