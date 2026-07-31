@@ -84,7 +84,7 @@
             <!-- Onglet Créer -->
             <div id="onglet-creer" class="max-w-xl mx-auto space-y-4">
                 <div id="pause-message-box" class="hidden bg-amber-50 border border-amber-200 p-4 rounded-xl text-amber-800 text-sm font-bold text-center mb-4">
-                    🕒 Les nouveaux messages sont suspendus pour la période de pause. Vous pouvez toujours consulter vos tickets existants via l'onglet "Suivre ma demande".
+                    🕒 Les nouveaux messages sont temporairement suspendus. Vous pouvez toujours consulter vos requêtes existantes via l'onglet "Suivre ma demande".
                 </div>
                 <div id="form-champs" class="space-y-4">
                     <input type="text" id="ticket-nom" placeholder="Votre Nom et Prénom..." class="w-full p-3 rounded-xl border border-slate-200 outline-none text-slate-800 font-semibold focus:border-violet focus:ring-1 focus:ring-violet">
@@ -136,6 +136,7 @@
 
         async function initSecuriteEtPause() {
             try {
+                // 1. Vérifier la configuration globale (Maintenance et Pause)
                 const { data: config } = await _supabase.from('site_config').select('*').eq('id', 1).single();
                 if (config) {
                     if (config.est_en_pause) {
@@ -144,35 +145,44 @@
                         document.body.style.overflow = 'hidden';
                         return;
                     }
-                    // Vérification de la période calendaire de pause (ex: 23 au 29 décembre)
+                    
+                    // Vérification de la période calendaire continue (ex: du 23 déc 20h00 au 29 déc 08h00)
                     if (config.pause_date_debut && config.pause_date_fin) {
+                        const dateDebut = new Date(`${config.pause_date_debut}T${config.pause_heure_debut || '00:00'}:00`);
+                        const dateFin = new Date(`${config.pause_date_fin}T${config.pause_heure_fin || '23:59'}:59`);
                         const now = new Date();
-                        const todayYMD = now.toISOString().split('T')[0]; // Format YYYY-MM-DD
-                        const currentHM = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
                         
-                        let enPause = false;
-                        if (todayYMD >= config.pause_date_debut && todayYMD <= config.pause_date_fin) {
-                            if (config.pause_heure_debut && config.pause_heure_fin) {
-                                if (currentHM >= config.pause_heure_debut && currentHM <= config.pause_fin) {
-                                    enPause = true;
-                                }
-                            } else {
-                                enPause = true;
-                            }
-                        }
-                        if (enPause) {
+                        // Si on est dans le créneau exact, on cache le formulaire
+                        if (now >= dateDebut && now <= dateFin) {
                             document.getElementById('pause-message-box').classList.remove('hidden');
                             document.getElementById('form-champs').classList.add('hidden');
                         }
                     }
                 }
-                const ipReq = await fetch('https://api.ipify.org?format=json');
-                const ipData = await ipReq.json();
-                const { data: banni } = await _supabase.from('ip_bannies').select('*').eq('ip', ipData.ip).single();
-                if (banni) {
-                    document.getElementById('banni-overlay').classList.remove('hidden');
-                    document.body.style.overflow = 'hidden';
-                }
+                
+                // 2. Vérifier si l'IP de l'utilisateur est bannie (avec sécurité anti-plantage)
+                try {
+                    let userIp = null;
+                    try {
+                        const ipReq = await fetch('https://api.ipify.org?format=json');
+                        const ipData = await ipReq.json();
+                        userIp = ipData.ip;
+                    } catch(e) {
+                        // Plan B si ipify.org est bloqué par le navigateur
+                        const ipReq2 = await fetch('https://ipapi.co/json/');
+                        const ipData2 = await ipReq2.json();
+                        userIp = ipData2.ip;
+                    }
+
+                    if (userIp) {
+                        const { data: banni } = await _supabase.from('ip_bannies').select('*').eq('ip', userIp).single();
+                        if (banni) {
+                            document.getElementById('banni-overlay').classList.remove('hidden');
+                            document.body.style.overflow = 'hidden';
+                        }
+                    }
+                } catch(e) {} // On ignore les erreurs d'IP pour ne pas bloquer les gens "propres"
+                
             } catch(e) {}
         }
         initSecuriteEtPause();
@@ -214,13 +224,19 @@
             const chiffres = Math.floor(Math.random() * 90 + 10);
             const code = nomSansEspace + chiffres;
 
-            // Récupération automatique de l'IP du visiteur pour l'associer au ticket (permet le bannissement direct)
+            // Récupération automatique de l'IP du visiteur pour l'associer au ticket en toute sécurité
             let ipVisiteur = "inconnue";
             try {
                 const ipRes = await fetch('https://api.ipify.org?format=json');
                 const ipJson = await ipRes.json();
                 ipVisiteur = ipJson.ip;
-            } catch(e) {}
+            } catch(e) {
+                try {
+                    const ipRes2 = await fetch('https://ipapi.co/json/');
+                    const ipJson2 = await ipRes2.json();
+                    ipVisiteur = ipJson2.ip;
+                } catch(e2) {}
+            }
 
             const date = new Date().toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'});
             const conversation = [{ auteur: nom, texte: msg, date: date }];
@@ -231,7 +247,7 @@
             const { error } = await _supabase.from('tickets').insert([{ code, nom, sujet, ip: ipVisiteur, statut: 'En attente de traitement', conversation }]);
             
             if(error) {
-                conteneurMsg.innerHTML = `<span class="text-red-500">❌ Erreur technique (${error.message})</span>`;
+                conteneurMsg.innerHTML = `<span class="text-red-500">❌ Une erreur est survenue, veuillez réessayer.</span>`;
             } else {
                 document.getElementById('ticket-nom').value = '';
                 document.getElementById('ticket-sujet').value = '';
