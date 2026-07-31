@@ -72,6 +72,7 @@
         </div>
 
         <div class="space-y-10">
+            <!-- Prochaines Messes -->
             <section class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 border-t-[6px] border-menthe/50">
                 <div class="flex items-center gap-3 mb-6">
                     <div class="bg-menthe/20 text-menthe p-2 rounded-xl"><span class="text-2xl">🌿</span></div>
@@ -81,14 +82,14 @@
                 <a href="/messes" class="block text-center font-black text-menthe bg-menthe/10 py-4 rounded-2xl hover:bg-menthe hover:text-white transition-colors text-lg">Voir tout l'agenda ➔</a>
             </section>
 
-            <section class="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 border-t-[6px] border-soleil overflow-hidden">
-                <div class="p-6 pb-2 text-center bg-soleil/10">
-                    <h3 class="text-2xl font-black text-slate-800 mb-2">Restons connectés !</h3>
-                    <p class="font-bold text-slate-600">Recevez les horaires par email.</p>
+            <!-- Contactez-nous -->
+            <section class="bg-gradient-to-br from-nuit to-slate-800 text-white p-8 md:p-10 rounded-[2.5rem] shadow-xl relative overflow-hidden group">
+                <div class="absolute -right-10 -bottom-10 opacity-10 group-hover:scale-110 transition-transform duration-500">
+                    <svg class="w-40 h-40" fill="currentColor" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke="currentColor" stroke-width="2" fill="none"/></svg>
                 </div>
-                <div class="w-full flex justify-center pb-2 bg-soleil/10">
-                    <iframe width="100%" height="305" src="https://671c9c40.sibforms.com/v2/serve/MUIFAGbb0eHoYfpV99KUUhawm8mwusD5QQV1bHD3JcnYXMvhQsSEvfX1s5-ROgRhEH4pdzbeN14WE5FIJteE1vWuE4xICUuC1OB5s6q63N1Jursf3rmZTMBjqRZdUiPkR4SqpG7zrTY-ZKYK2EPk_iNme_8OMQ3nU8kej9NJTM7HlqDat0wb3P_3eh2Mj2793-68IpMSaAHYBu0DFA==" frameborder="0" scrolling="auto"></iframe>
-                </div>
+                <h3 class="text-3xl font-black mb-3 relative z-10 flex items-center gap-3">Contactez-nous</h3>
+                <p class="text-slate-300 mb-8 font-bold leading-relaxed relative z-10">Le presbytère est à votre écoute pour toute demande de baptême, mariage, ou simplement pour échanger.</p>
+                <a href="/contact" class="inline-block bg-soleil text-nuit px-8 py-3 rounded-2xl font-black text-lg hover:bg-orange-300 transition-colors shadow-md relative z-10 hover:-translate-y-1">Nous écrire</a>
             </section>
         </div>
     </main>
@@ -132,24 +133,43 @@
         }
 
         async function chargerMesses() {
-            const today = new Date(); const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
-            const { data } = await _supabase.from('horaires_messes').select('*').gte('jour', todayStr).order('jour', {ascending: true}).limit(4);
+            // L'INTELLIGENCE DE L'HEURE : On récupère l'heure et la minute actuelles
+            const today = new Date(); 
+            const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+            const currentMins = today.getHours() * 60 + today.getMinutes();
+
+            const { data } = await _supabase.from('horaires_messes').select('*').gte('jour', todayStr).order('jour', {ascending: true});
             const c = document.getElementById('messes-container');
+            
             if (data && data.length > 0) {
-                c.innerHTML = data.map(m => {
-                    let dFr = m.jour; if(m.jour && m.jour.includes('-')) { const d = new Date(m.jour); dFr = d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }); dFr = dFr.charAt(0).toUpperCase() + dFr.slice(1); }
-                    return `
-                    <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-transparent hover:border-menthe/30 transition-all cursor-default">
-                        <div class="bg-white shadow-sm border border-slate-100 text-center rounded-xl p-2 min-w-[70px]">
-                            <div class="text-menthe font-black text-sm uppercase">${dFr.split(' ')[0]}</div>
-                            <div class="text-slate-800 font-black text-xl">${dFr.split(' ')[1]}</div>
-                        </div>
-                        <div>
-                            <div class="font-black text-slate-800 text-lg">${m.heure}</div>
-                            <div class="text-slate-500 font-bold text-sm">${m.lieu.split('–')[0]}</div>
-                        </div>
-                    </div>`;
-                }).join('');
+                // On filtre les messes pour exclure celles qui sont passées aujourd'hui
+                const messesFutures = data.filter(m => {
+                    if (m.jour > todayStr) return true; 
+                    if (m.jour === todayStr && m.heure) {
+                        const [h, min] = m.heure.split(':').map(Number);
+                        return (h * 60 + min) >= currentMins; // Si c'est passé, on l'enlève !
+                    }
+                    return true;
+                }).slice(0, 4);
+
+                if (messesFutures.length > 0) {
+                    c.innerHTML = messesFutures.map(m => {
+                        let dFr = m.jour; if(m.jour && m.jour.includes('-')) { const d = new Date(m.jour); dFr = d.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }); dFr = dFr.charAt(0).toUpperCase() + dFr.slice(1); }
+                        return `
+                        <div class="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-transparent hover:border-menthe/30 transition-all cursor-default">
+                            <div class="bg-white shadow-sm border border-slate-100 text-center rounded-xl p-2 min-w-[70px]">
+                                <div class="text-menthe font-black text-sm uppercase">${dFr.split(' ')[0]}</div>
+                                <div class="text-slate-800 font-black text-xl">${dFr.split(' ')[1]}</div>
+                            </div>
+                            <div>
+                                <div class="font-black text-slate-800 text-lg">${m.heure}</div>
+                                <div class="text-slate-500 font-bold text-sm">${m.lieu.split('–')[0]}</div>
+                            </div>
+                        </div>`;
+                    }).join('');
+                } else {
+                    c.innerHTML = '<p class="text-slate-500 font-bold">Toutes les messes d\'aujourd\'hui sont passées.</p>';
+                }
             } else { c.innerHTML = '<p class="text-slate-500 font-bold">Aucune messe prévue prochainement.</p>'; }
         }
 
