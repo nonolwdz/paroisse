@@ -47,12 +47,10 @@
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- Liste des tickets -->
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 h-[450px] overflow-y-auto custom-scrollbar" id="admin-liste-tickets">
                         <p class="text-slate-400 font-semibold text-center mt-10 text-sm">Chargement...</p>
                     </div>
                     
-                    <!-- Espace réponse -->
                     <div class="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-5 flex flex-col hidden" id="admin-ticket-view">
                         <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
                             <div>
@@ -65,14 +63,17 @@
                         <div id="at-conversation" class="flex-grow overflow-y-auto custom-scrollbar space-y-4 pr-3 mb-4 bg-slate-50 p-4 rounded-xl border border-slate-100"></div>
                         
                         <div id="at-actions" class="mt-auto space-y-3 bg-white border border-slate-200 p-4 rounded-xl">
-                            <!-- LA SIGNATURE EXPLICITE EST ICI -->
                             <div class="flex gap-3">
-                                <input type="text" id="admin-signature" placeholder="Votre prénom (Ex: Julienne)" class="w-1/3 border border-slate-300 rounded-lg p-2 font-semibold text-sm outline-none focus:border-violet bg-slate-50">
+                                <input type="text" id="admin-signature" placeholder="Votre prénom" class="w-1/3 border border-slate-300 rounded-lg p-2 font-semibold text-sm outline-none focus:border-violet bg-slate-50">
                                 <textarea id="at-reponse" rows="2" placeholder="Rédiger la réponse..." class="w-2/3 border border-slate-300 rounded-lg p-2 font-semibold text-sm outline-none focus:border-violet resize-none"></textarea>
                             </div>
-                            <div class="flex gap-3">
-                                <button onclick="repondreTicketAdmin()" class="flex-grow bg-violet text-white font-bold py-2 rounded-lg hover:bg-prune shadow-sm text-sm">Envoyer la réponse</button>
-                                <button onclick="cloturerTicket()" class="bg-slate-200 text-slate-600 font-bold px-4 py-2 rounded-lg hover:bg-slate-300 text-sm">Clôturer le dossier</button>
+                            <div class="flex flex-wrap gap-2 items-center justify-between">
+                                <div class="flex gap-2">
+                                    <button onclick="repondreTicketAdmin()" class="bg-violet text-white font-bold px-6 py-2 rounded-lg hover:bg-prune shadow-sm text-sm">Envoyer</button>
+                                    <button onclick="cloturerTicket()" class="bg-slate-200 text-slate-600 font-bold px-4 py-2 rounded-lg hover:bg-slate-300 text-sm">Clôturer</button>
+                                </div>
+                                <!-- BOUTON BANNIR IP RÉSERVÉ UNIQUEMENT À n.antoinemich@gmail.com -->
+                                <button id="btn-bannir" onclick="bannirAuteurTicket()" class="hidden bg-red-100 text-red-600 hover:bg-red-200 font-bold px-4 py-2 rounded-lg text-sm transition-colors">🚨 Bannir cette personne (IP)</button>
                             </div>
                         </div>
                     </div>
@@ -84,14 +85,13 @@
                 <h3 class="text-xl font-extrabold text-violet mb-6">🗝️ Ouvertures d'Églises</h3>
                 <div class="space-y-4">
                     <input type="text" id="eglise-nom" placeholder="Nom de l'église (ex: Notre-Dame)" class="w-full border border-slate-300 p-3 rounded-xl focus:border-violet outline-none font-bold">
-                    <textarea id="eglise-horaires" placeholder="Texte public (Ex: Du lundi au vendredi...)" class="w-full border border-slate-300 p-3 rounded-xl focus:border-violet outline-none h-20 font-medium text-sm"></textarea>
-
+                    <textarea id="eglise-horaires" placeholder="Texte public..." class="w-full border border-slate-300 p-3 rounded-xl focus:border-violet outline-none h-20 font-medium text-sm"></textarea>
                     <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
                         <label class="font-bold text-slate-700 block mb-2 text-sm">Réglage des Badges :</label>
                         <select id="eglise-type" onchange="toggleHoraires()" class="w-full border border-slate-300 p-2 rounded-lg mb-3 bg-white outline-none focus:border-violet font-semibold text-slate-600 text-sm">
                             <option value="inconnu">Badges Gris (Inconnu)</option>
                             <option value="tous">Tous les jours identiques</option>
-                            <option value="semaine_we">Semaine (Lun-Ven) / Samedi / Dimanche</option>
+                            <option value="semaine_we">Semaine / Samedi / Dimanche</option>
                         </select>
                         <div id="bloc-tous" class="hidden space-y-2 text-sm">
                             <div class="flex items-center gap-2 font-semibold"><span class="w-14">Matin:</span><input type="time" id="tous-m-s" class="border p-1 rounded-md"> à <input type="time" id="tous-m-e" class="border p-1 rounded-md"></div>
@@ -107,7 +107,7 @@
                         <input type="checkbox" id="eglise-estferme" class="w-5 h-5 accent-red-500 rounded">
                         <span class="font-bold text-red-700 text-sm">Forcer le Badge "Fermeture"</span>
                     </label>
-                    <input type="text" id="eglise-alerte" placeholder="Message d'alerte (ex: Travaux)" class="w-full border border-slate-300 p-3 rounded-xl focus:border-red-400 outline-none font-semibold text-sm">
+                    <input type="text" id="eglise-alerte" placeholder="Message d'alerte" class="w-full border border-slate-300 p-3 rounded-xl outline-none font-semibold text-sm">
                     <button id="btn-save-eglise" onclick="ajouterEglise()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl hover:bg-slate-700 shadow-sm mt-2 text-sm">Enregistrer l'Église</button>
                 </div>
             </div>
@@ -116,12 +116,12 @@
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400">
                 <h3 class="text-xl font-extrabold text-slate-700 mb-6">⛪ Ajouter une Messe</h3>
                 <div class="space-y-4">
-                    <select id="messe-lieu" class="w-full border border-slate-300 p-3 rounded-xl font-bold text-slate-800 outline-none focus:border-slate-500 bg-slate-50 cursor-pointer text-sm"></select>
+                    <select id="messe-lieu" class="w-full border border-slate-300 p-3 rounded-xl font-bold text-slate-800 outline-none bg-slate-50 cursor-pointer text-sm"></select>
                     <div class="grid grid-cols-2 gap-3">
-                        <input type="date" id="messe-jour" class="w-full border border-slate-300 p-3 rounded-xl outline-none focus:border-slate-500 font-semibold text-sm text-slate-600">
-                        <input type="time" id="messe-heure" class="w-full border border-slate-300 p-3 rounded-xl outline-none focus:border-slate-500 font-semibold text-sm text-slate-600">
+                        <input type="date" id="messe-jour" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm text-slate-600">
+                        <input type="time" id="messe-heure" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm text-slate-600">
                     </div>
-                    <input type="text" id="messe-remarques" placeholder="Remarque (ex: Fête Patronale)" class="w-full border border-slate-300 p-3 rounded-xl outline-none focus:border-slate-500 font-semibold text-sm">
+                    <input type="text" id="messe-remarques" placeholder="Remarque" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm">
                     <button id="btn-save-messe" onclick="ajouterMesse()" class="w-full bg-slate-600 text-white font-bold py-3 rounded-xl hover:bg-slate-700 shadow-sm mt-2 text-sm">Ajouter au Calendrier</button>
                 </div>
             </div>
@@ -131,10 +131,10 @@
                 <h3 class="text-xl font-extrabold text-violet mb-6">📢 Rédiger une Actualité</h3>
                 <div class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <input type="text" id="actu-titre" placeholder="Titre de l'annonce" class="w-full border border-slate-300 p-3 rounded-xl outline-none focus:border-violet font-bold text-sm">
-                        <input type="date" id="actu-date" class="w-full border border-slate-300 p-3 rounded-xl outline-none focus:border-violet font-semibold text-sm text-slate-600">
+                        <input type="text" id="actu-titre" placeholder="Titre" class="w-full border border-slate-300 p-3 rounded-xl font-bold text-sm">
+                        <input type="date" id="actu-date" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm text-slate-600">
                     </div>
-                    <div class="border border-slate-300 rounded-xl overflow-hidden"><div id="editeur-actu" style="height: 250px; font-family: 'Nunito'; font-size: 15px; font-weight: 600;"></div></div>
+                    <div class="border border-slate-300 rounded-xl overflow-hidden"><div id="editeur-actu" style="height: 250px; font-family: 'Nunito'; font-size: 15px;"></div></div>
                     <button id="btn-save-actu" onclick="ajouterActualite()" class="w-full bg-violet text-white font-bold py-3 rounded-xl hover:bg-prune shadow-sm text-sm">Publier l'Actualité</button>
                 </div>
             </div>
@@ -145,48 +145,47 @@
                     <div>
                         <h3 class="text-lg font-extrabold text-slate-800 mb-4">📞 Presbytère</h3>
                         <div class="space-y-3">
-                            <textarea id="contact-adresse" placeholder="Adresse" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm outline-none"></textarea>
-                            <input type="text" id="contact-tel" placeholder="Téléphone" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm outline-none">
-                            <input type="text" id="contact-email" placeholder="Email" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm outline-none">
-                            <textarea id="contact-permanences" placeholder="Permanences" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm outline-none"></textarea>
-                            <textarea id="contact-urgences" placeholder="Urgences" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm outline-none"></textarea>
+                            <textarea id="contact-adresse" placeholder="Adresse" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm"></textarea>
+                            <input type="text" id="contact-tel" placeholder="Téléphone" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm">
+                            <input type="text" id="contact-email" placeholder="Email" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm">
+                            <textarea id="contact-permanences" placeholder="Permanences" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm"></textarea>
+                            <textarea id="contact-urgences" placeholder="Urgences" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm"></textarea>
                             <button onclick="sauvegarderContact()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl shadow-sm hover:bg-slate-900 transition-colors text-sm">Sauvegarder les infos</button>
                             <div id="contact-msg" class="text-center font-bold mt-2 text-xs"></div>
                         </div>
                     </div>
-                    <div>
-                        <h3 class="text-lg font-extrabold text-slate-800 mb-4">👥 Autres Contacts</h3>
-                        <div class="space-y-3">
-                            <input type="text" id="autre-nom" placeholder="Rôle (ex: Secrétariat)" class="w-full border border-slate-300 p-3 rounded-xl font-bold text-sm outline-none">
-                            <input type="text" id="autre-valeur" placeholder="Numéro ou Email" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm outline-none">
-                            <button id="btn-save-autre" onclick="ajouterAutreContact()" class="w-full bg-slate-200 text-slate-700 font-bold py-3 rounded-xl hover:bg-slate-300 text-sm">Ajouter ce Contact</button>
-                        </div>
-                        <div id="liste-autres" class="mt-6 space-y-2 h-48 overflow-y-auto custom-scrollbar"></div>
-                    </div>
                 </div>
             </div>
 
-            <!-- MAINTENANCE DU SITE -->
+            <!-- MAINTENANCE & PLAGE HORAIRE DE PAUSE -->
             <div class="bg-red-50 p-6 rounded-2xl shadow-sm border border-red-200 border-t-4 border-red-500 lg:col-span-2">
-                <h3 class="text-xl font-extrabold text-red-800 mb-4">🛑 Mettre le site en Pause (Maintenance)</h3>
-                <div class="flex flex-col md:flex-row gap-4 items-center">
-                    <label class="flex items-center gap-3 bg-white p-3 rounded-xl border border-red-300 cursor-pointer shadow-sm w-full md:w-auto">
-                        <input type="checkbox" id="site-pause" class="w-6 h-6 accent-red-600 rounded">
-                        <span class="font-bold text-red-800 whitespace-nowrap">Site en Pause</span>
-                    </label>
-                    <input type="text" id="site-pause-msg" placeholder="Message d'information pour les visiteurs..." class="flex-grow w-full border border-red-300 p-3 rounded-xl outline-none focus:border-red-500 font-semibold text-sm text-red-900 placeholder-red-400">
-                    <button onclick="sauvegarderConfig()" class="w-full md:w-auto bg-red-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-red-700 shadow-sm text-sm">Activer / Mettre à jour</button>
+                <h3 class="text-xl font-extrabold text-red-800 mb-4">🛑 Gestion des Pauses et Maintenance</h3>
+                <div class="space-y-4">
+                    <div class="flex flex-col md:flex-row gap-4 items-center">
+                        <label class="flex items-center gap-3 bg-white p-3 rounded-xl border border-red-300 cursor-pointer shadow-sm w-full md:w-auto">
+                            <input type="checkbox" id="site-pause" class="w-6 h-6 accent-red-600 rounded">
+                            <span class="font-bold text-red-800 whitespace-nowrap">Site entier en Pause</span>
+                        </label>
+                        <input type="text" id="site-pause-msg" placeholder="Message d'information général..." class="flex-grow w-full border border-red-300 p-3 rounded-xl outline-none font-semibold text-sm text-red-900 placeholder-red-400">
+                    </div>
+                    <!-- PLAGE HORAIRE MESSAGES -->
+                    <div class="bg-white p-4 rounded-xl border border-red-200 flex flex-col md:flex-row gap-4 items-center justify-between">
+                        <span class="font-bold text-slate-700 text-sm">Suspendre la création de messages chaque jour de :</span>
+                        <div class="flex items-center gap-2 font-bold text-sm">
+                            <input type="time" id="pause-debut" class="border border-slate-300 p-2 rounded-lg"> à <input type="time" id="pause-fin" class="border border-slate-300 p-2 rounded-lg">
+                        </div>
+                    </div>
+                    <button onclick="sauvegarderConfig()" class="w-full bg-red-600 text-white font-bold py-3 rounded-xl hover:bg-red-700 shadow-sm text-sm">Enregistrer ces paramètres de pause</button>
                 </div>
             </div>
 
             <!-- GESTION -->
             <div class="bg-slate-900 text-white p-8 rounded-2xl shadow-sm lg:col-span-2 mb-12">
                 <h3 class="text-xl font-extrabold mb-6">🗑️ Nettoyage des données</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     <div class="bg-white/5 p-4 rounded-xl border border-white/10"><h4 class="font-bold text-violet-300 mb-3 text-sm">Églises</h4><div id="liste-eglises" class="space-y-2 font-semibold text-xs max-h-48 overflow-y-auto custom-scrollbar"></div></div>
                     <div class="bg-white/5 p-4 rounded-xl border border-white/10"><h4 class="font-bold text-slate-300 mb-3 text-sm">Messes</h4><div id="liste-messes" class="space-y-2 font-semibold text-xs max-h-48 overflow-y-auto custom-scrollbar"></div></div>
                     <div class="bg-white/5 p-4 rounded-xl border border-white/10"><h4 class="font-bold text-or mb-3 text-sm">Actualités</h4><div id="liste-actus" class="space-y-2 font-semibold text-xs max-h-48 overflow-y-auto custom-scrollbar"></div></div>
-                    <div class="bg-white/5 p-4 rounded-xl border border-white/10"><h4 class="font-bold text-pink-300 mb-3 text-sm">Ondes</h4><div id="liste-ondes" class="space-y-2 font-semibold text-xs max-h-48 overflow-y-auto custom-scrollbar"></div></div>
                 </div>
             </div>
 
@@ -204,8 +203,9 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
-        let eglisesData=[], messesData=[], actusData=[], autresData=[], ticketsData=[];
-        let editEgliseId = null, editMesseId = null, editActuId = null, editAutreId = null, ticketAdminCode = null;
+        let eglisesData=[], messesData=[], actusData=[], ticketsData=[];
+        let editEgliseId = null, editMesseId = null, editActuId = null, ticketAdminCode = null;
+        let currentUserEmail = "";
 
         var quill = new Quill('#editeur-actu', { theme: 'snow', modules: { toolbar: [ [{ 'header': [2, 3, false] }], ['bold', 'italic', 'underline'], ['link', 'image'], ['clean'] ] } });
 
@@ -216,9 +216,14 @@
                 document.getElementById('section-dashboard').classList.remove('hidden'); 
                 document.getElementById('btn-logout').classList.remove('hidden'); 
                 
-                // On récupère la signature enregistrée spécifiquement pour CE compte utilisateur
+                currentUserEmail = session.user.email;
                 document.getElementById('admin-signature').value = session.user.user_metadata?.signature || '';
                 
+                // Afficher le bouton Bannir uniquement pour n.antoinemich@gmail.com
+                if (currentUserEmail === 'n.antoinemich@gmail.com') {
+                    document.getElementById('btn-bannir').classList.remove('hidden');
+                }
+
                 chargerDonnees(); chargerContactAdmin(); chargerTicketsAdmin(); chargerConfig();
             }
         }
@@ -231,25 +236,30 @@
 
         async function seDeconnecter() { await _supabase.auth.signOut(); location.reload(); }
 
-        /* MAINTENANCE CONFIG */
         async function chargerConfig() {
             const { data } = await _supabase.from('site_config').select('*').eq('id', 1).single();
             if(data) {
                 document.getElementById('site-pause').checked = data.est_en_pause;
                 document.getElementById('site-pause-msg').value = data.message_pause || '';
+                document.getElementById('pause-debut').value = data.pause_debut || '';
+                document.getElementById('pause-fin').value = data.pause_fin || '';
             }
         }
+
         async function sauvegarderConfig() {
             const p = document.getElementById('site-pause').checked;
             const m = document.getElementById('site-pause-msg').value;
-            await _supabase.from('site_config').upsert({ id: 1, est_en_pause: p, message_pause: m });
-            alert(p ? "Le site est maintenant EN PAUSE." : "Le site est de nouveau EN LIGNE.");
+            const debut = document.getElementById('pause-debut').value;
+            const fin = document.getElementById('pause-fin').value;
+            
+            await _supabase.from('site_config').upsert({ id: 1, est_en_pause: p, message_pause: m, pause_debut: debut, pause_fin: fin });
+            alert("Paramètres de pause enregistrés avec succès !");
         }
 
         /* TICKETS ADMIN */
         async function chargerTicketsAdmin() {
             const { data, error } = await _supabase.from('tickets').select('*').order('created_at', { ascending: false });
-            if(error) { document.getElementById('admin-liste-tickets').innerHTML = '<p class="text-red-500 font-bold text-center mt-10 text-sm">Erreur de connexion.</p>'; return; }
+            if(error) { document.getElementById('admin-liste-tickets').innerHTML = '<p class="text-red-500 font-bold text-center mt-10 text-sm">Erreur.</p>'; return; }
             ticketsData = data || [];
             
             document.getElementById('admin-liste-tickets').innerHTML = ticketsData.map(t => {
@@ -268,7 +278,7 @@
                 </div>
                 `;
             }).join('');
-            if(ticketsData.length === 0) document.getElementById('admin-liste-tickets').innerHTML = '<p class="text-slate-400 font-bold text-center mt-10 text-sm">Aucun ticket.</p>';
+            if(ticketsData.length === 0) document.getElementById('admin-liste-tickets').innerHTML = '<p class="text-slate-400 font-semibold text-center mt-10 text-sm">Aucun ticket.</p>';
         }
 
         function ouvrirTicketAdmin(code) {
@@ -305,7 +315,6 @@
             const reponse = document.getElementById('at-reponse').value.trim();
             if(!reponse || !ticketAdminCode) return;
             
-            // LA MAGIE EST ICI : On récupère la signature et on l'enregistre sur le compte de la personne connectée !
             let nomAdmin = document.getElementById('admin-signature').value.trim() || 'L\'équipe paroissiale';
             await _supabase.auth.updateUser({ data: { signature: nomAdmin } });
             
@@ -322,10 +331,23 @@
         }
 
         async function cloturerTicket() {
-            if(!confirm("Clôturer ce dossier ? Il ne sera plus possible d'y répondre.")) return;
+            if(!confirm("Clôturer ce dossier ?")) return;
             await _supabase.from('tickets').update({ statut: 'Clos' }).eq('code', ticketAdminCode);
             await chargerTicketsAdmin();
             ouvrirTicketAdmin(ticketAdminCode);
+        }
+
+        // FONCTION DE BANNISSEMENT IP (UNIQUEMENT n.antoinemich@gmail.com)
+        async function bannirAuteurTicket() {
+            if (currentUserEmail !== 'n.antoinemich@gmail.com') {
+                alert("Action non autorisée."); return;
+            }
+            const ipBannir = prompt("Entrez l'adresse IP à bannir (ou laisse vide pour simuler le blocage du dernier message) :");
+            if (!ipBannir) return;
+
+            const { error } = await _supabase.from('ip_bannies').insert([{ ip: ipBannir.trim() }]);
+            if (error) alert("Erreur : " + error.message);
+            else alert("Succès : L'adresse IP " + ipBannir + " a été bannie du site.");
         }
         /* FIN TICKETS */
 
@@ -365,20 +387,13 @@
             editActuId = null; document.getElementById('actu-titre').value=''; document.getElementById('actu-date').value=''; quill.root.innerHTML=''; chargerDonnees();
         }
 
-        /* SAUVEGARDE CONTACT (RLS désactivé) */
         async function sauvegarderContact() {
             const a = document.getElementById('contact-adresse').value, t = document.getElementById('contact-tel').value, e = document.getElementById('contact-email').value, p = document.getElementById('contact-permanences').value, u = document.getElementById('contact-urgences').value;
             const m = document.getElementById('contact-msg');
             m.innerHTML = '<span class="text-slate-500">En cours...</span>';
             const { error } = await _supabase.from('contact_info').upsert({ id: 1, adresse: a, telephone: t, email: e, permanences: p, urgences: u });
             if (error) { m.innerHTML = `<span class="text-red-500">❌ Erreur</span>`; } 
-            else { m.innerHTML = '<span class="text-emerald-500">✅ Sauvegardé avec succès !</span>'; setTimeout(() => m.innerHTML = '', 3000); }
-        }
-
-        async function ajouterAutreContact() {
-            const n = document.getElementById('autre-nom').value, v = document.getElementById('autre-valeur').value; if(!n || !v) return;
-            if (editAutreId) await _supabase.from('autres_contacts').update({ nom:n, valeur:v }).eq('id', editAutreId); else await _supabase.from('autres_contacts').insert([{ nom:n, valeur:v }]);
-            editAutreId = null; document.getElementById('autre-nom').value=''; document.getElementById('autre-valeur').value=''; chargerDonnees();
+            else { m.innerHTML = '<span class="text-emerald-500">✅ Sauvegardé !</span>'; setTimeout(() => m.innerHTML = '', 3000); }
         }
 
         async function chargerContactAdmin() {
@@ -396,18 +411,11 @@
 
             const { data: actus } = await _supabase.from('actualites').select('*'); actusData = actus||[];
             document.getElementById('liste-actus').innerHTML = actusData.map(a => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-lg"><span class="truncate">${a.titre}</span> <div class="flex gap-2"><button onclick="editActu(${a.id})" class="text-or">✏️</button><button onclick="supprimer('actualites', ${a.id})" class="text-red-400">✖</button></div></div>`).join('');
-
-            const { data: autres } = await _supabase.from('autres_contacts').select('*'); autresData = autres||[];
-            document.getElementById('liste-autres').innerHTML = autresData.map(c => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-lg"><span class="truncate">${c.nom}</span> <div class="flex gap-2"><button onclick="editAutreContact(${c.id})" class="text-blue-300">✏️</button><button onclick="supprimer('autres_contacts', ${c.id})" class="text-red-400">✖</button></div></div>`).join('');
-
-            const { data: ondes } = await _supabase.from('bonnes_ondes').select('*');
-            document.getElementById('liste-ondes').innerHTML = (ondes||[]).map(o => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-lg"><span class="truncate italic text-slate-300">"${o.message}"</span> <button onclick="supprimer('bonnes_ondes', ${o.id})" class="text-red-400">✖</button></div>`).join('');
         }
 
         function editEglise(id) { const e = eglisesData.find(x => x.id === id); editEgliseId = e.id; document.getElementById('eglise-nom').value = e.nom; document.getElementById('eglise-horaires').value = e.horaires_base || ''; document.getElementById('eglise-type').value = 'inconnu'; ['tous-m-s','tous-m-e','tous-a-s','tous-a-e','sem-m-s','sem-m-e','sem-a-s','sem-a-e','sam-m-s','sam-m-e','sam-a-s','sam-a-e','dim-m-s','dim-m-e','dim-a-s','dim-a-e'].forEach(id => document.getElementById(id).value = ''); if(e.horaires_json) { try { const h = JSON.parse(e.horaires_json); document.getElementById('eglise-type').value = h.type || 'inconnu'; if(h.type) { ['tous_m_s','tous_m_e','tous_a_s','tous_a_e','sem_m_s','sem_m_e','sem_a_s','sem_a_e','sam_m_s','sam_m_e','sam_a_s','sam_a_e','dim_m_s','dim_m_e','dim_a_s','dim-a-e'].forEach(key => { if(h[key]) document.getElementById(key.replace(/_/g, '-')).value = h[key]; }); } } catch(err) {} } toggleHoraires(); document.getElementById('eglise-estferme').checked = e.est_ferme; document.getElementById('eglise-alerte').value = e.alerte || ''; window.scrollTo({top:0, behavior:'smooth'}); }
         function editMesse(id) { const m = messesData.find(x => x.id === id); editMesseId = m.id; document.getElementById('messe-lieu').value = m.lieu; document.getElementById('messe-jour').value = m.jour; document.getElementById('messe-heure').value = m.heure; document.getElementById('messe-remarques').value = m.remarques||''; window.scrollTo({top:0, behavior:'smooth'}); }
         function editActu(id) { const a = actusData.find(x => x.id === id); editActuId = a.id; document.getElementById('actu-titre').value = a.titre; document.getElementById('actu-date').value = a.date_publication; quill.root.innerHTML = a.contenu; window.scrollTo({top:0, behavior:'smooth'}); }
-        function editAutreContact(id) { const c = autresData.find(x => x.id === id); editAutreId = c.id; document.getElementById('autre-nom').value = c.nom; document.getElementById('autre-valeur').value = c.valeur; window.scrollTo({top:0, behavior:'smooth'}); }
         async function supprimer(table, id) { if(confirm("Supprimer définitivement ?")) { await _supabase.from(table).delete().eq('id', id); chargerDonnees(); } }
 
         checkSession();
