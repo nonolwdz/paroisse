@@ -32,7 +32,6 @@
         .fc-list-event-title a, .fc-list-event-time { color: #334155 !important; font-weight: 700; }
         .fc-list-event-dot { border-color: #eab308 !important; border-width: 4px !important; }
 
-        /* Ajustements pour les petits écrans (Téléphones) */
         @media (max-width: 768px) {
             .fc .fc-toolbar { flex-direction: column; gap: 12px; }
             .fc .fc-toolbar-title { font-size: 1.3rem; }
@@ -47,14 +46,6 @@
         <span class="text-6xl mb-6 animate-pulse">🚧</span>
         <h1 class="text-4xl font-extrabold mb-4 text-center px-4">Site en maintenance</h1>
         <p id="maintenance-msg" class="text-xl font-medium text-center px-6 max-w-2xl text-violet-200">Nous revenons vite.</p>
-    </div>
-    
-    <div id="banni-overlay" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center text-white hidden">
-        <div class="bg-white text-slate-800 p-8 rounded-3xl shadow-2xl max-w-md text-center border-t-8 border-red-500">
-            <span class="text-4xl mb-3 block">🚫</span>
-            <h2 class="text-2xl font-black mb-2 text-red-600">Accès restreint</h2>
-            <p class="text-slate-600 font-medium text-sm leading-relaxed">Votre accès à ce site a été suspendu suite à un non-respect des règles de la communauté paroissiale.</p>
-        </div>
     </div>
 
     <header class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-violet/10">
@@ -88,7 +79,6 @@
             </select>
         </div>
 
-        <!-- PETIT MESSAGE D'ASTUCE -->
         <div class="bg-violet/5 border border-violet/10 p-3 md:p-4 rounded-xl text-center mb-6">
             <p class="text-violet font-bold text-xs md:text-sm">💡 Astuce : Cliquez sur un événement dans le calendrier pour afficher ses détails (remarques, informations).</p>
         </div>
@@ -106,28 +96,17 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         let messesData = [], calendar;
 
-        async function checkSecurite() {
+        async function checkMaintenance() {
             try {
-                const { data: config } = await _supabase.from('site_config').select('*').eq('id', 1).single();
-                if (config && config.est_en_pause) {
-                    document.getElementById('maintenance-msg').innerText = config.message_pause || "Le site est en pause.";
+                const { data } = await _supabase.from('site_config').select('*').eq('id', 1).single();
+                if (data && data.est_en_pause) {
+                    document.getElementById('maintenance-msg').innerText = data.message_pause || "Le site est en pause.";
                     document.getElementById('maintenance-overlay').classList.remove('hidden');
                     document.body.style.overflow = 'hidden';
-                    return;
                 }
-                try {
-                    let userIp = null;
-                    try { const ipReq = await fetch('https://api.ipify.org?format=json'); const ipData = await ipReq.json(); userIp = ipData.ip; } 
-                    catch(e) { const ipReq2 = await fetch('https://ipapi.co/json/'); const ipData2 = await ipReq2.json(); userIp = ipData2.ip; }
-
-                    if (userIp) {
-                        const { data: banni } = await _supabase.from('ip_bannies').select('*').eq('ip', userIp).single();
-                        if (banni) { document.getElementById('banni-overlay').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
-                    }
-                } catch(e) {}
             } catch(e) {}
         }
-        checkSecurite();
+        checkMaintenance();
 
         async function chargerMesses() {
             const { data: messes } = await _supabase.from('horaires_messes').select('*');
@@ -152,7 +131,6 @@
                 extendedProps: { lieu: m.lieu, heure: m.heure, remarques: m.remarques }
             }));
 
-            // Si l'écran est petit (smartphone), on met "listMonth" (liste) par défaut
             const isMobile = window.innerWidth < 768;
 
             calendar = new FullCalendar.Calendar(document.getElementById('calendrier-messes'), {
