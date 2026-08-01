@@ -290,14 +290,14 @@
             document.getElementById('admin-content').classList.remove('hidden');
             document.querySelectorAll('.admin-tab').forEach(el => el.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Remonte automatiquement en haut !
         }
 
         function retourMenu() {
             document.getElementById('admin-content').classList.add('hidden');
             document.getElementById('admin-home').classList.remove('hidden');
             document.querySelectorAll('.admin-tab').forEach(el => el.classList.add('hidden'));
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Remonte automatiquement en haut !
         }
 
         async function chargerAbonnements() {
