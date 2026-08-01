@@ -25,6 +25,7 @@
 
     <main class="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
         
+        <!-- CONNEXION -->
         <div id="section-login" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet max-w-md mx-auto mt-12">
             <h2 class="text-2xl font-extrabold text-center mb-6 text-slate-800">Connexion</h2>
             <div class="space-y-4">
@@ -34,8 +35,10 @@
             </div>
         </div>
 
+        <!-- TABLEAU DE BORD (MENU PRINCIPAL ADAPTATIF) -->
         <div id="section-dashboard" class="hidden">
             
+            <!-- Sur Ordinateur : Grille en colonnes / Sur Mobile : Liste verticale fluide -->
             <div id="admin-home" class="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 
                 <button onclick="ouvrirTab('tab-tu')" class="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet flex md:flex-col items-center md:items-center text-left md:text-center hover:shadow-md transition-all gap-4 md:gap-0">
@@ -82,12 +85,13 @@
                     <span class="text-3xl md:text-4xl md:mb-4">⚙️</span>
                     <div>
                         <h3 class="text-base md:text-lg font-extrabold text-white">Paramètres & Sécurité</h3>
-                        <p class="text-xs text-slate-400 font-semibold md:hidden mt-0.5">Maintenance et bannières</p>
+                        <p class="text-xs text-slate-400 font-semibold md:hidden mt-0.5">Maintenance, bannières et blocages</p>
                     </div>
                 </button>
 
             </div>
 
+            <!-- CONTENEUR DES PAGES SPÉCIFIQUES -->
             <div id="admin-content" class="hidden">
                 <button onclick="retourMenu()" class="mb-6 bg-white border border-slate-300 text-slate-700 px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-50 shadow-sm transition-colors flex items-center gap-2">
                     <span>⬅</span> Retour au menu
@@ -236,6 +240,14 @@
                         </div>
 
                         <div class="space-y-8">
+                            <!-- IP Bannies -->
+                            <div id="section-bannissements" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-red-600">
+                                <h3 class="text-lg md:text-xl font-extrabold text-red-600 mb-2 flex items-center gap-2"><span>🛡️</span> Adresses IP Bannies</h3>
+                                <p class="text-sm text-slate-500 font-bold mb-4">Gérez les personnes bloquées.</p>
+                                <div id="liste-bannis" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar bg-slate-50 p-3 rounded-xl border border-slate-200">
+                                    <p class="text-slate-400 font-semibold text-sm">Chargement...</p>
+                                </div>
+                            </div>
                             <!-- Nettoyage Bonnes Ondes -->
                             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-pink-400">
                                 <h3 class="text-lg md:text-xl font-extrabold text-slate-800 mb-4 flex items-center gap-2"><span>✨</span> Modération Bonnes Ondes</h3>
@@ -263,6 +275,7 @@
         
         let eglisesData=[], messesData=[], actusData=[];
         let editEgliseId = null, editMesseId = null, editActuId = null;
+        let currentUserEmail = "";
 
         var quill = new Quill('#editeur-actu', { theme: 'snow', modules: { toolbar: [ [{ 'header': [2, 3, false] }], ['bold', 'italic', 'underline'], ['link', 'image'], ['clean'] ] } });
 
@@ -273,6 +286,12 @@
                 document.getElementById('section-dashboard').classList.remove('hidden'); 
                 document.getElementById('btn-logout').classList.remove('hidden'); 
                 
+                currentUserEmail = session.user.email;
+                if (currentUserEmail === 'n.antoinemich@gmail.com') {
+                    document.getElementById('section-bannissements').classList.remove('hidden');
+                    chargerBannis();
+                }
+
                 chargerDonnees(); chargerContactAdmin(); chargerConfig(); chargerAbonnements();
             }
         }
@@ -285,6 +304,7 @@
 
         async function seDeconnecter() { await _supabase.auth.signOut(); location.reload(); }
 
+        /* NAVIGATION INTERNE (TABS) */
         function ouvrirTab(tabId) {
             document.getElementById('admin-home').classList.add('hidden');
             document.getElementById('admin-content').classList.remove('hidden');
@@ -300,6 +320,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        /* GESTION DES ABONNÉS T.U. */
         async function chargerAbonnements() {
             const { data } = await _supabase.from('abonnements_tu').select('*').order('created_at', { ascending: false });
             const c = document.getElementById('liste-abonnements');
@@ -331,6 +352,7 @@
             }
         }
 
+        /* CONFIGURATION & BANNISSEMENTS */
         async function chargerConfig() {
             const { data } = await _supabase.from('site_config').select('*').eq('id', 1).single();
             if(data) {
@@ -351,6 +373,28 @@
             alert("Paramètres enregistrés avec succès !");
         }
 
+        async function chargerBannis() {
+            const { data } = await _supabase.from('ip_bannies').select('*').order('banni_le', { ascending: false });
+            const container = document.getElementById('liste-bannis');
+            if (!data || data.length === 0) { container.innerHTML = '<p class="text-emerald-600 font-bold text-xs">Aucune IP n\'est bannie.</p>'; return; }
+            
+            container.innerHTML = data.map(b => `
+                <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-red-100">
+                    <div>
+                        <span class="font-black text-red-700 text-sm">${b.ip}</span>
+                    </div>
+                    <button onclick="debannir(${b.id})" class="bg-red-100 text-red-700 px-2.5 py-1 rounded text-xs font-bold hover:bg-red-200">Débannir</button>
+                </div>
+            `).join('');
+        }
+
+        async function debannir(id) {
+            if(!confirm("Redonner l'accès au site à cette personne ?")) return;
+            await _supabase.from('ip_bannies').delete().eq('id', id);
+            chargerBannis();
+        }
+
+        /* MÉTHODES GÉNÉRALES */
         function toggleHoraires() {
             const type = document.getElementById('eglise-type').value;
             document.getElementById('bloc-tous').classList.add('hidden'); document.getElementById('bloc-semaine').classList.add('hidden');
