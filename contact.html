@@ -23,7 +23,7 @@
         <div class="bg-white text-slate-800 p-8 rounded-3xl shadow-2xl max-w-md text-center border-t-8 border-red-500">
             <span class="text-4xl mb-3 block">🚫</span>
             <h2 class="text-2xl font-black mb-2 text-red-600">Accès restreint</h2>
-            <p class="text-slate-600 font-medium text-sm leading-relaxed">Votre accès à ce site a été suspendu suite à un non-respect des règles de la communauté paroissiale.</p>
+            <p class="text-slate-600 font-medium text-sm leading-relaxed">Votre accès à ce site a été suspendu suite à un non-respect des règles de la communauté.</p>
         </div>
     </div>
 
@@ -72,46 +72,16 @@
             </div>
         </div>
 
-        <div class="bg-violet/5 p-8 md:p-10 rounded-2xl border border-violet/10" id="zone-tickets">
-            <h2 class="text-2xl font-extrabold text-violet text-center mb-2">Contactez-nous</h2>
-            <p class="text-slate-600 font-medium text-center mb-8 text-sm max-w-lg mx-auto">Laissez nous votre demande, une équipe reviendra vers vous dans les plus brefs délais.</p>
+        <!-- NOUVEAU SYSTÈME : ABONNEMENT TRAIT D'UNION -->
+        <div class="bg-violet/5 p-8 md:p-10 rounded-2xl border border-violet/10 max-w-2xl mx-auto text-center" id="zone-newsletter">
+            <span class="text-5xl block mb-4">💌</span>
+            <h2 class="text-2xl font-extrabold text-violet mb-2">Le Trait d'Union de Chez Nous</h2>
+            <p class="text-slate-600 font-medium mb-8 text-sm leading-relaxed">Inscrivez-vous gratuitement pour recevoir la feuille d'information paroissiale directement dans votre boîte e-mail.</p>
             
-            <div class="flex justify-center gap-3 mb-8">
-                <button onclick="voirOnglet('creer')" id="btn-creer" class="px-5 py-2 rounded-lg font-bold bg-violet text-white shadow-sm text-sm">Nouveau message</button>
-                <button onclick="voirOnglet('suivre')" id="btn-suivre" class="px-5 py-2 rounded-lg font-bold bg-white text-violet border border-violet/20 hover:bg-violet/5 transition-colors text-sm">Suivre ma demande</button>
-            </div>
-
-            <div id="onglet-creer" class="max-w-xl mx-auto space-y-4">
-                <div id="pause-message-box" class="hidden bg-amber-50 border border-amber-200 p-4 rounded-xl text-amber-800 text-sm font-bold text-center mb-4">
-                    🕒 Les nouveaux messages sont temporairement suspendus. Vous pouvez toujours consulter vos requêtes existantes via l'onglet "Suivre ma demande".
-                </div>
-                <div id="form-champs" class="space-y-4">
-                    <input type="text" id="ticket-nom" placeholder="Votre Nom et Prénom..." class="w-full p-3 rounded-xl border border-slate-200 outline-none text-slate-800 font-semibold focus:border-violet focus:ring-1 focus:ring-violet">
-                    <input type="text" id="ticket-sujet" placeholder="Sujet (ex: Erreur d'horaire, Demande de document...)" class="w-full p-3 rounded-xl border border-slate-200 outline-none text-slate-800 font-semibold focus:border-violet focus:ring-1 focus:ring-violet">
-                    <textarea id="ticket-message" rows="5" placeholder="Votre message détaillé..." class="w-full p-3 rounded-xl border border-slate-200 outline-none text-slate-800 font-semibold focus:border-violet focus:ring-1 focus:ring-violet resize-none"></textarea>
-                    <button onclick="creerTicket()" class="w-full bg-violet text-white font-bold py-3 rounded-xl hover:bg-prune transition-colors shadow-sm">Envoyer la demande</button>
-                </div>
-                <div id="ticket-creation-msg" class="text-center font-bold mt-4 text-sm"></div>
-            </div>
-
-            <div id="onglet-suivre" class="hidden max-w-xl mx-auto">
-                <div class="flex gap-3 mb-8">
-                    <input type="text" id="ticket-code" placeholder="Votre code (ex: MARTIN42)" class="w-full p-3 rounded-xl border border-slate-200 outline-none text-slate-800 font-bold focus:border-violet text-center uppercase tracking-widest">
-                    <button onclick="chargerTicket()" class="bg-violet text-white font-bold px-6 rounded-xl shadow-sm hover:bg-prune transition-colors">Voir</button>
-                </div>
-                
-                <div id="ticket-details" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-100">
-                        <h3 id="td-sujet" class="text-lg font-extrabold text-violet">Sujet</h3>
-                        <span id="td-statut" class="px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide border">Statut</span>
-                    </div>
-                    <div id="td-conversation" class="space-y-4 mb-6 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar"></div>
-                    <div id="td-reponse-box" class="space-y-3 pt-4 border-t border-slate-100">
-                        <textarea id="td-nouvelle-reponse" rows="2" placeholder="Ajouter une réponse..." class="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 outline-none focus:border-violet font-semibold text-sm resize-none"></textarea>
-                        <button onclick="repondreTicket()" class="w-full bg-slate-800 text-white font-bold py-2.5 rounded-xl text-sm">Envoyer la réponse</button>
-                    </div>
-                </div>
-                <p id="ticket-erreur" class="text-center font-bold text-red-500 mt-4 text-sm hidden">Ticket introuvable, vérifiez votre code.</p>
+            <div class="space-y-4">
+                <input type="email" id="tu-email" placeholder="Votre adresse e-mail..." class="w-full p-4 rounded-xl border border-slate-200 outline-none text-slate-800 font-semibold focus:border-violet focus:ring-1 focus:ring-violet text-center">
+                <button onclick="sInscrireTU()" class="w-full bg-violet text-white font-bold py-3.5 rounded-xl hover:bg-prune transition-colors shadow-sm">Je m'inscris</button>
+                <div id="tu-msg" class="font-bold mt-4 text-sm h-6"></div>
             </div>
         </div>
 
@@ -119,40 +89,19 @@
 
     <footer class="bg-slate-800 text-slate-300 text-center py-8 mt-8 font-semibold text-sm"><p>&copy; 2026 Paroisse Saint-François d'Assise</p></footer>
 
-    <style>
-        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.02); border-radius: 10px;}
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px;}
-    </style>
-
     <script>
         const SUPABASE_URL = 'https://tyxybtrthvmyzjefziop.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let ticketActuelCode = null;
-        let ticketActuelNom = "";
 
         async function initSecuriteEtPause() {
             try {
                 const { data: config } = await _supabase.from('site_config').select('*').eq('id', 1).single();
-                if (config) {
-                    if (config.est_en_pause) {
-                        document.getElementById('maintenance-msg').innerText = config.message_pause || "Le site est en pause.";
-                        document.getElementById('maintenance-overlay').classList.remove('hidden');
-                        document.body.style.overflow = 'hidden';
-                        return;
-                    }
-                    
-                    if (config.pause_date_debut && config.pause_date_fin) {
-                        const dateDebut = new Date(`${config.pause_date_debut}T${config.pause_heure_debut || '00:00'}:00`);
-                        const dateFin = new Date(`${config.pause_date_fin}T${config.pause_heure_fin || '23:59'}:59`);
-                        const now = new Date();
-                        
-                        if (now >= dateDebut && now <= dateFin) {
-                            document.getElementById('pause-message-box').classList.remove('hidden');
-                            document.getElementById('form-champs').classList.add('hidden');
-                        }
-                    }
+                if (config && config.est_en_pause) {
+                    document.getElementById('maintenance-msg').innerText = config.message_pause || "Le site est en pause.";
+                    document.getElementById('maintenance-overlay').classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                    return;
                 }
                 
                 try {
@@ -181,110 +130,25 @@
             }
         }
 
-        function voirOnglet(onglet) {
-            document.getElementById('onglet-creer').classList.add('hidden');
-            document.getElementById('onglet-suivre').classList.add('hidden');
-            document.getElementById(`onglet-${onglet}`).classList.remove('hidden');
+        async function sInscrireTU() {
+            const email = document.getElementById('tu-email').value.trim();
+            const msgBox = document.getElementById('tu-msg');
             
-            if(onglet === 'creer') {
-                document.getElementById('btn-creer').className = "px-5 py-2 rounded-lg font-bold bg-violet text-white shadow-sm text-sm";
-                document.getElementById('btn-suivre').className = "px-5 py-2 rounded-lg font-bold bg-white text-violet border border-violet/20 hover:bg-violet/5 transition-colors text-sm";
-            } else {
-                document.getElementById('btn-suivre').className = "px-5 py-2 rounded-lg font-bold bg-violet text-white shadow-sm text-sm";
-                document.getElementById('btn-creer').className = "px-5 py-2 rounded-lg font-bold bg-white text-violet border border-violet/20 hover:bg-violet/5 transition-colors text-sm";
+            if(!email || !email.includes('@')) {
+                msgBox.innerHTML = `<span class="text-red-500">Veuillez entrer une adresse e-mail valide.</span>`;
+                return;
             }
-        }
-
-        async function creerTicket() {
-            const nom = document.getElementById('ticket-nom').value.trim();
-            const sujet = document.getElementById('ticket-sujet').value.trim();
-            const msg = document.getElementById('ticket-message').value.trim();
             
-            if(!nom || !sujet || !msg) return alert("Veuillez remplir tous les champs.");
+            msgBox.innerHTML = `<span class="text-violet">Inscription en cours...</span>`;
             
-            let nomSansEspace = nom.replace(/[^a-zA-Z]/g, '').substring(0, 6).toUpperCase();
-            if(nomSansEspace.length === 0) nomSansEspace = "TICKET";
-            const chiffres = Math.floor(Math.random() * 90 + 10);
-            const code = nomSansEspace + chiffres;
-
-            let ipVisiteur = "inconnue";
-            try { const ipRes = await fetch('https://api.ipify.org?format=json'); const ipJson = await ipRes.json(); ipVisiteur = ipJson.ip; } 
-            catch(e) { try { const ipRes2 = await fetch('https://ipapi.co/json/'); const ipJson2 = await ipRes2.json(); ipVisiteur = ipJson2.ip; } catch(e2) {} }
-
-            const date = new Date().toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'});
-            const conversation = [{ auteur: nom, texte: msg, date: date }];
-
-            const conteneurMsg = document.getElementById('ticket-creation-msg');
-            conteneurMsg.innerHTML = `<span class="text-violet">Envoi en cours...</span>`;
-
-            const { error } = await _supabase.from('tickets').insert([{ code, nom, sujet, ip: ipVisiteur, statut: 'En attente de traitement', conversation }]);
-            
+            const { error } = await _supabase.from('abonnements_tu').insert([{ email }]);
             if(error) {
-                conteneurMsg.innerHTML = `<span class="text-red-500">❌ Une erreur est survenue, veuillez réessayer.</span>`;
+                if(error.code === '23505') msgBox.innerHTML = `<span class="text-amber-600">Cette adresse est déjà inscrite.</span>`;
+                else msgBox.innerHTML = `<span class="text-red-500">❌ Erreur technique, veuillez réessayer.</span>`;
             } else {
-                document.getElementById('ticket-nom').value = '';
-                document.getElementById('ticket-sujet').value = '';
-                document.getElementById('ticket-message').value = '';
-                document.getElementById('ticket-creation-msg').innerHTML = '';
-                
-                document.getElementById('ticket-code').value = code;
-                voirOnglet('suivre');
-                await chargerTicket();
-                document.getElementById('zone-tickets').scrollIntoView({ behavior: 'smooth' });
+                msgBox.innerHTML = `<span class="text-emerald-600">✅ Merci ! Votre inscription est confirmée.</span>`;
+                document.getElementById('tu-email').value = '';
             }
-        }
-
-        async function chargerTicket() {
-            const code = document.getElementById('ticket-code').value.toUpperCase().trim();
-            if(!code) return;
-            document.getElementById('ticket-erreur').classList.add('hidden');
-            document.getElementById('ticket-details').classList.add('hidden');
-            
-            const { data, error } = await _supabase.from('tickets').select('*').eq('code', code).single();
-            if(error || !data) {
-                document.getElementById('ticket-erreur').classList.remove('hidden'); return;
-            }
-
-            ticketActuelCode = code;
-            ticketActuelNom = data.nom || "Visiteur";
-            document.getElementById('ticket-details').classList.remove('hidden');
-            document.getElementById('td-sujet').innerText = data.sujet;
-            
-            const badge = document.getElementById('td-statut');
-            badge.innerText = data.statut;
-            badge.className = "px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide border ";
-            if(data.statut === 'Clos') badge.className += "bg-slate-100 text-slate-500 border-slate-200";
-            else if(data.statut === 'En attente de traitement' || data.statut === 'En attente') badge.className += "bg-amber-50 text-amber-700 border-amber-200";
-            else badge.className += "bg-emerald-50 text-emerald-700 border-emerald-200";
-
-            const convBox = document.getElementById('td-conversation');
-            convBox.innerHTML = (data.conversation || []).map(m => {
-                const isVisiteur = (m.auteur === ticketActuelNom || m.auteur === 'Visiteur');
-                return `
-                <div class="flex flex-col ${isVisiteur ? 'items-end' : 'items-start'}">
-                    <span class="text-[10px] font-semibold text-slate-400 mb-1 px-1">${m.auteur} - ${m.date}</span>
-                    <div class="max-w-[85%] px-3 py-2 rounded-xl text-sm shadow-sm ${isVisiteur ? 'bg-violet text-white rounded-tr-none' : 'bg-slate-100 text-slate-700 rounded-tl-none border border-slate-200'}">
-                        ${m.texte.replace(/\n/g, '<br>')}
-                    </div>
-                </div>
-            `}).join('');
-            convBox.scrollTop = convBox.scrollHeight;
-
-            if(data.statut === 'Clos') document.getElementById('td-reponse-box').classList.add('hidden');
-            else document.getElementById('td-reponse-box').classList.remove('hidden');
-        }
-
-        async function repondreTicket() {
-            const reponse = document.getElementById('td-nouvelle-reponse').value.trim();
-            if(!reponse || !ticketActuelCode) return;
-            
-            const { data } = await _supabase.from('tickets').select('conversation').eq('code', ticketActuelCode).single();
-            let conv = data.conversation || [];
-            conv.push({ auteur: ticketActuelNom, texte: reponse, date: new Date().toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'}) });
-
-            await _supabase.from('tickets').update({ conversation: conv, statut: 'En attente de traitement' }).eq('code', ticketActuelCode);
-            document.getElementById('td-nouvelle-reponse').value = '';
-            chargerTicket();
         }
 
         chargerContacts();
