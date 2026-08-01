@@ -23,8 +23,9 @@
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-6 py-12">
+    <main class="max-w-6xl mx-auto px-6 py-12">
         
+        <!-- CONNEXION -->
         <div id="section-login" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet max-w-md mx-auto mt-12">
             <h2 class="text-2xl font-extrabold text-center mb-6 text-slate-800">Connexion</h2>
             <div class="space-y-4">
@@ -34,192 +35,209 @@
             </div>
         </div>
 
-        <div id="section-dashboard" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+        <!-- TABLEAU DE BORD (MENU PRINCIPAL) -->
+        <div id="section-dashboard" class="hidden">
             
-            <div class="bg-amber-50 p-6 rounded-2xl shadow-sm border border-amber-200 border-t-4 border-amber-500 lg:col-span-2">
-                <h3 class="text-xl font-extrabold text-amber-800 mb-4">📣 Bannière d'Accueil</h3>
-                <div class="flex flex-col md:flex-row gap-4 items-center">
-                    <label class="flex items-center gap-3 bg-white p-3 rounded-xl border border-amber-300 cursor-pointer shadow-sm w-full md:w-auto">
-                        <input type="checkbox" id="site-banner-toggle" class="w-6 h-6 accent-amber-600 rounded">
-                        <span class="font-bold text-amber-800 whitespace-nowrap">Afficher la bannière</span>
-                    </label>
-                    <input type="text" id="site-banner-msg" placeholder="Message affiché tout en haut de l'accueil..." class="flex-grow w-full border border-amber-300 p-3 rounded-xl outline-none focus:border-amber-500 font-semibold text-sm text-amber-900 placeholder-amber-400">
-                    <button onclick="sauvegarderConfig()" class="w-full md:w-auto bg-amber-600 text-white font-bold px-6 py-3 rounded-xl hover:bg-amber-700 shadow-sm text-sm">Sauvegarder</button>
-                </div>
+            <div id="admin-home" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <button onclick="ouvrirTab('tab-tu')" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet text-center hover:shadow-md hover:-translate-y-1 transition-all">
+                    <span class="text-4xl block mb-4">📬</span>
+                    <h3 class="text-lg font-extrabold text-slate-800">Abonnés Trait d'Union</h3>
+                </button>
+                <button onclick="ouvrirTab('tab-actus')" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-or text-center hover:shadow-md hover:-translate-y-1 transition-all">
+                    <span class="text-4xl block mb-4">📢</span>
+                    <h3 class="text-lg font-extrabold text-slate-800">Actualités</h3>
+                </button>
+                <button onclick="ouvrirTab('tab-messes')" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400 text-center hover:shadow-md hover:-translate-y-1 transition-all">
+                    <span class="text-4xl block mb-4">⛪</span>
+                    <h3 class="text-lg font-extrabold text-slate-800">Messes & Événements</h3>
+                </button>
+                <button onclick="ouvrirTab('tab-eglises')" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400 text-center hover:shadow-md hover:-translate-y-1 transition-all">
+                    <span class="text-4xl block mb-4">🗝️</span>
+                    <h3 class="text-lg font-extrabold text-slate-800">Églises & Horaires</h3>
+                </button>
+                <button onclick="ouvrirTab('tab-presbytere')" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400 text-center hover:shadow-md hover:-translate-y-1 transition-all">
+                    <span class="text-4xl block mb-4">📞</span>
+                    <h3 class="text-lg font-extrabold text-slate-800">Presbytère & Contacts</h3>
+                </button>
+                <button onclick="ouvrirTab('tab-parametres')" class="bg-slate-900 p-8 rounded-2xl shadow-sm border border-slate-800 border-t-4 border-red-500 text-center hover:shadow-md hover:-translate-y-1 transition-all">
+                    <span class="text-4xl block mb-4">⚙️</span>
+                    <h3 class="text-lg font-extrabold text-white">Paramètres & Sécurité</h3>
+                </button>
             </div>
 
-            <!-- GESTION DES TICKETS PUBLIC -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-or lg:col-span-2">
-                <div class="flex items-center gap-3 mb-6 border-b border-slate-100 pb-4">
-                    <span class="text-2xl">🎫</span>
-                    <div>
-                        <h3 class="text-xl font-extrabold text-slate-800">Tickets & Suggestions</h3>
-                        <p class="text-slate-500 font-semibold text-sm">Répondez aux demandes des paroissiens.</p>
+            <!-- CONTENEUR DES PAGES SPÉCIFIQUES -->
+            <div id="admin-content" class="hidden">
+                <button onclick="retourMenu()" class="mb-6 bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded-lg font-bold text-sm hover:bg-slate-50 shadow-sm transition-colors">
+                    ⬅ Retour au menu
+                </button>
+
+                <!-- 1. ABONNÉS T.U. -->
+                <div id="tab-tu" class="admin-tab hidden">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet">
+                        <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
+                            <h3 class="text-xl font-extrabold text-slate-800 flex items-center gap-3"><span>📬</span> Abonnés au Trait d'Union</h3>
+                        </div>
+                        <p class="text-sm text-slate-500 font-bold mb-4">Voici la liste des personnes ayant demandé à recevoir le Trait d'Union par e-mail. Cliquez sur "Marquer comme Ajouté" une fois que vous avez copié leur e-mail dans votre logiciel d'envoi.</p>
+                        
+                        <div id="liste-abonnements" class="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar pr-2">
+                            <p class="text-slate-400 font-semibold text-sm">Chargement...</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 h-[450px] overflow-y-auto custom-scrollbar" id="admin-liste-tickets">
-                        <p class="text-slate-400 font-semibold text-center mt-10 text-sm">Chargement...</p>
-                    </div>
-                    
-                    <div class="lg:col-span-2 bg-white rounded-xl border border-slate-200 p-5 flex flex-col hidden" id="admin-ticket-view">
-                        <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-100">
-                            <div>
-                                <h4 id="at-sujet" class="text-lg font-extrabold text-violet">Sujet</h4>
-                                <p id="at-code" class="text-xs font-bold text-slate-400 tracking-wider mt-1">CODE</p>
+                <!-- 2. ACTUALITÉS -->
+                <div id="tab-actus" class="admin-tab hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-or">
+                            <h3 class="text-xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span>📢</span> Rédiger une Actualité</h3>
+                            <div class="space-y-4">
+                                <input type="text" id="actu-titre" placeholder="Titre" class="w-full border border-slate-300 p-3 rounded-xl font-bold text-sm">
+                                <input type="date" id="actu-date" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm text-slate-600">
+                                <div class="border border-slate-300 rounded-xl overflow-hidden"><div id="editeur-actu" style="height: 250px; font-family: 'Nunito'; font-size: 15px;"></div></div>
+                                <button id="btn-save-actu" onclick="ajouterActualite()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl hover:bg-slate-700 shadow-sm text-sm">Publier l'Actualité</button>
                             </div>
-                            <span id="at-statut" class="px-3 py-1 rounded-md text-[10px] font-bold uppercase border">Statut</span>
                         </div>
-                        
-                        <div id="at-conversation" class="flex-grow overflow-y-auto custom-scrollbar space-y-4 pr-3 mb-4 bg-slate-50 p-4 rounded-xl border border-slate-100"></div>
-                        
-                        <div id="at-actions" class="mt-auto space-y-3 bg-white border border-slate-200 p-4 rounded-xl">
-                            <div class="flex gap-3">
-                                <input type="text" id="admin-signature" placeholder="Votre prénom" class="w-1/3 border border-slate-300 rounded-lg p-2 font-semibold text-sm outline-none focus:border-violet bg-slate-50">
-                                <textarea id="at-reponse" rows="2" placeholder="Rédiger la réponse..." class="w-2/3 border border-slate-300 rounded-lg p-2 font-semibold text-sm outline-none focus:border-violet resize-none"></textarea>
-                            </div>
-                            <div class="flex flex-wrap gap-2 items-center justify-between">
-                                <div class="flex gap-2">
-                                    <button onclick="repondreTicketAdmin()" class="bg-violet text-white font-bold px-6 py-2 rounded-lg hover:bg-prune shadow-sm text-sm">Envoyer</button>
-                                    <button onclick="cloturerTicket()" class="bg-slate-200 text-slate-600 font-bold px-4 py-2 rounded-lg hover:bg-slate-300 text-sm">Clôturer</button>
+                        <div class="bg-slate-50 p-6 rounded-2xl shadow-sm border border-slate-200">
+                            <h3 class="text-xl font-extrabold text-slate-800 mb-6">🗑️ Gérer les Actualités</h3>
+                            <div id="liste-actus" class="space-y-2 font-semibold text-sm max-h-[500px] overflow-y-auto custom-scrollbar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. MESSES & EVÉNEMENTS -->
+                <div id="tab-messes" class="admin-tab hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400">
+                            <h3 class="text-xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span>⛪</span> Ajouter un événement</h3>
+                            <div class="space-y-4">
+                                <select id="messe-lieu" class="w-full border border-slate-300 p-3 rounded-xl font-bold text-slate-800 outline-none bg-slate-50 text-sm"></select>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <input type="date" id="messe-jour" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm text-slate-600">
+                                    <input type="time" id="messe-heure" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm text-slate-600">
                                 </div>
-                                <button id="btn-bannir" onclick="bannirAuteurTicket()" class="hidden bg-red-100 text-red-600 hover:bg-red-200 font-bold px-4 py-2 rounded-lg text-sm transition-colors">🚨 Bannir cette IP</button>
+                                <input type="text" id="messe-remarques" placeholder="Remarque (ex: Fête Patronale)" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm">
+                                <button id="btn-save-messe" onclick="ajouterMesse()" class="w-full bg-slate-600 text-white font-bold py-3 rounded-xl hover:bg-slate-700 shadow-sm text-sm">Ajouter au Calendrier</button>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- NOUVEAU : SECTION DÉBANNISSEMENT -->
-            <div id="section-bannissements" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-red-600 lg:col-span-2">
-                <h3 class="text-xl font-extrabold text-red-600 mb-2">🛡️ Gestion des accès (IP Bannies)</h3>
-                <p class="text-sm text-slate-500 font-bold mb-4">Gérez les personnes qui ont été bloquées et ne peuvent plus accéder au site.</p>
-                <div id="liste-bannis" class="space-y-3 max-h-48 overflow-y-auto custom-scrollbar bg-slate-50 p-4 rounded-xl border border-slate-200">
-                    <p class="text-slate-400 font-semibold text-sm">Chargement...</p>
-                </div>
-            </div>
-
-            <!-- ÉGLISES -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet">
-                <h3 class="text-xl font-extrabold text-violet mb-6">🗝️ Ouvertures d'Églises</h3>
-                <div class="space-y-4">
-                    <input type="text" id="eglise-nom" placeholder="Nom de l'église (ex: Notre-Dame)" class="w-full border border-slate-300 p-3 rounded-xl focus:border-violet outline-none font-bold">
-                    <textarea id="eglise-horaires" placeholder="Texte public..." class="w-full border border-slate-300 p-3 rounded-xl focus:border-violet outline-none h-20 font-medium text-sm"></textarea>
-                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                        <label class="font-bold text-slate-700 block mb-2 text-sm">Réglage des Badges :</label>
-                        <select id="eglise-type" onchange="toggleHoraires()" class="w-full border border-slate-300 p-2 rounded-lg mb-3 bg-white outline-none focus:border-violet font-semibold text-slate-600 text-sm">
-                            <option value="inconnu">Badges Gris (Inconnu)</option>
-                            <option value="tous">Tous les jours identiques</option>
-                            <option value="semaine_we">Semaine / Samedi / Dimanche</option>
-                        </select>
-                        <div id="bloc-tous" class="hidden space-y-2 text-sm">
-                            <div class="flex items-center gap-2 font-semibold"><span class="w-14">Matin:</span><input type="time" id="tous-m-s" class="border p-1 rounded-md"> à <input type="time" id="tous-m-e" class="border p-1 rounded-md"></div>
-                            <div class="flex items-center gap-2 font-semibold"><span class="w-14">Aprem:</span><input type="time" id="tous-a-s" class="border p-1 rounded-md"> à <input type="time" id="tous-a-e" class="border p-1 rounded-md"></div>
-                        </div>
-                        <div id="bloc-semaine" class="hidden space-y-3 text-sm">
-                            <div><span class="font-bold text-violet block mb-1">Semaine</span><div class="flex flex-wrap gap-2 font-semibold"><input type="time" id="sem-m-s" class="border p-1 rounded-md w-24"> à <input type="time" id="sem-m-e" class="border p-1 rounded-md w-24"><span class="mx-1">|</span><input type="time" id="sem-a-s" class="border p-1 rounded-md w-24"> à <input type="time" id="sem-a-e" class="border p-1 rounded-md w-24"></div></div>
-                            <div><span class="font-bold text-or block mb-1">Samedi</span><div class="flex flex-wrap gap-2 font-semibold"><input type="time" id="sam-m-s" class="border p-1 rounded-md w-24"> à <input type="time" id="sam-m-e" class="border p-1 rounded-md w-24"><span class="mx-1">|</span><input type="time" id="sam-a-s" class="border p-1 rounded-md w-24"> à <input type="time" id="sam-a-e" class="border p-1 rounded-md w-24"></div></div>
-                            <div><span class="font-bold text-red-500 block mb-1">Dimanche</span><div class="flex flex-wrap gap-2 font-semibold"><input type="time" id="dim-m-s" class="border p-1 rounded-md w-24"> à <input type="time" id="dim-m-e" class="border p-1 rounded-md w-24"><span class="mx-1">|</span><input type="time" id="dim-a-s" class="border p-1 rounded-md w-24"> à <input type="time" id="dim-a-e" class="border p-1 rounded-md w-24"></div></div>
+                        <div class="bg-slate-50 p-6 rounded-2xl shadow-sm border border-slate-200">
+                            <h3 class="text-xl font-extrabold text-slate-800 mb-6">🗑️ Gérer l'Agenda</h3>
+                            <div id="liste-messes" class="space-y-2 font-semibold text-sm max-h-[500px] overflow-y-auto custom-scrollbar"></div>
                         </div>
                     </div>
-                    <label class="flex items-center gap-2 bg-red-50 p-3 rounded-xl border border-red-100 cursor-pointer">
-                        <input type="checkbox" id="eglise-estferme" class="w-5 h-5 accent-red-500 rounded">
-                        <span class="font-bold text-red-700 text-sm">Forcer le Badge "Fermeture"</span>
-                    </label>
-                    <input type="text" id="eglise-alerte" placeholder="Message d'alerte" class="w-full border border-slate-300 p-3 rounded-xl outline-none font-semibold text-sm">
-                    <button id="btn-save-eglise" onclick="ajouterEglise()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl hover:bg-slate-700 shadow-sm mt-2 text-sm">Enregistrer l'Église</button>
                 </div>
-            </div>
 
-            <!-- MESSES -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400">
-                <h3 class="text-xl font-extrabold text-slate-700 mb-6">⛪ Ajouter un Événement / Messe</h3>
-                <div class="space-y-4">
-                    <select id="messe-lieu" class="w-full border border-slate-300 p-3 rounded-xl font-bold text-slate-800 outline-none bg-slate-50 cursor-pointer text-sm"></select>
-                    <div class="grid grid-cols-2 gap-3">
-                        <input type="date" id="messe-jour" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm text-slate-600">
-                        <input type="time" id="messe-heure" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm text-slate-600">
-                    </div>
-                    <input type="text" id="messe-remarques" placeholder="Remarque" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm">
-                    <button id="btn-save-messe" onclick="ajouterMesse()" class="w-full bg-slate-600 text-white font-bold py-3 rounded-xl hover:bg-slate-700 shadow-sm mt-2 text-sm">Ajouter au Calendrier</button>
-                </div>
-            </div>
-
-            <!-- ACTUALITÉS -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet lg:col-span-2">
-                <h3 class="text-xl font-extrabold text-violet mb-6">📢 Rédiger une Actualité</h3>
-                <div class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        <input type="text" id="actu-titre" placeholder="Titre" class="w-full border border-slate-300 p-3 rounded-xl font-bold text-sm">
-                        <input type="date" id="actu-date" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm text-slate-600">
-                    </div>
-                    <div class="border border-slate-300 rounded-xl overflow-hidden"><div id="editeur-actu" style="height: 250px; font-family: 'Nunito'; font-size: 15px;"></div></div>
-                    <button id="btn-save-actu" onclick="ajouterActualite()" class="w-full bg-violet text-white font-bold py-3 rounded-xl hover:bg-prune shadow-sm text-sm">Publier l'Actualité</button>
-                </div>
-            </div>
-
-            <!-- CONTACTS PRINCIPAUX -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400 lg:col-span-2">
-                <h3 class="text-lg font-extrabold text-slate-800 mb-4">📞 Presbytère</h3>
-                <div class="space-y-3">
-                    <textarea id="contact-adresse" placeholder="Adresse" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm"></textarea>
-                    <input type="text" id="contact-tel" placeholder="Téléphone" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm">
-                    <input type="text" id="contact-email" placeholder="Email" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm">
-                    <textarea id="contact-permanences" placeholder="Permanences" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm"></textarea>
-                    <textarea id="contact-urgences" placeholder="Urgences" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm"></textarea>
-                    <button onclick="sauvegarderContact()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl shadow-sm hover:bg-slate-900 transition-colors text-sm">Sauvegarder les infos</button>
-                    <div id="contact-msg" class="text-center font-bold mt-2 text-xs"></div>
-                </div>
-            </div>
-
-            <!-- MAINTENANCE & PLAGE HORAIRE DE PAUSE -->
-            <div class="bg-red-50 p-6 rounded-2xl shadow-sm border border-red-200 border-t-4 border-red-500 lg:col-span-2">
-                <h3 class="text-xl font-extrabold text-red-800 mb-4">🛑 Gestion des Pauses et Maintenance</h3>
-                <div class="space-y-4">
-                    <div class="flex flex-col md:flex-row gap-4 items-center">
-                        <label class="flex items-center gap-3 bg-white p-3 rounded-xl border border-red-300 cursor-pointer shadow-sm w-full md:w-auto">
-                            <input type="checkbox" id="site-pause" class="w-6 h-6 accent-red-600 rounded">
-                            <span class="font-bold text-red-800 whitespace-nowrap">Site entier en Pause</span>
-                        </label>
-                        <input type="text" id="site-pause-msg" placeholder="Message d'information général..." class="flex-grow w-full border border-red-300 p-3 rounded-xl outline-none font-semibold text-sm text-red-900 placeholder-red-400">
-                    </div>
-                    
-                    <div class="bg-white p-4 rounded-xl border border-red-200 space-y-3">
-                        <span class="font-bold text-slate-700 text-sm block">Suspendre les nouveaux messages sur une période spécifique :</span>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-bold">
-                            <div class="flex items-center gap-2">
-                                <span class="text-slate-500 w-16">Du :</span>
-                                <input type="date" id="pause-date-debut" class="border border-slate-300 p-2 rounded-lg flex-grow">
-                                <input type="time" id="pause-heure-debut" class="border border-slate-300 p-2 rounded-lg">
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="text-slate-500 w-16">Au :</span>
-                                <input type="date" id="pause-date-fin" class="border border-slate-300 p-2 rounded-lg flex-grow">
-                                <input type="time" id="pause-heure-fin" class="border border-slate-300 p-2 rounded-lg">
+                <!-- 4. ÉGLISES -->
+                <div id="tab-eglises" class="admin-tab hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400">
+                            <h3 class="text-xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span>🗝️</span> Créer / Modifier une Église</h3>
+                            <div class="space-y-4">
+                                <input type="text" id="eglise-nom" placeholder="Nom de l'église (ex: Notre-Dame)" class="w-full border border-slate-300 p-3 rounded-xl font-bold text-sm">
+                                <textarea id="eglise-horaires" placeholder="Texte public des horaires..." class="w-full border border-slate-300 p-3 rounded-xl font-medium text-sm h-20"></textarea>
+                                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                                    <label class="font-bold text-slate-700 block mb-2 text-sm">Badges dynamiques :</label>
+                                    <select id="eglise-type" onchange="toggleHoraires()" class="w-full border border-slate-300 p-2 rounded-lg mb-3 bg-white text-sm font-semibold">
+                                        <option value="inconnu">Badges Gris (Inconnu)</option>
+                                        <option value="tous">Tous les jours identiques</option>
+                                        <option value="semaine_we">Semaine / Samedi / Dimanche</option>
+                                    </select>
+                                    <div id="bloc-tous" class="hidden space-y-2 text-sm">
+                                        <div class="flex gap-2"><span class="w-14 font-semibold">Matin:</span><input type="time" id="tous-m-s" class="border p-1 rounded-md"> à <input type="time" id="tous-m-e" class="border p-1 rounded-md"></div>
+                                        <div class="flex gap-2"><span class="w-14 font-semibold">Aprem:</span><input type="time" id="tous-a-s" class="border p-1 rounded-md"> à <input type="time" id="tous-a-e" class="border p-1 rounded-md"></div>
+                                    </div>
+                                    <div id="bloc-semaine" class="hidden space-y-3 text-sm">
+                                        <div><span class="font-bold text-violet block mb-1">Semaine</span><div class="flex flex-wrap gap-2"><input type="time" id="sem-m-s" class="border p-1 rounded-md w-24"> à <input type="time" id="sem-m-e" class="border p-1 rounded-md w-24"><span class="mx-1">|</span><input type="time" id="sem-a-s" class="border p-1 rounded-md w-24"> à <input type="time" id="sem-a-e" class="border p-1 rounded-md w-24"></div></div>
+                                        <div><span class="font-bold text-or block mb-1">Samedi</span><div class="flex flex-wrap gap-2"><input type="time" id="sam-m-s" class="border p-1 rounded-md w-24"> à <input type="time" id="sam-m-e" class="border p-1 rounded-md w-24"><span class="mx-1">|</span><input type="time" id="sam-a-s" class="border p-1 rounded-md w-24"> à <input type="time" id="sam-a-e" class="border p-1 rounded-md w-24"></div></div>
+                                        <div><span class="font-bold text-red-500 block mb-1">Dimanche</span><div class="flex flex-wrap gap-2"><input type="time" id="dim-m-s" class="border p-1 rounded-md w-24"> à <input type="time" id="dim-m-e" class="border p-1 rounded-md w-24"><span class="mx-1">|</span><input type="time" id="dim-a-s" class="border p-1 rounded-md w-24"> à <input type="time" id="dim-a-e" class="border p-1 rounded-md w-24"></div></div>
+                                    </div>
+                                </div>
+                                <label class="flex items-center gap-2 bg-red-50 p-3 rounded-xl border border-red-100 cursor-pointer">
+                                    <input type="checkbox" id="eglise-estferme" class="w-5 h-5 accent-red-500 rounded">
+                                    <span class="font-bold text-red-700 text-sm">Forcer le Badge "Fermeture"</span>
+                                </label>
+                                <input type="text" id="eglise-alerte" placeholder="Message d'alerte (ex: Travaux)" class="w-full border border-slate-300 p-3 rounded-xl text-sm font-semibold">
+                                <button id="btn-save-eglise" onclick="ajouterEglise()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl hover:bg-slate-700 text-sm shadow-sm">Enregistrer l'Église</button>
                             </div>
                         </div>
+                        <div class="bg-slate-50 p-6 rounded-2xl shadow-sm border border-slate-200">
+                            <h3 class="text-xl font-extrabold text-slate-800 mb-6">🗑️ Gérer les Églises</h3>
+                            <div id="liste-eglises" class="space-y-2 font-semibold text-sm max-h-[500px] overflow-y-auto custom-scrollbar"></div>
+                        </div>
                     </div>
-
-                    <button onclick="sauvegarderConfig()" class="w-full bg-red-600 text-white font-bold py-3 rounded-xl hover:bg-red-700 shadow-sm text-sm">Enregistrer ces paramètres de pause</button>
                 </div>
-            </div>
 
-            <!-- GESTION -->
-            <div class="bg-slate-900 text-white p-8 rounded-2xl shadow-sm lg:col-span-2 mb-12">
-                <h3 class="text-xl font-extrabold mb-6">🗑️ Nettoyage des données</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div class="bg-white/5 p-4 rounded-xl border border-white/10"><h4 class="font-bold text-violet-300 mb-3 text-sm">Églises</h4><div id="liste-eglises" class="space-y-2 font-semibold text-xs max-h-48 overflow-y-auto custom-scrollbar"></div></div>
-                    <div class="bg-white/5 p-4 rounded-xl border border-white/10"><h4 class="font-bold text-slate-300 mb-3 text-sm">Événements</h4><div id="liste-messes" class="space-y-2 font-semibold text-xs max-h-48 overflow-y-auto custom-scrollbar"></div></div>
-                    <div class="bg-white/5 p-4 rounded-xl border border-white/10"><h4 class="font-bold text-or mb-3 text-sm">Actualités</h4><div id="liste-actus" class="space-y-2 font-semibold text-xs max-h-48 overflow-y-auto custom-scrollbar"></div></div>
+                <!-- 5. PRESBYTÈRE -->
+                <div id="tab-presbytere" class="admin-tab hidden">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400">
+                        <h3 class="text-xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span>📞</span> Coordonnées du Presbytère</h3>
+                        <div class="space-y-4 max-w-2xl mx-auto">
+                            <textarea id="contact-adresse" placeholder="Adresse" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm outline-none"></textarea>
+                            <input type="text" id="contact-tel" placeholder="Téléphone" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm outline-none">
+                            <input type="text" id="contact-email" placeholder="Email" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm outline-none">
+                            <textarea id="contact-permanences" placeholder="Permanences" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm outline-none"></textarea>
+                            <textarea id="contact-urgences" placeholder="Urgences" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm outline-none"></textarea>
+                            <button onclick="sauvegarderContact()" class="w-full bg-slate-800 text-white font-bold py-3 rounded-xl shadow-sm hover:bg-slate-900 transition-colors text-sm">Sauvegarder les infos</button>
+                            <div id="contact-msg" class="text-center font-bold mt-2 text-sm"></div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
+                <!-- 6. PARAMÈTRES & SÉCURITÉ -->
+                <div id="tab-parametres" class="admin-tab hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        
+                        <div class="space-y-8">
+                            <!-- Maintenance -->
+                            <div class="bg-red-50 p-6 rounded-2xl shadow-sm border border-red-200 border-t-4 border-red-500">
+                                <h3 class="text-xl font-extrabold text-red-800 mb-4 flex items-center gap-2"><span>🛑</span> Maintenance Générale</h3>
+                                <div class="space-y-4">
+                                    <label class="flex items-center gap-3 bg-white p-3 rounded-xl border border-red-300 cursor-pointer shadow-sm">
+                                        <input type="checkbox" id="site-pause" class="w-6 h-6 accent-red-600 rounded">
+                                        <span class="font-bold text-red-800">Couper complètement l'accès au site</span>
+                                    </label>
+                                    <input type="text" id="site-pause-msg" placeholder="Message affiché aux visiteurs..." class="w-full border border-red-300 p-3 rounded-xl outline-none font-semibold text-sm text-red-900 placeholder-red-400">
+                                    <button onclick="sauvegarderConfig()" class="w-full bg-red-600 text-white font-bold py-3 rounded-xl hover:bg-red-700 shadow-sm text-sm">Appliquer</button>
+                                </div>
+                            </div>
+                            <!-- Bannière Accueil -->
+                            <div class="bg-amber-50 p-6 rounded-2xl shadow-sm border border-amber-200 border-t-4 border-amber-500">
+                                <h3 class="text-xl font-extrabold text-amber-800 mb-4 flex items-center gap-2"><span>📣</span> Bannière d'accueil</h3>
+                                <div class="space-y-4">
+                                    <label class="flex items-center gap-3 bg-white p-3 rounded-xl border border-amber-300 cursor-pointer shadow-sm">
+                                        <input type="checkbox" id="site-banner-toggle" class="w-6 h-6 accent-amber-600 rounded">
+                                        <span class="font-bold text-amber-800">Afficher la bannière</span>
+                                    </label>
+                                    <input type="text" id="site-banner-msg" placeholder="Message affiché tout en haut..." class="w-full border border-amber-300 p-3 rounded-xl outline-none font-semibold text-sm text-amber-900 placeholder-amber-400">
+                                    <button onclick="sauvegarderConfig()" class="w-full bg-amber-600 text-white font-bold py-3 rounded-xl hover:bg-amber-700 shadow-sm text-sm">Appliquer</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-8">
+                            <!-- IP Bannies (Réservé Admin Principal) -->
+                            <div id="section-bannissements" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-red-600">
+                                <h3 class="text-xl font-extrabold text-red-600 mb-2 flex items-center gap-2"><span>🛡️</span> Adresses IP Bannies</h3>
+                                <p class="text-sm text-slate-500 font-bold mb-4">Gérez les personnes bloquées.</p>
+                                <div id="liste-bannis" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar bg-slate-50 p-3 rounded-xl border border-slate-200">
+                                    <p class="text-slate-400 font-semibold text-sm">Chargement...</p>
+                                </div>
+                            </div>
+                            <!-- Nettoyage Bonnes Ondes -->
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-pink-400">
+                                <h3 class="text-xl font-extrabold text-slate-800 mb-4 flex items-center gap-2"><span>✨</span> Modération Bonnes Ondes</h3>
+                                <div id="liste-ondes" class="space-y-2 font-semibold text-xs max-h-[300px] overflow-y-auto custom-scrollbar"></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
         </div>
     </main>
 
     <style>
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); border-radius: 10px;}
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 10px;}
     </style>
@@ -229,8 +247,8 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
-        let eglisesData=[], messesData=[], actusData=[], ticketsData=[];
-        let editEgliseId = null, editMesseId = null, editActuId = null, ticketAdminCode = null;
+        let eglisesData=[], messesData=[], actusData=[];
+        let editEgliseId = null, editMesseId = null, editActuId = null;
         let currentUserEmail = "";
 
         var quill = new Quill('#editeur-actu', { theme: 'snow', modules: { toolbar: [ [{ 'header': [2, 3, false] }], ['bold', 'italic', 'underline'], ['link', 'image'], ['clean'] ] } });
@@ -243,15 +261,12 @@
                 document.getElementById('btn-logout').classList.remove('hidden'); 
                 
                 currentUserEmail = session.user.email;
-                document.getElementById('admin-signature').value = session.user.user_metadata?.signature || '';
-                
                 if (currentUserEmail === 'n.antoinemich@gmail.com') {
-                    document.getElementById('btn-bannir').classList.remove('hidden');
                     document.getElementById('section-bannissements').classList.remove('hidden');
                     chargerBannis();
                 }
 
-                chargerDonnees(); chargerContactAdmin(); chargerTicketsAdmin(); chargerConfig();
+                chargerDonnees(); chargerContactAdmin(); chargerConfig(); chargerAbonnements();
             }
         }
 
@@ -263,40 +278,58 @@
 
         async function seDeconnecter() { await _supabase.auth.signOut(); location.reload(); }
 
-        /* GESTION BANNISSEMENTS (Uniquement pour n.antoinemich@gmail.com) */
-        async function chargerBannis() {
-            const { data, error } = await _supabase.from('ip_bannies').select('*').order('banni_le', { ascending: false });
-            const container = document.getElementById('liste-bannis');
-            if (error) { container.innerHTML = '<p class="text-red-500 font-bold text-sm">Erreur de chargement.</p>'; return; }
-            if (!data || data.length === 0) { container.innerHTML = '<p class="text-emerald-600 font-bold text-sm">Aucune IP n\'est bannie pour le moment.</p>'; return; }
+        /* NAVIGATION INTERNE (TABS) */
+        function ouvrirTab(tabId) {
+            document.getElementById('admin-home').classList.add('hidden');
+            document.getElementById('admin-content').classList.remove('hidden');
+            document.querySelectorAll('.admin-tab').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+        }
+
+        function retourMenu() {
+            document.getElementById('admin-content').classList.add('hidden');
+            document.getElementById('admin-home').classList.remove('hidden');
+            document.querySelectorAll('.admin-tab').forEach(el => el.classList.add('hidden'));
+        }
+
+        /* GESTION DES ABONNÉS T.U. */
+        async function chargerAbonnements() {
+            const { data } = await _supabase.from('abonnements_tu').select('*').order('created_at', { ascending: false });
+            const c = document.getElementById('liste-abonnements');
+            if(!data || data.length === 0) { c.innerHTML = '<p class="text-slate-500 font-semibold text-sm">Aucun abonné pour le moment.</p>'; return; }
             
-            container.innerHTML = data.map(b => `
-                <div class="flex justify-between items-center bg-white p-3 rounded-lg border border-red-100 shadow-sm">
+            c.innerHTML = data.map(a => `
+                <div class="flex justify-between items-center bg-slate-50 p-4 rounded-xl border border-slate-200 mb-2">
                     <div>
-                        <span class="font-black text-red-700">${b.ip}</span>
-                        <span class="text-xs text-slate-500 ml-2 font-bold">Bloqué le ${new Date(b.banni_le).toLocaleDateString('fr-FR')}</span>
+                        <span class="font-extrabold text-slate-800 text-sm block md:inline">${a.email}</span>
+                        <span class="md:ml-3 px-2 py-1 rounded text-[10px] font-bold uppercase inline-block mt-1 md:mt-0 ${a.statut === 'Nouveau' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}">${a.statut}</span>
                     </div>
-                    <button onclick="debannir(${b.id})" class="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1.5 rounded-lg text-xs font-black transition-colors">Débannir</button>
+                    <div class="flex flex-col md:flex-row gap-2">
+                        ${a.statut === 'Nouveau' ? `<button onclick="marquerAbo('${a.id}')" class="bg-violet text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm hover:bg-prune transition-colors">Marquer comme Ajouté</button>` : ''}
+                        <button onclick="supprimerAbo('${a.id}')" class="bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">Supprimer</button>
+                    </div>
                 </div>
             `).join('');
         }
-
-        async function debannir(id) {
-            if(!confirm("Êtes-vous sûr de vouloir redonner l'accès au site à cette personne ?")) return;
-            await _supabase.from('ip_bannies').delete().eq('id', id);
-            chargerBannis();
+        
+        async function marquerAbo(id) {
+            await _supabase.from('abonnements_tu').update({ statut: 'Ajouté' }).eq('id', id);
+            chargerAbonnements();
+        }
+        
+        async function supprimerAbo(id) {
+            if(confirm("Supprimer définitivement cet abonné ?")) {
+                await _supabase.from('abonnements_tu').delete().eq('id', id);
+                chargerAbonnements();
+            }
         }
 
-        /* MAINTENANCE CONFIG */
+        /* CONFIGURATION & BANNISSEMENTS */
         async function chargerConfig() {
             const { data } = await _supabase.from('site_config').select('*').eq('id', 1).single();
             if(data) {
-                document.getElementById('site-pause').checked = data.est_en_pause;
+                document.getElementById('site-pause').checked = data.est_en_pause || false;
                 document.getElementById('site-pause-msg').value = data.message_pause || '';
-                document.getElementById('pause-date-debut').value = data.pause_date_debut || '';
-                document.getElementById('pause-date-fin').value = data.pause_date_fin || '';
-                document.getElementById('pause-heure-debut').value = data.pause_heure_debut || '';
-                document.getElementById('pause-heure-fin').value = data.pause_heure_fin || '';
                 document.getElementById('site-banner-toggle').checked = data.afficher_message_accueil || false;
                 document.getElementById('site-banner-msg').value = data.message_accueil || '';
             }
@@ -305,129 +338,35 @@
         async function sauvegarderConfig() {
             const p = document.getElementById('site-pause').checked;
             const m = document.getElementById('site-pause-msg').value;
-            const dDebut = document.getElementById('pause-date-debut').value;
-            const dFin = document.getElementById('pause-date-fin').value;
-            const hDebut = document.getElementById('pause-heure-debut').value;
-            const hFin = document.getElementById('pause-heure-fin').value;
             const bToggle = document.getElementById('site-banner-toggle').checked;
             const bMsg = document.getElementById('site-banner-msg').value;
             
-            await _supabase.from('site_config').upsert({ 
-                id: 1, 
-                est_en_pause: p, 
-                message_pause: m, 
-                pause_date_debut: dDebut, 
-                pause_date_fin: dFin, 
-                pause_heure_debut: hDebut, 
-                pause_heure_fin: hFin,
-                afficher_message_accueil: bToggle,
-                message_accueil: bMsg
-            });
+            await _supabase.from('site_config').upsert({ id: 1, est_en_pause: p, message_pause: m, afficher_message_accueil: bToggle, message_accueil: bMsg });
             alert("Paramètres enregistrés avec succès !");
         }
 
-        /* TICKETS ADMIN */
-        async function chargerTicketsAdmin() {
-            const { data, error } = await _supabase.from('tickets').select('*').order('created_at', { ascending: false });
-            if(error) { document.getElementById('admin-liste-tickets').innerHTML = '<p class="text-red-500 font-bold text-center mt-10 text-sm">Erreur.</p>'; return; }
-            ticketsData = data || [];
+        async function chargerBannis() {
+            const { data } = await _supabase.from('ip_bannies').select('*').order('banni_le', { ascending: false });
+            const container = document.getElementById('liste-bannis');
+            if (!data || data.length === 0) { container.innerHTML = '<p class="text-emerald-600 font-bold text-xs">Aucune IP n\'est bannie.</p>'; return; }
             
-            document.getElementById('admin-liste-tickets').innerHTML = ticketsData.map(t => {
-                let badgeClass = "bg-amber-50 text-amber-700 border-amber-200";
-                if(t.statut === 'Clos') badgeClass = "bg-slate-100 text-slate-500 border-slate-200";
-                else if(t.statut !== 'En attente de traitement' && t.statut !== 'En attente') badgeClass = "bg-emerald-50 text-emerald-700 border-emerald-200";
-                
-                return `
-                <div onclick="ouvrirTicketAdmin('${t.code}')" class="bg-white p-3 rounded-xl shadow-sm border border-slate-200 mb-2 cursor-pointer hover:border-violet transition-colors">
-                    <div class="flex justify-between items-start mb-1">
-                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">${t.code}</span>
-                        <span class="px-2 py-0.5 rounded text-[9px] font-bold uppercase border ${badgeClass}">${t.statut}</span>
+            container.innerHTML = data.map(b => `
+                <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-red-100">
+                    <div>
+                        <span class="font-black text-red-700 text-sm">${b.ip}</span>
                     </div>
-                    <p class="font-bold text-slate-700 text-xs truncate">${t.sujet}</p>
-                    <p class="text-[10px] text-slate-500 mt-1 font-semibold">De : ${t.nom || 'Visiteur'}</p>
+                    <button onclick="debannir(${b.id})" class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold hover:bg-red-200">Débannir</button>
                 </div>
-                `;
-            }).join('');
-            if(ticketsData.length === 0) document.getElementById('admin-liste-tickets').innerHTML = '<p class="text-slate-400 font-semibold text-center mt-10 text-sm">Aucun ticket.</p>';
+            `).join('');
         }
 
-        function ouvrirTicketAdmin(code) {
-            ticketAdminCode = code;
-            const t = ticketsData.find(x => x.code === code);
-            document.getElementById('admin-ticket-view').classList.remove('hidden');
-            document.getElementById('at-sujet').innerText = t.sujet + " (de " + (t.nom || "Visiteur") + ")";
-            document.getElementById('at-code').innerText = "CODE : " + t.code;
-            
-            let badgeClass = "bg-amber-50 text-amber-700 border-amber-200";
-            if(t.statut === 'Clos') badgeClass = "bg-slate-100 text-slate-500 border-slate-200";
-            else if(t.statut !== 'En attente de traitement' && t.statut !== 'En attente') badgeClass = "bg-emerald-50 text-emerald-700 border-emerald-200";
-            document.getElementById('at-statut').className = `px-3 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide border ${badgeClass}`;
-            document.getElementById('at-statut').innerText = t.statut;
-
-            const convBox = document.getElementById('at-conversation');
-            convBox.innerHTML = (t.conversation || []).map(m => {
-                const isVisiteur = (m.auteur === t.nom || m.auteur === 'Visiteur');
-                return `
-                <div class="flex flex-col ${isVisiteur ? 'items-start' : 'items-end'}">
-                    <span class="text-[9px] font-semibold text-slate-400 mb-0.5 px-1">${m.auteur} - ${m.date}</span>
-                    <div class="max-w-[90%] px-3 py-2 rounded-xl text-xs font-semibold shadow-sm ${isVisiteur ? 'bg-white text-slate-700 border border-slate-200 rounded-tl-none' : 'bg-violet text-white rounded-tr-none'}">
-                        ${m.texte.replace(/\n/g, '<br>')}
-                    </div>
-                </div>
-            `}).join('');
-            convBox.scrollTop = convBox.scrollHeight;
-
-            if(t.statut === 'Clos') document.getElementById('at-actions').classList.add('hidden');
-            else document.getElementById('at-actions').classList.remove('hidden');
+        async function debannir(id) {
+            if(!confirm("Redonner l'accès au site à cette personne ?")) return;
+            await _supabase.from('ip_bannies').delete().eq('id', id);
+            chargerBannis();
         }
 
-        async function repondreTicketAdmin() {
-            const reponse = document.getElementById('at-reponse').value.trim();
-            if(!reponse || !ticketAdminCode) return;
-            
-            let nomAdmin = document.getElementById('admin-signature').value.trim() || 'L\'équipe paroissiale';
-            await _supabase.auth.updateUser({ data: { signature: nomAdmin } });
-            
-            const texteAEnvoyer = reponse + "\n\n— " + nomAdmin;
-
-            const t = ticketsData.find(x => x.code === ticketAdminCode);
-            let conv = t.conversation || [];
-            conv.push({ auteur: nomAdmin, texte: texteAEnvoyer, date: new Date().toLocaleString('fr-FR', {dateStyle: 'short', timeStyle: 'short'}) });
-
-            await _supabase.from('tickets').update({ conversation: conv, statut: 'Réponse envoyée' }).eq('code', ticketAdminCode);
-            document.getElementById('at-reponse').value = '';
-            await chargerTicketsAdmin();
-            ouvrirTicketAdmin(ticketAdminCode);
-        }
-
-        async function cloturerTicket() {
-            if(!confirm("Clôturer ce dossier ?")) return;
-            await _supabase.from('tickets').update({ statut: 'Clos' }).eq('code', ticketAdminCode);
-            await chargerTicketsAdmin();
-            ouvrirTicketAdmin(ticketAdminCode);
-        }
-
-        // BANNISSEMENT IP AUTOMATIQUE DEPUIS LE TICKET
-        async function bannirAuteurTicket() {
-            if (currentUserEmail !== 'n.antoinemich@gmail.com') {
-                alert("Action non autorisée."); return;
-            }
-            const t = ticketsData.find(x => x.code === ticketAdminCode);
-            if (!t || !t.ip || t.ip === 'inconnue') {
-                alert("Impossible de récupérer l'adresse IP de ce message.");
-                return;
-            }
-            if (!confirm("Voulez-vous vraiment bannir l'adresse IP " + t.ip + " (" + t.nom + ") ?")) return;
-
-            const { error } = await _supabase.from('ip_bannies').insert([{ ip: t.ip }]);
-            if (error) alert("Erreur (peut-être déjà bannie) : " + error.message);
-            else {
-                alert("Succès : L'adresse IP a été bannie.");
-                chargerBannis();
-            }
-        }
-        /* FIN TICKETS */
-
+        /* MÉTHODES GÉNÉRALES (ÉGLISES, MESSES, ACTUS) */
         function toggleHoraires() {
             const type = document.getElementById('eglise-type').value;
             document.getElementById('bloc-tous').classList.add('hidden'); document.getElementById('bloc-semaine').classList.add('hidden');
@@ -481,13 +420,16 @@
         async function chargerDonnees() {
             const { data: eglises } = await _supabase.from('horaires_eglises').select('*'); eglisesData = eglises||[];
             const sL = document.getElementById('messe-lieu'); sL.innerHTML = '<option value="" disabled selected>Église...</option>';
-            document.getElementById('liste-eglises').innerHTML = eglisesData.map(e => { sL.innerHTML += `<option value="${e.nom}">${e.nom}</option>`; return `<div class="flex justify-between items-center bg-white/5 p-2 rounded-lg"><span class="truncate" title="${e.nom}">${e.nom}</span> <div class="flex gap-2"><button onclick="editEglise(${e.id})" class="text-violet-300">✏️</button><button onclick="supprimer('horaires_eglises', ${e.id})" class="text-red-400">✖</button></div></div>`; }).join('');
+            document.getElementById('liste-eglises').innerHTML = eglisesData.map(e => { sL.innerHTML += `<option value="${e.nom}">${e.nom}</option>`; return `<div class="flex justify-between items-center bg-white p-2 rounded-lg border border-slate-200"><span class="truncate" title="${e.nom}">${e.nom}</span> <div class="flex gap-2"><button onclick="editEglise(${e.id})" class="text-violet">✏️</button><button onclick="supprimer('horaires_eglises', ${e.id})" class="text-red-500">✖</button></div></div>`; }).join('');
 
             const { data: messes } = await _supabase.from('horaires_messes').select('*').order('jour', {ascending: true}); messesData = messes||[];
-            document.getElementById('liste-messes').innerHTML = messesData.map(m => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-lg"><span class="truncate">${m.lieu.split('–')[0]} - ${m.jour}</span> <div class="flex gap-2"><button onclick="editMesse(${m.id})" class="text-slate-300">✏️</button><button onclick="supprimer('horaires_messes', ${m.id})" class="text-red-400">✖</button></div></div>`).join('');
+            document.getElementById('liste-messes').innerHTML = messesData.map(m => `<div class="flex justify-between items-center bg-white p-2 rounded-lg border border-slate-200"><span class="truncate">${m.lieu.split('–')[0]} - ${m.jour}</span> <div class="flex gap-2"><button onclick="editMesse(${m.id})" class="text-violet">✏️</button><button onclick="supprimer('horaires_messes', ${m.id})" class="text-red-500">✖</button></div></div>`).join('');
 
             const { data: actus } = await _supabase.from('actualites').select('*'); actusData = actus||[];
-            document.getElementById('liste-actus').innerHTML = actusData.map(a => `<div class="flex justify-between items-center bg-white/5 p-2 rounded-lg"><span class="truncate">${a.titre}</span> <div class="flex gap-2"><button onclick="editActu(${a.id})" class="text-or">✏️</button><button onclick="supprimer('actualites', ${a.id})" class="text-red-400">✖</button></div></div>`).join('');
+            document.getElementById('liste-actus').innerHTML = actusData.map(a => `<div class="flex justify-between items-center bg-white p-2 rounded-lg border border-slate-200"><span class="truncate">${a.titre}</span> <div class="flex gap-2"><button onclick="editActu(${a.id})" class="text-or">✏️</button><button onclick="supprimer('actualites', ${a.id})" class="text-red-500">✖</button></div></div>`).join('');
+
+            const { data: ondes } = await _supabase.from('bonnes_ondes').select('*');
+            document.getElementById('liste-ondes').innerHTML = (ondes||[]).map(o => `<div class="flex justify-between items-center bg-white p-2 rounded-lg border border-slate-200"><span class="truncate italic text-slate-600">"${o.message}"</span> <button onclick="supprimer('bonnes_ondes', ${o.id})" class="text-red-500">✖</button></div>`).join('');
         }
 
         function editEglise(id) { const e = eglisesData.find(x => x.id === id); editEgliseId = e.id; document.getElementById('eglise-nom').value = e.nom; document.getElementById('eglise-horaires').value = e.horaires_base || ''; document.getElementById('eglise-type').value = 'inconnu'; ['tous-m-s','tous-m-e','tous-a-s','tous-a-e','sem-m-s','sem-m-e','sem-a-s','sem-a-e','sam-m-s','sam-m-e','sam-a-s','sam-a-e','dim-m-s','dim-m-e','dim-a-s','dim-a-e'].forEach(id => document.getElementById(id).value = ''); if(e.horaires_json) { try { const h = JSON.parse(e.horaires_json); document.getElementById('eglise-type').value = h.type || 'inconnu'; if(h.type) { ['tous_m_s','tous_m_e','tous_a_s','tous_a_e','sem_m_s','sem_m_e','sem_a_s','sem_a_e','sam_m_s','sam_m_e','sam_a_s','sam_a_e','dim_m_s','dim_m_e','dim_a_s','dim-a-e'].forEach(key => { if(h[key]) document.getElementById(key.replace(/_/g, '-')).value = h[key]; }); } } catch(err) {} } toggleHoraires(); document.getElementById('eglise-estferme').checked = e.est_ferme; document.getElementById('eglise-alerte').value = e.alerte || ''; window.scrollTo({top:0, behavior:'smooth'}); }
