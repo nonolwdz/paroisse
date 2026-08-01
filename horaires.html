@@ -83,7 +83,9 @@
         checkMaintenance();
 
         function getStatut(e) {
-            if (e.est_ferme) return { text: "Fermeture exceptionnelle", color: "bg-red-50 text-red-600 border border-red-200", isOpen: false };
+            // FOND ROUGE VIF : Pour une fermeture exceptionnelle (alerte)
+            if (e.est_ferme) return { text: "Fermeture exceptionnelle", color: "bg-red-600 text-white border border-red-700 shadow-sm", isOpen: false };
+            
             if (!e.horaires_json) return { text: "Horaires inconnus", color: "bg-slate-50 text-slate-500 border border-slate-200", isOpen: false };
 
             let h; try { h = JSON.parse(e.horaires_json); } catch(err) { return { text: "Horaires inconnus", color: "bg-slate-50 text-slate-500 border border-slate-200", isOpen: false }; }
@@ -100,9 +102,12 @@
                 else if (day === 0) { addSlot(h.dim_m_s, h.dim_m_e); addSlot(h.dim_a_s, h.dim_a_e); } 
             }
 
-            if (slots.length === 0) return { text: "Fermée aujourd'hui", color: "bg-slate-100 text-slate-500 border border-slate-200", isOpen: false };
+            // FOND ROUGE CLAIR : Pour une fermeture normale d'une journée entière
+            if (slots.length === 0) return { text: "Fermée aujourd'hui", color: "bg-red-50 text-red-600 border border-red-200", isOpen: false };
 
-            let status = { text: "Fermée", color: "bg-slate-100 text-slate-500 border border-slate-200", isOpen: false };
+            // FOND ROUGE CLAIR : Pour une fermeture normale en ce moment précis
+            let status = { text: "Fermée", color: "bg-red-50 text-red-600 border border-red-200", isOpen: false };
+            
             for (let slot of slots) {
                 if (minsNow >= slot.s && minsNow < (slot.e - 30)) return { text: "Ouverte actuellement", color: "bg-emerald-50 text-emerald-700 border border-emerald-200", isOpen: true };
                 if (minsNow >= (slot.e - 30) && minsNow < slot.e) return { text: "Ferme bientôt", color: "bg-amber-50 text-amber-700 border border-amber-200", isOpen: true };
