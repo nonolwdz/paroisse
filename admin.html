@@ -25,7 +25,6 @@
 
     <main class="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
         
-        <!-- CONNEXION -->
         <div id="section-login" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet max-w-md mx-auto mt-12">
             <h2 class="text-2xl font-extrabold text-center mb-6 text-slate-800">Connexion</h2>
             <div class="space-y-4">
@@ -37,7 +36,6 @@
 
         <div id="section-dashboard" class="hidden">
             
-            <!-- LE MENU PRINCIPAL -->
             <div id="admin-home" class="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 
                 <button onclick="ouvrirTab('tab-tu')" class="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet flex md:flex-col items-center md:items-center text-left md:text-center hover:shadow-md transition-all gap-4 md:gap-0">
@@ -90,7 +88,6 @@
 
             </div>
 
-            <!-- CONTENU DE LA PAGE SÉLECTIONNÉE (Caché au départ) -->
             <div id="admin-content" class="hidden">
                 <button onclick="retourMenu()" class="mb-6 bg-white border border-slate-300 text-slate-700 px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-50 shadow-sm transition-colors flex items-center gap-2">
                     <span>⬅</span> Retour au menu
@@ -98,13 +95,13 @@
 
                 <!-- 1. ABONNÉS T.U. -->
                 <div id="tab-tu" class="admin-tab hidden">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet max-w-4xl mx-auto">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet">
                         <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
                             <h3 class="text-lg md:text-xl font-extrabold text-slate-800 flex items-center gap-3"><span>📬</span> Abonnés au Trait d'Union</h3>
                         </div>
                         <p class="text-sm text-slate-500 font-bold mb-4">Voici la liste des personnes ayant demandé à recevoir le Trait d'Union par e-mail.</p>
                         
-                        <div id="liste-abonnements" class="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
+                        <div id="liste-abonnements" class="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar pr-2">
                             <p class="text-slate-400 font-semibold text-sm">Chargement...</p>
                         </div>
                     </div>
@@ -124,7 +121,7 @@
                         </div>
                         <div class="bg-slate-50 p-6 rounded-2xl shadow-sm border border-slate-200">
                             <h3 class="text-lg md:text-xl font-extrabold text-slate-800 mb-6">🗑️ Gérer les Actualités</h3>
-                            <div id="liste-actus" class="space-y-2 font-semibold text-sm max-h-[600px] overflow-y-auto custom-scrollbar"></div>
+                            <div id="liste-actus" class="space-y-2 font-semibold text-sm max-h-[500px] overflow-y-auto custom-scrollbar"></div>
                         </div>
                     </div>
                 </div>
@@ -146,7 +143,7 @@
                         </div>
                         <div class="bg-slate-50 p-6 rounded-2xl shadow-sm border border-slate-200">
                             <h3 class="text-lg md:text-xl font-extrabold text-slate-800 mb-6">🗑️ Gérer l'Agenda</h3>
-                            <div id="liste-messes" class="space-y-2 font-semibold text-sm max-h-[600px] overflow-y-auto custom-scrollbar"></div>
+                            <div id="liste-messes" class="space-y-2 font-semibold text-sm max-h-[500px] overflow-y-auto custom-scrollbar"></div>
                         </div>
                     </div>
                 </div>
@@ -186,7 +183,7 @@
                         </div>
                         <div class="bg-slate-50 p-6 rounded-2xl shadow-sm border border-slate-200">
                             <h3 class="text-lg md:text-xl font-extrabold text-slate-800 mb-6">🗑️ Gérer les Églises</h3>
-                            <div id="liste-eglises" class="space-y-2 font-semibold text-sm max-h-[600px] overflow-y-auto custom-scrollbar"></div>
+                            <div id="liste-eglises" class="space-y-2 font-semibold text-sm max-h-[500px] overflow-y-auto custom-scrollbar"></div>
                         </div>
                     </div>
                 </div>
@@ -242,7 +239,7 @@
                             <!-- Nettoyage Bonnes Ondes -->
                             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-pink-400">
                                 <h3 class="text-lg md:text-xl font-extrabold text-slate-800 mb-4 flex items-center gap-2"><span>✨</span> Modération Bonnes Ondes</h3>
-                                <div id="liste-ondes" class="space-y-2 font-semibold text-xs max-h-[400px] overflow-y-auto custom-scrollbar"></div>
+                                <div id="liste-ondes" class="space-y-2 font-semibold text-xs max-h-[300px] overflow-y-auto custom-scrollbar"></div>
                             </div>
                         </div>
 
@@ -288,32 +285,21 @@
 
         async function seDeconnecter() { await _supabase.auth.signOut(); location.reload(); }
 
-        /* LA MAGIE DE LA PAGE UNIQUE : Affiche la bonne section et cache tout le reste, puis remonte en haut */
         function ouvrirTab(tabId) {
-            // On cache le menu d'accueil
             document.getElementById('admin-home').classList.add('hidden');
-            // On affiche la zone de contenu
             document.getElementById('admin-content').classList.remove('hidden');
-            // On cache toutes les sections
             document.querySelectorAll('.admin-tab').forEach(el => el.classList.add('hidden'));
-            // On affiche uniquement la section demandée
             document.getElementById(tabId).classList.remove('hidden');
-            // On remonte la page tout en haut instantanément
-            window.scrollTo({ top: 0, behavior: 'auto' });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function retourMenu() {
-            // On cache la zone de contenu
             document.getElementById('admin-content').classList.add('hidden');
-            // On réaffiche le menu d'accueil
             document.getElementById('admin-home').classList.remove('hidden');
-            // On cache toutes les sections par sécurité
             document.querySelectorAll('.admin-tab').forEach(el => el.classList.add('hidden'));
-            // On remonte la page tout en haut instantanément
-            window.scrollTo({ top: 0, behavior: 'auto' });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        /* GESTION DES ABONNÉS T.U. */
         async function chargerAbonnements() {
             const { data } = await _supabase.from('abonnements_tu').select('*').order('created_at', { ascending: false });
             const c = document.getElementById('liste-abonnements');
@@ -345,7 +331,6 @@
             }
         }
 
-        /* CONFIGURATION */
         async function chargerConfig() {
             const { data } = await _supabase.from('site_config').select('*').eq('id', 1).single();
             if(data) {
@@ -366,7 +351,6 @@
             alert("Paramètres enregistrés avec succès !");
         }
 
-        /* MÉTHODES GÉNÉRALES */
         function toggleHoraires() {
             const type = document.getElementById('eglise-type').value;
             document.getElementById('bloc-tous').classList.add('hidden'); document.getElementById('bloc-semaine').classList.add('hidden');
