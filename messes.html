@@ -98,9 +98,9 @@
 
         async function checkMaintenance() {
             try {
-                const { data } = await _supabase.from('site_config').select('*').eq('id', 1).single();
-                if (data && data.est_en_pause) {
-                    document.getElementById('maintenance-msg').innerText = data.message_pause || "Le site est en pause.";
+                const { data: config } = await _supabase.from('site_config').select('*').eq('id', 1).single();
+                if (config && config.est_en_pause) {
+                    document.getElementById('maintenance-msg').innerText = config.message_pause || "Le site est en pause.";
                     document.getElementById('maintenance-overlay').classList.remove('hidden');
                     document.body.style.overflow = 'hidden';
                 }
@@ -109,8 +109,21 @@
         checkMaintenance();
 
         async function chargerMesses() {
-            const { data: messes } = await _supabase.from('horaires_messes').select('*');
-            messesData = messes || [];
+            const today = new Date(); 
+            const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+            const currentMins = today.getHours() * 60 + today.getMinutes();
+
+            // On ne récupère depuis Supabase que les dates à partir d'aujourd'hui
+            const { data: messes } = await _supabase.from('horaires_messes').select('*').gte('jour', todayStr);
+            
+            // On affine le filtre pour retirer les heures déjà passées du jour même
+            messesData = (messes || []).filter(m => {
+                if (m.jour === todayStr && m.heure) {
+                    const [h, min] = m.heure.split(':').map(Number);
+                    return (h * 60 + min) >= currentMins;
+                }
+                return true;
+            });
             
             const { data: eglises } = await _supabase.from('horaires_eglises').select('nom');
             const listeEglises = eglises ? eglises.map(e => e.nom) : [];
