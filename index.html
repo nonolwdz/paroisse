@@ -20,14 +20,6 @@
         <p id="maintenance-msg" class="text-lg font-medium text-center px-6 max-w-xl text-violet-200">Nous revenons très bientôt.</p>
     </div>
 
-    <div id="banni-overlay" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center text-white hidden">
-        <div class="bg-white text-slate-800 p-8 rounded-3xl shadow-2xl max-w-md text-center border-t-8 border-red-500">
-            <span class="text-4xl mb-3 block">🚫</span>
-            <h2 class="text-2xl font-black mb-2 text-red-600">Accès restreint</h2>
-            <p class="text-slate-600 font-medium text-sm leading-relaxed">Votre accès à ce site a été suspendu suite à un non-respect des règles de la communauté.</p>
-        </div>
-    </div>
-
     <div id="banner-accueil" class="hidden bg-or text-slate-900 font-bold px-6 py-3 flex justify-between items-center relative z-[60] shadow-sm">
         <div id="banner-texte" class="flex-grow text-center text-sm md:text-base"></div>
         <button onclick="document.getElementById('banner-accueil').style.display='none'" class="text-slate-800 hover:text-white transition-colors ml-4 text-xl">✖</button>
@@ -127,7 +119,7 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        async function checkSecurite() {
+        async function checkMaintenance() {
             try {
                 const { data: config } = await _supabase.from('site_config').select('*').eq('id', 1).single();
                 if (config) {
@@ -142,21 +134,9 @@
                         document.getElementById('banner-accueil').classList.remove('hidden');
                     }
                 }
-                
-                try {
-                    let userIp = null;
-                    try { const ipReq = await fetch('https://api.ipify.org?format=json'); const ipData = await ipReq.json(); userIp = ipData.ip; } 
-                    catch(e) { const ipReq2 = await fetch('https://ipapi.co/json/'); const ipData2 = await ipReq2.json(); userIp = ipData2.ip; }
-
-                    if (userIp) {
-                        const { data: banni } = await _supabase.from('ip_bannies').select('*').eq('ip', userIp).single();
-                        if (banni) { document.getElementById('banni-overlay').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
-                    }
-                } catch(e) {}
-
             } catch(e) {}
         }
-        checkSecurite();
+        checkMaintenance();
 
         const bgUrl = `${SUPABASE_URL}/storage/v1/object/public/images/accueil.jpg?t=${new Date().getTime()}`;
         const img = new Image();
