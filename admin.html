@@ -23,61 +23,83 @@
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-6 py-12">
+    <main class="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
         
-        <!-- CONNEXION -->
-        <div id="section-login" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet max-w-md mx-auto mt-12">
+        <div id="section-login" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet max-w-md mx-auto mt-12">
             <h2 class="text-2xl font-extrabold text-center mb-6 text-slate-800">Connexion</h2>
             <div class="space-y-4">
-                <input type="email" id="email" class="w-full border border-slate-300 p-3 rounded-xl outline-none focus:border-violet font-semibold text-slate-800" placeholder="Email admin">
-                <input type="password" id="password" class="w-full border border-slate-300 p-3 rounded-xl outline-none focus:border-violet font-semibold text-slate-800" placeholder="Mot de passe">
+                <input type="email" id="email" class="w-full border border-slate-300 p-3 rounded-xl outline-none focus:border-violet font-semibold text-slate-800 text-base" placeholder="Email admin">
+                <input type="password" id="password" class="w-full border border-slate-300 p-3 rounded-xl outline-none focus:border-violet font-semibold text-slate-800 text-base" placeholder="Mot de passe">
                 <button onclick="seConnecter()" class="w-full bg-violet text-white font-bold text-lg py-3 rounded-xl shadow-sm hover:bg-prune transition-colors mt-2">Accéder</button>
             </div>
         </div>
 
-        <!-- TABLEAU DE BORD (MENU PRINCIPAL) -->
         <div id="section-dashboard" class="hidden">
             
-            <div id="admin-home" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                <button onclick="ouvrirTab('tab-tu')" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet text-center hover:shadow-md hover:-translate-y-1 transition-all">
-                    <span class="text-4xl block mb-4">📬</span>
-                    <h3 class="text-lg font-extrabold text-slate-800">Abonnés Trait d'Union</h3>
+            <div id="admin-home" class="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                
+                <button onclick="ouvrirTab('tab-tu')" class="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet flex md:flex-col items-center md:items-center text-left md:text-center hover:shadow-md transition-all gap-4 md:gap-0">
+                    <span class="text-3xl md:text-4xl md:mb-4">📬</span>
+                    <div>
+                        <h3 class="text-base md:text-lg font-extrabold text-slate-800">Abonnés Trait d'Union</h3>
+                        <p class="text-xs text-slate-400 font-semibold md:hidden mt-0.5">Gérer les demandes de reçus e-mail</p>
+                    </div>
                 </button>
-                <button onclick="ouvrirTab('tab-actus')" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-or text-center hover:shadow-md hover:-translate-y-1 transition-all">
-                    <span class="text-4xl block mb-4">📢</span>
-                    <h3 class="text-lg font-extrabold text-slate-800">Actualités</h3>
+
+                <button onclick="ouvrirTab('tab-actus')" class="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-or flex md:flex-col items-center md:items-center text-left md:text-center hover:shadow-md transition-all gap-4 md:gap-0">
+                    <span class="text-3xl md:text-4xl md:mb-4">📢</span>
+                    <div>
+                        <h3 class="text-base md:text-lg font-extrabold text-slate-800">Actualités</h3>
+                        <p class="text-xs text-slate-400 font-semibold md:hidden mt-0.5">Publier et modifier les articles</p>
+                    </div>
                 </button>
-                <button onclick="ouvrirTab('tab-messes')" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400 text-center hover:shadow-md hover:-translate-y-1 transition-all">
-                    <span class="text-4xl block mb-4">⛪</span>
-                    <h3 class="text-lg font-extrabold text-slate-800">Messes & Événements</h3>
+
+                <button onclick="ouvrirTab('tab-messes')" class="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400 flex md:flex-col items-center md:items-center text-left md:text-center hover:shadow-md transition-all gap-4 md:gap-0">
+                    <span class="text-3xl md:text-4xl md:mb-4">⛪</span>
+                    <div>
+                        <h3 class="text-base md:text-lg font-extrabold text-slate-800">Messes & Événements</h3>
+                        <p class="text-xs text-slate-400 font-semibold md:hidden mt-0.5">Gérer le calendrier</p>
+                    </div>
                 </button>
-                <button onclick="ouvrirTab('tab-eglises')" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400 text-center hover:shadow-md hover:-translate-y-1 transition-all">
-                    <span class="text-4xl block mb-4">🗝️</span>
-                    <h3 class="text-lg font-extrabold text-slate-800">Églises & Horaires</h3>
+
+                <button onclick="ouvrirTab('tab-eglises')" class="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400 flex md:flex-col items-center md:items-center text-left md:text-center hover:shadow-md transition-all gap-4 md:gap-0">
+                    <span class="text-3xl md:text-4xl md:mb-4">🗝️</span>
+                    <div>
+                        <h3 class="text-base md:text-lg font-extrabold text-slate-800">Églises & Horaires</h3>
+                        <p class="text-xs text-slate-400 font-semibold md:hidden mt-0.5">Modifier l'ouverture des édifices</p>
+                    </div>
                 </button>
-                <button onclick="ouvrirTab('tab-presbytere')" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400 text-center hover:shadow-md hover:-translate-y-1 transition-all">
-                    <span class="text-4xl block mb-4">📞</span>
-                    <h3 class="text-lg font-extrabold text-slate-800">Presbytère & Contacts</h3>
+
+                <button onclick="ouvrirTab('tab-presbytere')" class="bg-white p-5 md:p-8 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400 flex md:flex-col items-center md:items-center text-left md:text-center hover:shadow-md transition-all gap-4 md:gap-0">
+                    <span class="text-3xl md:text-4xl md:mb-4">📞</span>
+                    <div>
+                        <h3 class="text-base md:text-lg font-extrabold text-slate-800">Presbytère & Contacts</h3>
+                        <p class="text-xs text-slate-400 font-semibold md:hidden mt-0.5">Adresse, téléphone et permanences</p>
+                    </div>
                 </button>
-                <button onclick="ouvrirTab('tab-parametres')" class="bg-slate-900 p-8 rounded-2xl shadow-sm border border-slate-800 border-t-4 border-red-500 text-center hover:shadow-md hover:-translate-y-1 transition-all">
-                    <span class="text-4xl block mb-4">⚙️</span>
-                    <h3 class="text-lg font-extrabold text-white">Paramètres & Sécurité</h3>
+
+                <button onclick="ouvrirTab('tab-parametres')" class="bg-slate-900 p-5 md:p-8 rounded-2xl shadow-sm border border-slate-800 border-t-4 border-red-500 flex md:flex-col items-center md:items-center text-left md:text-center hover:shadow-md transition-all gap-4 md:gap-0">
+                    <span class="text-3xl md:text-4xl md:mb-4">⚙️</span>
+                    <div>
+                        <h3 class="text-base md:text-lg font-extrabold text-white">Paramètres & Sécurité</h3>
+                        <p class="text-xs text-slate-400 font-semibold md:hidden mt-0.5">Maintenance et bannières</p>
+                    </div>
                 </button>
+
             </div>
 
-            <!-- CONTENEUR DES PAGES SPÉCIFIQUES -->
             <div id="admin-content" class="hidden">
-                <button onclick="retourMenu()" class="mb-6 bg-white border border-slate-300 text-slate-700 px-4 py-2 rounded-lg font-bold text-sm hover:bg-slate-50 shadow-sm transition-colors">
-                    ⬅ Retour au menu
+                <button onclick="retourMenu()" class="mb-6 bg-white border border-slate-300 text-slate-700 px-4 py-2.5 rounded-xl font-bold text-sm hover:bg-slate-50 shadow-sm transition-colors flex items-center gap-2">
+                    <span>⬅</span> Retour au menu
                 </button>
 
                 <!-- 1. ABONNÉS T.U. -->
                 <div id="tab-tu" class="admin-tab hidden">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-violet">
                         <div class="flex justify-between items-center mb-6 border-b border-slate-100 pb-4">
-                            <h3 class="text-xl font-extrabold text-slate-800 flex items-center gap-3"><span>📬</span> Abonnés au Trait d'Union</h3>
+                            <h3 class="text-lg md:text-xl font-extrabold text-slate-800 flex items-center gap-3"><span>📬</span> Abonnés au Trait d'Union</h3>
                         </div>
-                        <p class="text-sm text-slate-500 font-bold mb-4">Voici la liste des personnes ayant demandé à recevoir le Trait d'Union par e-mail. Cliquez sur "Marquer comme Ajouté" une fois que vous avez copié leur e-mail dans votre logiciel d'envoi.</p>
+                        <p class="text-sm text-slate-500 font-bold mb-4">Voici la liste des personnes ayant demandé à recevoir le Trait d'Union par e-mail.</p>
                         
                         <div id="liste-abonnements" class="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar pr-2">
                             <p class="text-slate-400 font-semibold text-sm">Chargement...</p>
@@ -89,7 +111,7 @@
                 <div id="tab-actus" class="admin-tab hidden">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-or">
-                            <h3 class="text-xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span>📢</span> Rédiger une Actualité</h3>
+                            <h3 class="text-lg md:text-xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span>📢</span> Rédiger une Actualité</h3>
                             <div class="space-y-4">
                                 <input type="text" id="actu-titre" placeholder="Titre" class="w-full border border-slate-300 p-3 rounded-xl font-bold text-sm">
                                 <input type="date" id="actu-date" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm text-slate-600">
@@ -98,7 +120,7 @@
                             </div>
                         </div>
                         <div class="bg-slate-50 p-6 rounded-2xl shadow-sm border border-slate-200">
-                            <h3 class="text-xl font-extrabold text-slate-800 mb-6">🗑️ Gérer les Actualités</h3>
+                            <h3 class="text-lg md:text-xl font-extrabold text-slate-800 mb-6">🗑️ Gérer les Actualités</h3>
                             <div id="liste-actus" class="space-y-2 font-semibold text-sm max-h-[500px] overflow-y-auto custom-scrollbar"></div>
                         </div>
                     </div>
@@ -108,10 +130,10 @@
                 <div id="tab-messes" class="admin-tab hidden">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400">
-                            <h3 class="text-xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span>⛪</span> Ajouter un événement</h3>
+                            <h3 class="text-lg md:text-xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span>⛪</span> Ajouter un événement</h3>
                             <div class="space-y-4">
                                 <select id="messe-lieu" class="w-full border border-slate-300 p-3 rounded-xl font-bold text-slate-800 outline-none bg-slate-50 text-sm"></select>
-                                <div class="grid grid-cols-2 gap-3">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <input type="date" id="messe-jour" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm text-slate-600">
                                     <input type="time" id="messe-heure" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm text-slate-600">
                                 </div>
@@ -120,7 +142,7 @@
                             </div>
                         </div>
                         <div class="bg-slate-50 p-6 rounded-2xl shadow-sm border border-slate-200">
-                            <h3 class="text-xl font-extrabold text-slate-800 mb-6">🗑️ Gérer l'Agenda</h3>
+                            <h3 class="text-lg md:text-xl font-extrabold text-slate-800 mb-6">🗑️ Gérer l'Agenda</h3>
                             <div id="liste-messes" class="space-y-2 font-semibold text-sm max-h-[500px] overflow-y-auto custom-scrollbar"></div>
                         </div>
                     </div>
@@ -130,7 +152,7 @@
                 <div id="tab-eglises" class="admin-tab hidden">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400">
-                            <h3 class="text-xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span>🗝️</span> Créer / Modifier une Église</h3>
+                            <h3 class="text-lg md:text-xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span>🗝️</span> Créer / Modifier une Église</h3>
                             <div class="space-y-4">
                                 <input type="text" id="eglise-nom" placeholder="Nom de l'église (ex: Notre-Dame)" class="w-full border border-slate-300 p-3 rounded-xl font-bold text-sm">
                                 <textarea id="eglise-horaires" placeholder="Texte public des horaires..." class="w-full border border-slate-300 p-3 rounded-xl font-medium text-sm h-20"></textarea>
@@ -142,8 +164,8 @@
                                         <option value="semaine_we">Semaine / Samedi / Dimanche</option>
                                     </select>
                                     <div id="bloc-tous" class="hidden space-y-2 text-sm">
-                                        <div class="flex gap-2"><span class="w-14 font-semibold">Matin:</span><input type="time" id="tous-m-s" class="border p-1 rounded-md"> à <input type="time" id="tous-m-e" class="border p-1 rounded-md"></div>
-                                        <div class="flex gap-2"><span class="w-14 font-semibold">Aprem:</span><input type="time" id="tous-a-s" class="border p-1 rounded-md"> à <input type="time" id="tous-a-e" class="border p-1 rounded-md"></div>
+                                        <div class="flex flex-wrap gap-2"><span class="w-14 font-semibold">Matin:</span><input type="time" id="tous-m-s" class="border p-1 rounded-md"> à <input type="time" id="tous-m-e" class="border p-1 rounded-md"></div>
+                                        <div class="flex flex-wrap gap-2"><span class="w-14 font-semibold">Aprem:</span><input type="time" id="tous-a-s" class="border p-1 rounded-md"> à <input type="time" id="tous-a-e" class="border p-1 rounded-md"></div>
                                     </div>
                                     <div id="bloc-semaine" class="hidden space-y-3 text-sm">
                                         <div><span class="font-bold text-violet block mb-1">Semaine</span><div class="flex flex-wrap gap-2"><input type="time" id="sem-m-s" class="border p-1 rounded-md w-24"> à <input type="time" id="sem-m-e" class="border p-1 rounded-md w-24"><span class="mx-1">|</span><input type="time" id="sem-a-s" class="border p-1 rounded-md w-24"> à <input type="time" id="sem-a-e" class="border p-1 rounded-md w-24"></div></div>
@@ -160,7 +182,7 @@
                             </div>
                         </div>
                         <div class="bg-slate-50 p-6 rounded-2xl shadow-sm border border-slate-200">
-                            <h3 class="text-xl font-extrabold text-slate-800 mb-6">🗑️ Gérer les Églises</h3>
+                            <h3 class="text-lg md:text-xl font-extrabold text-slate-800 mb-6">🗑️ Gérer les Églises</h3>
                             <div id="liste-eglises" class="space-y-2 font-semibold text-sm max-h-[500px] overflow-y-auto custom-scrollbar"></div>
                         </div>
                     </div>
@@ -169,7 +191,7 @@
                 <!-- 5. PRESBYTÈRE -->
                 <div id="tab-presbytere" class="admin-tab hidden">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-slate-400">
-                        <h3 class="text-xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span>📞</span> Coordonnées du Presbytère</h3>
+                        <h3 class="text-lg md:text-xl font-extrabold text-slate-800 mb-6 flex items-center gap-3"><span>📞</span> Coordonnées du Presbytère</h3>
                         <div class="space-y-4 max-w-2xl mx-auto">
                             <textarea id="contact-adresse" placeholder="Adresse" class="w-full border border-slate-300 p-3 rounded-xl h-20 font-semibold text-sm outline-none"></textarea>
                             <input type="text" id="contact-tel" placeholder="Téléphone" class="w-full border border-slate-300 p-3 rounded-xl font-semibold text-sm outline-none">
@@ -189,7 +211,7 @@
                         <div class="space-y-8">
                             <!-- Maintenance -->
                             <div class="bg-red-50 p-6 rounded-2xl shadow-sm border border-red-200 border-t-4 border-red-500">
-                                <h3 class="text-xl font-extrabold text-red-800 mb-4 flex items-center gap-2"><span>🛑</span> Maintenance Générale</h3>
+                                <h3 class="text-lg md:text-xl font-extrabold text-red-800 mb-4 flex items-center gap-2"><span>🛑</span> Maintenance Générale</h3>
                                 <div class="space-y-4">
                                     <label class="flex items-center gap-3 bg-white p-3 rounded-xl border border-red-300 cursor-pointer shadow-sm">
                                         <input type="checkbox" id="site-pause" class="w-6 h-6 accent-red-600 rounded">
@@ -201,7 +223,7 @@
                             </div>
                             <!-- Bannière Accueil -->
                             <div class="bg-amber-50 p-6 rounded-2xl shadow-sm border border-amber-200 border-t-4 border-amber-500">
-                                <h3 class="text-xl font-extrabold text-amber-800 mb-4 flex items-center gap-2"><span>📣</span> Bannière d'accueil</h3>
+                                <h3 class="text-lg md:text-xl font-extrabold text-amber-800 mb-4 flex items-center gap-2"><span>📣</span> Bannière d'accueil</h3>
                                 <div class="space-y-4">
                                     <label class="flex items-center gap-3 bg-white p-3 rounded-xl border border-amber-300 cursor-pointer shadow-sm">
                                         <input type="checkbox" id="site-banner-toggle" class="w-6 h-6 accent-amber-600 rounded">
@@ -214,17 +236,9 @@
                         </div>
 
                         <div class="space-y-8">
-                            <!-- IP Bannies (Réservé Admin Principal) -->
-                            <div id="section-bannissements" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-red-600">
-                                <h3 class="text-xl font-extrabold text-red-600 mb-2 flex items-center gap-2"><span>🛡️</span> Adresses IP Bannies</h3>
-                                <p class="text-sm text-slate-500 font-bold mb-4">Gérez les personnes bloquées.</p>
-                                <div id="liste-bannis" class="space-y-2 max-h-48 overflow-y-auto custom-scrollbar bg-slate-50 p-3 rounded-xl border border-slate-200">
-                                    <p class="text-slate-400 font-semibold text-sm">Chargement...</p>
-                                </div>
-                            </div>
                             <!-- Nettoyage Bonnes Ondes -->
                             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-t-4 border-pink-400">
-                                <h3 class="text-xl font-extrabold text-slate-800 mb-4 flex items-center gap-2"><span>✨</span> Modération Bonnes Ondes</h3>
+                                <h3 class="text-lg md:text-xl font-extrabold text-slate-800 mb-4 flex items-center gap-2"><span>✨</span> Modération Bonnes Ondes</h3>
                                 <div id="liste-ondes" class="space-y-2 font-semibold text-xs max-h-[300px] overflow-y-auto custom-scrollbar"></div>
                             </div>
                         </div>
@@ -249,7 +263,6 @@
         
         let eglisesData=[], messesData=[], actusData=[];
         let editEgliseId = null, editMesseId = null, editActuId = null;
-        let currentUserEmail = "";
 
         var quill = new Quill('#editeur-actu', { theme: 'snow', modules: { toolbar: [ [{ 'header': [2, 3, false] }], ['bold', 'italic', 'underline'], ['link', 'image'], ['clean'] ] } });
 
@@ -260,12 +273,6 @@
                 document.getElementById('section-dashboard').classList.remove('hidden'); 
                 document.getElementById('btn-logout').classList.remove('hidden'); 
                 
-                currentUserEmail = session.user.email;
-                if (currentUserEmail === 'n.antoinemich@gmail.com') {
-                    document.getElementById('section-bannissements').classList.remove('hidden');
-                    chargerBannis();
-                }
-
                 chargerDonnees(); chargerContactAdmin(); chargerConfig(); chargerAbonnements();
             }
         }
@@ -278,33 +285,33 @@
 
         async function seDeconnecter() { await _supabase.auth.signOut(); location.reload(); }
 
-        /* NAVIGATION INTERNE (TABS) */
         function ouvrirTab(tabId) {
             document.getElementById('admin-home').classList.add('hidden');
             document.getElementById('admin-content').classList.remove('hidden');
             document.querySelectorAll('.admin-tab').forEach(el => el.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function retourMenu() {
             document.getElementById('admin-content').classList.add('hidden');
             document.getElementById('admin-home').classList.remove('hidden');
             document.querySelectorAll('.admin-tab').forEach(el => el.classList.add('hidden'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        /* GESTION DES ABONNÉS T.U. */
         async function chargerAbonnements() {
             const { data } = await _supabase.from('abonnements_tu').select('*').order('created_at', { ascending: false });
             const c = document.getElementById('liste-abonnements');
             if(!data || data.length === 0) { c.innerHTML = '<p class="text-slate-500 font-semibold text-sm">Aucun abonné pour le moment.</p>'; return; }
             
             c.innerHTML = data.map(a => `
-                <div class="flex justify-between items-center bg-slate-50 p-4 rounded-xl border border-slate-200 mb-2">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-50 p-4 rounded-xl border border-slate-200 mb-2 gap-3">
                     <div>
-                        <span class="font-extrabold text-slate-800 text-sm block md:inline">${a.email}</span>
-                        <span class="md:ml-3 px-2 py-1 rounded text-[10px] font-bold uppercase inline-block mt-1 md:mt-0 ${a.statut === 'Nouveau' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}">${a.statut}</span>
+                        <span class="font-extrabold text-slate-800 text-sm block">${a.email}</span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase inline-block mt-1 ${a.statut === 'Nouveau' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}">${a.statut}</span>
                     </div>
-                    <div class="flex flex-col md:flex-row gap-2">
+                    <div class="flex gap-2 w-full sm:w-auto justify-end">
                         ${a.statut === 'Nouveau' ? `<button onclick="marquerAbo('${a.id}')" class="bg-violet text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm hover:bg-prune transition-colors">Marquer comme Ajouté</button>` : ''}
                         <button onclick="supprimerAbo('${a.id}')" class="bg-red-100 text-red-600 hover:bg-red-200 px-3 py-1.5 rounded-lg text-xs font-bold transition-colors">Supprimer</button>
                     </div>
@@ -324,7 +331,6 @@
             }
         }
 
-        /* CONFIGURATION & BANNISSEMENTS */
         async function chargerConfig() {
             const { data } = await _supabase.from('site_config').select('*').eq('id', 1).single();
             if(data) {
@@ -345,28 +351,6 @@
             alert("Paramètres enregistrés avec succès !");
         }
 
-        async function chargerBannis() {
-            const { data } = await _supabase.from('ip_bannies').select('*').order('banni_le', { ascending: false });
-            const container = document.getElementById('liste-bannis');
-            if (!data || data.length === 0) { container.innerHTML = '<p class="text-emerald-600 font-bold text-xs">Aucune IP n\'est bannie.</p>'; return; }
-            
-            container.innerHTML = data.map(b => `
-                <div class="flex justify-between items-center bg-white p-2 rounded-lg border border-red-100">
-                    <div>
-                        <span class="font-black text-red-700 text-sm">${b.ip}</span>
-                    </div>
-                    <button onclick="debannir(${b.id})" class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-bold hover:bg-red-200">Débannir</button>
-                </div>
-            `).join('');
-        }
-
-        async function debannir(id) {
-            if(!confirm("Redonner l'accès au site à cette personne ?")) return;
-            await _supabase.from('ip_bannies').delete().eq('id', id);
-            chargerBannis();
-        }
-
-        /* MÉTHODES GÉNÉRALES (ÉGLISES, MESSES, ACTUS) */
         function toggleHoraires() {
             const type = document.getElementById('eglise-type').value;
             document.getElementById('bloc-tous').classList.add('hidden'); document.getElementById('bloc-semaine').classList.add('hidden');
@@ -420,16 +404,16 @@
         async function chargerDonnees() {
             const { data: eglises } = await _supabase.from('horaires_eglises').select('*'); eglisesData = eglises||[];
             const sL = document.getElementById('messe-lieu'); sL.innerHTML = '<option value="" disabled selected>Église...</option>';
-            document.getElementById('liste-eglises').innerHTML = eglisesData.map(e => { sL.innerHTML += `<option value="${e.nom}">${e.nom}</option>`; return `<div class="flex justify-between items-center bg-white p-2 rounded-lg border border-slate-200"><span class="truncate" title="${e.nom}">${e.nom}</span> <div class="flex gap-2"><button onclick="editEglise(${e.id})" class="text-violet">✏️</button><button onclick="supprimer('horaires_eglises', ${e.id})" class="text-red-500">✖</button></div></div>`; }).join('');
+            document.getElementById('liste-eglises').innerHTML = eglisesData.map(e => { sL.innerHTML += `<option value="${e.nom}">${e.nom}</option>`; return `<div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-slate-200"><span class="truncate" title="${e.nom}">${e.nom}</span> <div class="flex gap-2"><button onclick="editEglise(${e.id})" class="text-violet font-bold">✏️</button><button onclick="supprimer('horaires_eglises', ${e.id})" class="text-red-500 font-bold">✖</button></div></div>`; }).join('');
 
             const { data: messes } = await _supabase.from('horaires_messes').select('*').order('jour', {ascending: true}); messesData = messes||[];
-            document.getElementById('liste-messes').innerHTML = messesData.map(m => `<div class="flex justify-between items-center bg-white p-2 rounded-lg border border-slate-200"><span class="truncate">${m.lieu.split('–')[0]} - ${m.jour}</span> <div class="flex gap-2"><button onclick="editMesse(${m.id})" class="text-violet">✏️</button><button onclick="supprimer('horaires_messes', ${m.id})" class="text-red-500">✖</button></div></div>`).join('');
+            document.getElementById('liste-messes').innerHTML = messesData.map(m => `<div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-slate-200"><span class="truncate">${m.lieu.split('–')[0]} - ${m.jour}</span> <div class="flex gap-2"><button onclick="editMesse(${m.id})" class="text-violet font-bold">✏️</button><button onclick="supprimer('horaires_messes', ${m.id})" class="text-red-500 font-bold">✖</button></div></div>`).join('');
 
             const { data: actus } = await _supabase.from('actualites').select('*'); actusData = actus||[];
-            document.getElementById('liste-actus').innerHTML = actusData.map(a => `<div class="flex justify-between items-center bg-white p-2 rounded-lg border border-slate-200"><span class="truncate">${a.titre}</span> <div class="flex gap-2"><button onclick="editActu(${a.id})" class="text-or">✏️</button><button onclick="supprimer('actualites', ${a.id})" class="text-red-500">✖</button></div></div>`).join('');
+            document.getElementById('liste-actus').innerHTML = actusData.map(a => `<div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-slate-200"><span class="truncate">${a.titre}</span> <div class="flex gap-2"><button onclick="editActu(${a.id})" class="text-or font-bold">✏️</button><button onclick="supprimer('actualites', ${a.id})" class="text-red-500 font-bold">✖</button></div></div>`).join('');
 
             const { data: ondes } = await _supabase.from('bonnes_ondes').select('*');
-            document.getElementById('liste-ondes').innerHTML = (ondes||[]).map(o => `<div class="flex justify-between items-center bg-white p-2 rounded-lg border border-slate-200"><span class="truncate italic text-slate-600">"${o.message}"</span> <button onclick="supprimer('bonnes_ondes', ${o.id})" class="text-red-500">✖</button></div>`).join('');
+            document.getElementById('liste-ondes').innerHTML = (ondes||[]).map(o => `<div class="flex justify-between items-center bg-white p-2.5 rounded-lg border border-slate-200"><span class="truncate italic text-slate-600">"${o.message}"</span> <button onclick="supprimer('bonnes_ondes', ${o.id})" class="text-red-500 font-bold">✖</button></div>`).join('');
         }
 
         function editEglise(id) { const e = eglisesData.find(x => x.id === id); editEgliseId = e.id; document.getElementById('eglise-nom').value = e.nom; document.getElementById('eglise-horaires').value = e.horaires_base || ''; document.getElementById('eglise-type').value = 'inconnu'; ['tous-m-s','tous-m-e','tous-a-s','tous-a-e','sem-m-s','sem-m-e','sem-a-s','sem-a-e','sam-m-s','sam-m-e','sam-a-s','sam-a-e','dim-m-s','dim-m-e','dim-a-s','dim-a-e'].forEach(id => document.getElementById(id).value = ''); if(e.horaires_json) { try { const h = JSON.parse(e.horaires_json); document.getElementById('eglise-type').value = h.type || 'inconnu'; if(h.type) { ['tous_m_s','tous_m_e','tous_a_s','tous_a_e','sem_m_s','sem_m_e','sem_a_s','sem_a_e','sam_m_s','sam_m_e','sam_a_s','sam_a_e','dim_m_s','dim_m_e','dim_a_s','dim-a-e'].forEach(key => { if(h[key]) document.getElementById(key.replace(/_/g, '-')).value = h[key]; }); } } catch(err) {} } toggleHoraires(); document.getElementById('eglise-estferme').checked = e.est_ferme; document.getElementById('eglise-alerte').value = e.alerte || ''; window.scrollTo({top:0, behavior:'smooth'}); }
