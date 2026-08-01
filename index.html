@@ -24,11 +24,10 @@
         <div class="bg-white text-slate-800 p-8 rounded-3xl shadow-2xl max-w-md text-center border-t-8 border-red-500">
             <span class="text-4xl mb-3 block">🚫</span>
             <h2 class="text-2xl font-black mb-2 text-red-600">Accès restreint</h2>
-            <p class="text-slate-600 font-medium text-sm leading-relaxed">Votre accès à ce site a été suspendu suite à un non-respect des règles de la communauté paroissiale.</p>
+            <p class="text-slate-600 font-medium text-sm leading-relaxed">Votre accès à ce site a été suspendu suite à un non-respect des règles de la communauté.</p>
         </div>
     </div>
 
-    <!-- BANNIÈRE D'ACCUEIL -->
     <div id="banner-accueil" class="hidden bg-or text-slate-900 font-bold px-6 py-3 flex justify-between items-center relative z-[60] shadow-sm">
         <div id="banner-texte" class="flex-grow text-center text-sm md:text-base"></div>
         <button onclick="document.getElementById('banner-accueil').style.display='none'" class="text-slate-800 hover:text-white transition-colors ml-4 text-xl">✖</button>
@@ -87,7 +86,7 @@
                 <p class="mb-6 font-semibold text-violet-100 relative z-10">Un merci, une prière... Partagez un instant de joie avec la communauté.</p>
                 <div class="flex flex-col md:flex-row gap-8 relative z-10">
                     <div class="w-full md:w-2/5 space-y-3">
-                        <input type="text" id="bo-prenom" placeholder="Votre prénom (facultatif)" class="w-full p-3 rounded-xl outline-none text-slate-800 font-semibold focus:ring-2 focus:ring-or transition-shadow">
+                        <input type="text" id="bo-prenom" placeholder="Votre prénom" class="w-full p-3 rounded-xl outline-none text-slate-800 font-semibold focus:ring-2 focus:ring-or transition-shadow">
                         <textarea id="bo-message" rows="3" placeholder="Votre petit mot ici..." class="w-full p-3 rounded-xl outline-none text-slate-800 font-semibold focus:ring-2 focus:ring-or transition-shadow resize-none"></textarea>
                         <button onclick="envoyerOnde()" class="w-full bg-or text-white font-extrabold text-lg py-3 rounded-xl shadow-md hover:bg-yellow-500 transition-colors">Envoyer</button>
                         <p id="bo-msg" class="text-sm font-bold text-center mt-2"></p>
@@ -109,8 +108,8 @@
 
             <section class="bg-gradient-to-br from-slate-800 to-slate-900 text-white p-8 rounded-2xl shadow-lg border-t-4 border-or relative overflow-hidden group">
                 <h3 class="text-xl font-extrabold text-white mb-4 flex items-center gap-3 relative z-10">📞 Contactez-nous</h3>
-                <p class="text-slate-300 mb-8 font-medium leading-relaxed relative z-10">Laissez nous votre demande, nous reviendront vers vous dans les plus brefs délais.</p>
-                <a href="/contact" class="inline-block bg-or text-slate-900 px-6 py-3 rounded-xl font-bold hover:bg-yellow-400 transition-colors shadow-md w-full text-center relative z-10">Nous écrire</a>
+                <p class="text-slate-300 mb-8 font-medium leading-relaxed relative z-10">Retrouvez les coordonnées du presbytère et inscrivez-vous à notre lettre d'information.</p>
+                <a href="/contact" class="inline-block bg-or text-slate-900 px-6 py-3 rounded-xl font-bold hover:bg-yellow-400 transition-colors shadow-md w-full text-center relative z-10">Voir les contacts</a>
             </section>
         </div>
     </main>
