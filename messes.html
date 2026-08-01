@@ -72,11 +72,20 @@
             <p class="text-slate-500 font-semibold text-base md:text-lg mt-2">Retrouvez toutes les célébrations de la paroisse.</p>
         </div>
         
-        <div class="mb-6 bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-slate-200">
-            <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Filtrer par église</label>
-            <select id="filtre-eglise" onchange="filtrerCalendrier()" class="w-full text-base md:text-lg font-bold text-violet bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none cursor-pointer focus:border-violet transition-colors">
-                <option value="toutes">🌍 Voir toutes les églises</option>
-            </select>
+        <div class="mb-6 bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+            <div>
+                <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Filtrer par église</label>
+                <select id="filtre-eglise" onchange="filtrerCalendrier()" class="w-full text-base md:text-lg font-bold text-violet bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none cursor-pointer focus:border-violet transition-colors">
+                    <option value="toutes">🌍 Voir toutes les églises</option>
+                </select>
+            </div>
+            
+            <div class="pt-2 border-t border-slate-100">
+                <label class="flex items-center gap-3 cursor-pointer w-fit">
+                    <input type="checkbox" id="toggle-passes" onchange="filtrerCalendrier()" class="w-5 h-5 accent-violet rounded cursor-pointer border-slate-300">
+                    <span class="font-bold text-slate-700 text-sm">Afficher les événements passés</span>
+                </label>
+            </div>
         </div>
 
         <div class="bg-violet/5 border border-violet/10 p-3 md:p-4 rounded-xl text-center mb-6">
@@ -94,7 +103,7 @@
         const SUPABASE_URL = 'https://tyxybtrthvmyzjefziop.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_nQf46_VAwZVxUm0hIQUFbA_fBiiaJvP'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        let messesData = [], calendar;
+        let toutesMessesData = [], calendar;
 
         async function checkMaintenance() {
             try {
@@ -109,41 +118,24 @@
         checkMaintenance();
 
         async function chargerMesses() {
-            const today = new Date(); 
-            const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
-            const currentMins = today.getHours() * 60 + today.getMinutes();
-
-            // On ne récupère depuis Supabase que les dates à partir d'aujourd'hui
-            const { data: messes } = await _supabase.from('horaires_messes').select('*').gte('jour', todayStr);
-            
-            // On affine le filtre pour retirer les heures déjà passées du jour même
-            messesData = (messes || []).filter(m => {
-                if (m.jour === todayStr && m.heure) {
-                    const [h, min] = m.heure.split(':').map(Number);
-                    return (h * 60 + min) >= currentMins;
-                }
-                return true;
-            });
+            // On récupère TOUTES les messes depuis Supabase (sans filtrer par la date du jour ici)
+            const { data: messes } = await _supabase.from('horaires_messes').select('*').order('jour', {ascending: true});
+            toutesMessesData = messes || [];
             
             const { data: eglises } = await _supabase.from('horaires_eglises').select('nom');
             const listeEglises = eglises ? eglises.map(e => e.nom) : [];
-            const eglisesDansMesses = messesData.map(m => m.lieu);
+            const eglisesDansMesses = toutesMessesData.map(m => m.lieu);
             
             const toutesEglises = [...new Set([...listeEglises, ...eglisesDansMesses])].filter(Boolean).sort();
 
             const select = document.getElementById('filtre-eglise');
             toutesEglises.forEach(e => select.innerHTML += `<option value="${e}">📍 ${e}</option>`);
             
-            initCalendar(messesData);
+            initCalendar();
+            filtrerCalendrier(); // Applique le filtrage initial
         }
 
-        function initCalendar(donnees) {
-            const evts = donnees.filter(m => m.jour && m.jour.includes('-')).map(m => ({
-                title: `${m.heure} - ${m.lieu.split('–')[0].trim()}`,
-                start: m.jour,
-                extendedProps: { lieu: m.lieu, heure: m.heure, remarques: m.remarques }
-            }));
-
+        function initCalendar() {
             const isMobile = window.innerWidth < 768;
 
             calendar = new FullCalendar.Calendar(document.getElementById('calendrier-messes'), {
@@ -157,7 +149,7 @@
                     right: isMobile ? 'today' : 'dayGridMonth,listMonth' 
                 },
                 buttonText: { today: "Aujourd'hui", month: 'Grille', list: 'Liste' },
-                events: evts,
+                events: [], // Laissé vide au départ, géré par filtrerCalendrier
                 eventClick: function(info) {
                     const p = info.event.extendedProps;
                     alert(`⛪ ${p.lieu}\n🕒 ${p.heure}\n\nℹ️ ${p.remarques || 'Aucune remarque spécifique'}`);
@@ -168,9 +160,33 @@
 
         function filtrerCalendrier() {
             const lc = document.getElementById('filtre-eglise').value;
-            const df = lc === 'toutes' ? messesData : messesData.filter(m => m.lieu === lc);
+            const afficherPasses = document.getElementById('toggle-passes').checked;
+            
+            const today = new Date(); 
+            const todayStr = today.getFullYear() + '-' + String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0');
+            const currentMins = today.getHours() * 60 + today.getMinutes();
+
+            // Filtrer par lieu
+            let df = lc === 'toutes' ? toutesMessesData : toutesMessesData.filter(m => m.lieu === lc);
+
+            // Si la case n'est pas cochée, on masque les événements passés
+            if (!afficherPasses) {
+                df = df.filter(m => {
+                    if (m.jour > todayStr) return true; 
+                    if (m.jour === todayStr && m.heure) {
+                        const [h, min] = m.heure.split(':').map(Number);
+                        return (h * 60 + min) >= currentMins; 
+                    }
+                    return false;
+                });
+            }
+
             calendar.removeAllEvents();
-            calendar.addEventSource(df.filter(m => m.jour && m.jour.includes('-')).map(m => ({ title: `${m.heure} - ${m.lieu.split('–')[0].trim()}`, start: m.jour, extendedProps: { lieu: m.lieu, heure: m.heure, remarques: m.remarques } })));
+            calendar.addEventSource(df.filter(m => m.jour && m.jour.includes('-')).map(m => ({ 
+                title: `${m.heure} - ${m.lieu.split('–')[0].trim()}`, 
+                start: m.jour, 
+                extendedProps: { lieu: m.lieu, heure: m.heure, remarques: m.remarques } 
+            })));
         }
         chargerMesses();
     </script>
