@@ -31,6 +31,14 @@
         .fc-list-event:hover td { background-color: #fef08a !important; }
         .fc-list-event-title a, .fc-list-event-time { color: #334155 !important; font-weight: 700; }
         .fc-list-event-dot { border-color: #eab308 !important; border-width: 4px !important; }
+
+        /* Ajustements pour les petits écrans (Téléphones) */
+        @media (max-width: 768px) {
+            .fc .fc-toolbar { flex-direction: column; gap: 12px; }
+            .fc .fc-toolbar-title { font-size: 1.3rem; }
+            .fc .fc-button { padding: 0.4rem 0.6rem; font-size: 0.85rem; }
+            .fc-view-harness { min-height: 400px; }
+        }
     </style>
 </head>
 <body class="bg-fond text-texte font-sans min-h-screen flex flex-col relative">
@@ -50,42 +58,42 @@
     </div>
 
     <header class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-violet/10">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-center">
+        <div class="max-w-6xl mx-auto px-4 md:px-6 py-4 flex flex-col md:flex-row justify-between items-center">
             <div class="flex items-center gap-3">
                 <div class="bg-violet text-or p-2 rounded-xl shadow-md">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 3v18m-6-12h12"></path></svg>
                 </div>
-                <div><span class="text-2xl font-extrabold text-violet tracking-tight">Saint-François d'Assise</span></div>
+                <div><span class="text-xl md:text-2xl font-extrabold text-violet tracking-tight">Saint-François d'Assise</span></div>
             </div>
-            <nav class="mt-4 md:mt-0 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm font-bold text-slate-500">
+            <nav class="mt-4 md:mt-0 flex flex-wrap justify-center gap-x-4 md:gap-x-5 gap-y-2 text-sm font-bold text-slate-500">
                 <a href="/" class="hover:text-violet transition-colors">Accueil</a>
                 <a href="/actualites" class="hover:text-violet transition-colors">Actualités</a>
-                <a href="/messes" class="text-violet border-b-2 border-violet pb-1">Messes & autres événements</a>
+                <a href="/messes" class="text-violet border-b-2 border-violet pb-1">Messes & événements</a>
                 <a href="/horaires" class="hover:text-violet transition-colors">Ouverture Églises</a>
                 <a href="/contact" class="hover:text-violet transition-colors">Contact / Aide</a>
             </nav>
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-6 py-12 flex-grow w-full">
-        <div class="text-center mb-10">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-slate-800 tracking-tight">Messes & Événements</h1>
-            <p class="text-slate-500 font-semibold text-lg mt-2">Retrouvez toutes les célébrations de la paroisse.</p>
+    <main class="max-w-5xl mx-auto px-4 md:px-6 py-8 md:py-12 flex-grow w-full">
+        <div class="text-center mb-8 md:mb-10">
+            <h1 class="text-3xl md:text-5xl font-extrabold text-slate-800 tracking-tight">Messes & Événements</h1>
+            <p class="text-slate-500 font-semibold text-base md:text-lg mt-2">Retrouvez toutes les célébrations de la paroisse.</p>
         </div>
         
-        <div class="mb-6 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+        <div class="mb-6 bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-slate-200">
             <label class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">Filtrer par église</label>
-            <select id="filtre-eglise" onchange="filtrerCalendrier()" class="w-full text-lg font-bold text-violet bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none cursor-pointer focus:border-violet transition-colors">
+            <select id="filtre-eglise" onchange="filtrerCalendrier()" class="w-full text-base md:text-lg font-bold text-violet bg-slate-50 border border-slate-200 p-3 rounded-xl outline-none cursor-pointer focus:border-violet transition-colors">
                 <option value="toutes">🌍 Voir toutes les églises</option>
             </select>
         </div>
 
         <!-- PETIT MESSAGE D'ASTUCE -->
-        <div class="bg-violet/5 border border-violet/10 p-4 rounded-xl text-center mb-6">
-            <p class="text-violet font-bold text-sm">💡 Astuce : Cliquez sur un événement dans le calendrier pour afficher ses détails (remarques, informations).</p>
+        <div class="bg-violet/5 border border-violet/10 p-3 md:p-4 rounded-xl text-center mb-6">
+            <p class="text-violet font-bold text-xs md:text-sm">💡 Astuce : Cliquez sur un événement dans le calendrier pour afficher ses détails (remarques, informations).</p>
         </div>
 
-        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+        <div class="bg-white rounded-2xl p-4 md:p-6 shadow-sm border border-slate-200">
             <div id="calendrier-messes"></div>
         </div>
     </main>
@@ -144,14 +152,24 @@
                 extendedProps: { lieu: m.lieu, heure: m.heure, remarques: m.remarques }
             }));
 
+            // Si l'écran est petit (smartphone), on met "listMonth" (liste) par défaut
+            const isMobile = window.innerWidth < 768;
+
             calendar = new FullCalendar.Calendar(document.getElementById('calendrier-messes'), {
-                initialView: 'dayGridMonth', locale: 'fr', firstDay: 1, height: 'auto',
-                headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,listMonth' },
+                initialView: isMobile ? 'listMonth' : 'dayGridMonth', 
+                locale: 'fr', 
+                firstDay: 1, 
+                height: 'auto',
+                headerToolbar: { 
+                    left: 'prev,next', 
+                    center: 'title', 
+                    right: isMobile ? 'today' : 'dayGridMonth,listMonth' 
+                },
                 buttonText: { today: "Aujourd'hui", month: 'Grille', list: 'Liste' },
                 events: evts,
                 eventClick: function(info) {
                     const p = info.event.extendedProps;
-                    alert(`⛪ ${p.lieu}\n🕒 ${p.heure}\n\nℹ️ ${p.remarques || 'Aucune remarque'}`);
+                    alert(`⛪ ${p.lieu}\n🕒 ${p.heure}\n\nℹ️ ${p.remarques || 'Aucune remarque spécifique'}`);
                 }
             });
             calendar.render();
